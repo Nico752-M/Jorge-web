@@ -1,0 +1,1 @@
+# Ya no se usa este archivo — las dependencias ahora están en el requirements.txt de la raíz del proyecto (Vercel lo exige ahí).

@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Panel · Café Real{% endblock %}
+{% block contenido %}
+
+<section class="bloque">
+  <h2>Bandeja de solicitudes de alquiler</h2>
+  {% if not solicitudes %}
+    <p class="vacio">No hay solicitudes pendientes por ahora.</p>
+  {% else %}
+  <table class="tabla">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Teléfono</th>
+        <th>Fecha deseada</th>
+        <th>Hora aprox.</th>
+        <th>Tipo de evento</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in solicitudes %}
+      {% set id, nombre, telefono, fecha, hora, tipo_ev, estado = s %}
+      <tr>
+        <td>{{ nombre }}</td>
+        <td>{{ telefono }}</td>
+        <td>{{ fecha }}</td>
+        <td>{{ hora or "—" }}</td>
+        <td>{{ tipo_ev or "—" }}</td>
+        <td><span class="badge badge-{{ estado|lower }}">{{ estado }}</span></td>
+        <td class="acciones">
+          <a class="btn-mini btn-wa" target="_blank"
+             href="https://wa.me/{{ telefono|replace(' ','')|replace('+','')|replace('-','') }}">
+             Contactar por WhatsApp
+          </a>
+          {% if estado == 'PENDIENTE' %}
+            <a class="btn-mini" href="{{ url_for('marcar_contactado', solicitud_id=id) }}">Marcar contactado</a>
+          {% endif %}
+          <a class="btn-mini btn-confirmar" href="{{ url_for('confirmar_solicitud', solicitud_id=id) }}">Confirmar</a>
+          <a class="btn-mini btn-rechazar" href="{{ url_for('rechazar_solicitud', solicitud_id=id) }}"
+             onclick="return confirm('¿Seguro que quieres rechazar esta solicitud?')">Rechazar</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+</section>
+
+<section class="bloque">
+  <h2>Eventos activos</h2>
+  {% if not eventos %}
+    <p class="vacio">Todavía no hay eventos creados.</p>
+  {% else %}
+  <table class="tabla">
+    <thead>
+      <tr>
+        <th>Tipo</th>
+        <th>Título</th>
+        <th>Inicio</th>
+        <th>Fin</th>
+        <th>Cupos</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for e in eventos %}
+      {% set id, tipo, titulo, inicio, fin, aforo_disp, aforo_total = e %}
+      <tr>
+        <td><span class="badge badge-tipo-{{ tipo|lower }}">{{ tipo }}</span></td>
+        <td>{{ titulo }}</td>
+        <td>{{ inicio }}</td>
+        <td>{{ fin or "—" }}</td>
+        <td>
+          {% if tipo == 'CUPOS' %}
+            {{ aforo_disp }} / {{ aforo_total }} disponibles
+          {% else %}
+            —
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+</section>
+
+{% endblock %}

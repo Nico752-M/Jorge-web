@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Confirmar alquiler · Café Real{% endblock %}
+{% block contenido %}
+
+{% set id, nombre, telefono, fecha_deseada, hora_aprox, tipo_evento = s %}
+
+<section class="bloque bloque-angosto">
+  <h2>Confirmar solicitud de alquiler</h2>
+  <div class="resumen-solicitud">
+    <p><b>Cliente:</b> {{ nombre }} · {{ telefono }}</p>
+    <p><b>Fecha pedida:</b> {{ fecha_deseada }}</p>
+    <p><b>Hora aproximada que pidió:</b> {{ hora_aprox or "no especificó" }}</p>
+    <p><b>Motivo:</b> {{ tipo_evento or "no especificó" }}</p>
+  </div>
+
+  <p class="ayuda">Llena esto después de haber negociado por WhatsApp la hora exacta y el precio final.</p>
+
+  <form method="POST" class="form-confirmar">
+    <label for="titulo">Título del evento / alquiler</label>
+    <input type="text" id="titulo" name="titulo" required placeholder="Ej: Alquiler privado — cumpleaños">
+
+    <label for="fecha">Fecha confirmada</label>
+    <input type="date" id="fecha" name="fecha" required>
+
+    <div class="fila-doble">
+      <div>
+        <label for="hora_inicio">Hora de inicio</label>
+        <input type="time" id="hora_inicio" name="hora_inicio" required>
+      </div>
+      <div>
+        <label for="hora_fin">Hora de fin</label>
+        <input type="time" id="hora_fin" name="hora_fin" required>
+      </div>
+    </div>
+
+    <label for="precio_final">Precio final acordado (COP)</label>
+    <input type="number" id="precio_final" name="precio_final" min="0" step="1000" required placeholder="Ej: 350000">
+
+    <button type="submit" class="btn-solid">Confirmar y bloquear ese horario</button>
+  </form>
+  <a class="volver" href="{{ url_for('dashboard') }}">← Volver a la bandeja</a>
+</section>
+
+{% endblock %}
