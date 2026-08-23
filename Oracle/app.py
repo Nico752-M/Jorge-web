@@ -6,6 +6,8 @@ Ruta oculta: cámbiala en ADMIN_PREFIX por algo que solo ustedes conozcan
 import os
 from datetime import datetime
 
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
+
 import oracledb
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, url_for, session, flash
@@ -60,6 +62,38 @@ def logout():
     session.clear()
     return redirect(url_for("login"))
 
+# =========================================================
+# SOLICITUD PÚBLICA DE ALQUILER (sin login — la llama index.html)
+# =========================================================
+@app.route("/api/solicitudes-alquiler", methods=["POST"])
+def crear_solicitud_alquiler():
+    data = request.get_json(silent=True) or {}
+
+    nombre = (data.get("nombre") or "").strip()
+    telefono = (data.get("telefono") or "").strip()
+    fecha_deseada = data.get("fecha_deseada") or None
+    rango_hora = (data.get("rango_hora_aprox") or "").strip()
+    tipo_evento = (data.get("tipo_evento") or "").strip()
+
+    if not nombre or not telefono:
+        return jsonify({"ok": False, "error": "Faltan nombre o teléfono."}), 400
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        """INSERT INTO SOLICITUDES_ALQUILER
+               (NOMBRE, TELEFONO, FECHA_DESEADA, RANGO_HORA_APROX, TIPO_EVENTO, ESTADO)
+           VALUES (:nombre, :telefono, TO_DATE(:fecha, 'YYYY-MM-DD'), :rango, :tipo, 'PENDIENTE')""",
+        nombre=nombre,
+        telefono=telefono,
+        fecha=fecha_deseada,
+        rango=rango_hora,
+        tipo=tipo_evento,
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify({"ok": True})
 
 # =========================================================
 # DASHBOARD — bandeja de solicitudes + lista de eventos
