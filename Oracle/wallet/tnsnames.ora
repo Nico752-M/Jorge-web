@@ -1,0 +1,12 @@
+cafereal_high = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.sa-bogota-1.oraclecloud.com))(connect_data=(service_name=g473fddcae420b1_cafereal_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+cafereal_medium = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.sa-bogota-1.oraclecloud.com))(connect_data=(service_name=g473fddcae420b1_cafereal_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+cafereal_low = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.sa-bogota-1.oraclecloud.com))(connect_data=(service_name=g473fddcae420b1_cafereal_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+cafereal_tp = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.sa-bogota-1.oraclecloud.com))(connect_data=(service_name=g473fddcae420b1_cafereal_tp.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+cafereal_tpurgent = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.sa-bogota-1.oraclecloud.com))(connect_data=(service_name=g473fddcae420b1_cafereal_tpurgent.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+
+
