@@ -1,3 +1,0 @@
-[tool.vercel]
-# Le dice a Vercel dónde está la instancia de Flask llamada "app"
-entrypoint = "Oracle.app:app"
