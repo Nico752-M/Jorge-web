@@ -75,6 +75,7 @@ def crear_solicitud_alquiler():
     fecha_deseada = data.get("fecha_deseada") or None
     rango_hora = (data.get("rango_hora_aprox") or "").strip()
     tipo_evento = (data.get("tipo_evento") or "").strip()
+    num_personas = data.get("num_personas") or None
 
     if not nombre or not telefono:
         return jsonify({"ok": False, "error": "Faltan nombre o teléfono."}), 400
@@ -83,13 +84,14 @@ def crear_solicitud_alquiler():
     cur = conn.cursor()
     cur.execute(
         """INSERT INTO SOLICITUDES_ALQUILER
-               (NOMBRE, TELEFONO, FECHA_DESEADA, RANGO_HORA_APROX, TIPO_EVENTO, ESTADO)
-           VALUES (:nombre, :telefono, TO_DATE(:fecha, 'YYYY-MM-DD'), :rango, :tipo, 'PENDIENTE')""",
+               (NOMBRE, TELEFONO, FECHA_DESEADA, RANGO_HORA_APROX, TIPO_EVENTO, NUM_PERSONAS, ESTADO)
+           VALUES (:nombre, :telefono, TO_DATE(:fecha, 'YYYY-MM-DD'), :rango, :tipo, :personas, 'PENDIENTE')""",
         nombre=nombre,
         telefono=telefono,
         fecha=fecha_deseada,
         rango=rango_hora,
         tipo=tipo_evento,
+        personas=num_personas,
     )
     conn.commit()
     cur.close()
@@ -107,7 +109,7 @@ def dashboard():
     cur = conn.cursor()
 
     cur.execute(
-        """SELECT ID, NOMBRE, TELEFONO, FECHA_DESEADA, RANGO_HORA_APROX, TIPO_EVENTO, ESTADO
+        """SELECT ID, NOMBRE, TELEFONO, FECHA_DESEADA, RANGO_HORA_APROX, TIPO_EVENTO, NUM_PERSONAS, ESTADO
            FROM SOLICITUDES_ALQUILER
            WHERE ESTADO IN ('PENDIENTE', 'CONTACTADO')
            ORDER BY FECHA_SOLICITUD DESC"""
@@ -115,7 +117,7 @@ def dashboard():
     solicitudes = cur.fetchall()
 
     cur.execute(
-        """SELECT ID, TIPO, TITULO, FECHA_INICIO, FECHA_FIN, AFORO_DISPONIBLE, AFORO_TOTAL, VISIBLE_PUBLICO
+        """SELECT ID, TIPO, TITULO, DESCRIPCION, FECHA_INICIO, FECHA_FIN, AFORO_DISPONIBLE, AFORO_TOTAL, VISIBLE_PUBLICO
            FROM EVENTOS
            WHERE ESTADO = 'ACTIVO'
            ORDER BY FECHA_INICIO"""
@@ -239,7 +241,7 @@ def confirmar_solicitud(solicitud_id):
 
     # GET: mostrar el formulario con los datos de la solicitud
     cur.execute(
-        """SELECT ID, NOMBRE, TELEFONO, FECHA_DESEADA, RANGO_HORA_APROX, TIPO_EVENTO
+        """SELECT ID, NOMBRE, TELEFONO, FECHA_DESEADA, RANGO_HORA_APROX, TIPO_EVENTO, NUM_PERSONAS
            FROM SOLICITUDES_ALQUILER WHERE ID = :id""",
         id=solicitud_id,
     )
