@@ -49,7 +49,51 @@
 </section>
 
 <section class="bloque">
+  <h2>Reservas de cupos por decidir</h2>
+  <p class="ayuda">Estas personas quisieron apartar un cupo pero el evento ya no tenía suficientes. Decide si amplías el aforo o rechazas la reserva.</p>
+  {% if not excedentes %}
+    <p class="vacio">No hay reservas pendientes por exceso de cupos.</p>
+  {% else %}
+  <table class="tabla">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Teléfono</th>
+        <th>Personas</th>
+        <th>Evento</th>
+        <th>Cupos del evento</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in excedentes %}
+      {% set rid, nombre, apellido, telefono, personas, fecha_reserva, evento_id, evento_titulo, aforo_total, aforo_disp = r %}
+      <tr>
+        <td>{{ nombre }} {{ apellido or "" }}</td>
+        <td>{{ telefono }}</td>
+        <td>{{ personas }}</td>
+        <td>{{ evento_titulo }}</td>
+        <td>{{ aforo_disp }} / {{ aforo_total }}</td>
+        <td class="acciones">
+          <a class="btn-mini btn-wa" target="_blank"
+             href="https://wa.me/{{ telefono|replace(' ','')|replace('+','')|replace('-','') }}">
+             Contactar por WhatsApp
+          </a>
+          <a class="btn-mini btn-confirmar" href="{{ url_for('ampliar_reserva_cupo', reserva_id=rid) }}"
+             onclick="return confirm('¿Ampliar el aforo en {{ personas }} cupos y confirmar esta reserva?')">Ampliar y confirmar</a>
+          <a class="btn-mini btn-rechazar" href="{{ url_for('rechazar_reserva_cupo', reserva_id=rid) }}"
+             onclick="return confirm('¿Seguro que quieres rechazar esta reserva?')">Rechazar</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+</section>
+
+<section class="bloque">
   <h2>Eventos activos</h2>
+  <p><a class="btn-mini btn-confirmar" href="{{ url_for('evento_nuevo') }}">+ Crear evento con cupos</a></p>
   {% if not eventos %}
     <p class="vacio">Todavía no hay eventos creados.</p>
   {% else %}
@@ -61,22 +105,36 @@
         <th>Inicio</th>
         <th>Fin</th>
         <th>Cupos</th>
+        <th>Público</th>
+        <th>Acciones</th>
       </tr>
     </thead>
     <tbody>
       {% for e in eventos %}
-      {% set id, tipo, titulo, inicio, fin, aforo_disp, aforo_total = e %}
+      {% set id, tipo, titulo, inicio, fin, aforo_disp, aforo_total, visible = e %}
       <tr>
         <td><span class="badge badge-tipo-{{ tipo|lower }}">{{ tipo }}</span></td>
         <td>{{ titulo }}</td>
         <td>{{ inicio }}</td>
         <td>{{ fin or "—" }}</td>
         <td>
-          {% if tipo == 'CUPOS' %}
+          {% if aforo_total %}
             {{ aforo_disp }} / {{ aforo_total }} disponibles
           {% else %}
             —
           {% endif %}
+        </td>
+        <td>
+          {% if visible == 1 %}
+            <span class="badge badge-confirmado">Visible</span>
+          {% else %}
+            <span class="badge badge-rechazado">Oculto</span>
+          {% endif %}
+        </td>
+        <td class="acciones">
+          <a class="btn-mini" href="{{ url_for('toggle_visible_evento', evento_id=id) }}">
+            {% if visible == 1 %}Ocultar del sitio{% else %}Mostrar al público{% endif %}
+          </a>
         </td>
       </tr>
       {% endfor %}
