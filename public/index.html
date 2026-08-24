@@ -1466,7 +1466,7 @@ function enviarReserva(e){
   // Solo el alquiler del auditorio completo se guarda en el panel admin.
   // Si falla, no bloquea el envío por WhatsApp (por eso no se espera con await).
   if(esAlquilerCompleto){
-    fetch('/api/solicitudes-alquiler', {
+      fetch('/api/solicitudes-alquiler', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -1474,7 +1474,8 @@ function enviarReserva(e){
         telefono: telefono,
         fecha_deseada: fecha || null,
         rango_hora_aprox: mensaje || null,
-        tipo_evento: motivo
+        tipo_evento: motivo,
+        num_personas: personas || null
       })
     }).catch(err => console.error('No se pudo guardar la solicitud en el panel:', err));
   }
