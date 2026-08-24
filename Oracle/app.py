@@ -355,6 +355,25 @@ def rechazar_reserva_cupo(reserva_id):
 # =========================================================
 # EVENTOS PÚBLICOS Y RESERVA DE CUPOS (sin login — los llama index.html)
 # =========================================================
+
+@app.route("/evento/<int:evento_id>/reservar")
+def formulario_reserva(evento_id):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        """SELECT ID, TITULO, DESCRIPCION, FECHA_INICIO, FECHA_FIN, AFORO_TOTAL, AFORO_DISPONIBLE
+           FROM EVENTOS WHERE ID = :id AND ESTADO = 'ACTIVO' AND FECHA_FIN >= SYSTIMESTAMP""",
+        id=evento_id,
+    )
+    evento = cur.fetchone()
+    cur.close()
+    conn.close()
+
+    if not evento:
+        return render_template("evento_no_disponible.html"), 404
+
+    return render_template("reservar_cupo.html", evento=evento)
+
 @app.route("/api/eventos-publicos")
 def eventos_publicos():
     conn = get_connection()
@@ -409,7 +428,7 @@ def crear_reserva_cupo():
     cur = conn.cursor()
 
     cur.execute(
-        "SELECT ID FROM EVENTOS WHERE ID = :id AND VISIBLE_PUBLICO = 1 AND ESTADO = 'ACTIVO'",
+        "SELECT ID FROM EVENTOS WHERE ID = :id AND ESTADO = 'ACTIVO' AND FECHA_FIN >= SYSTIMESTAMP",
         id=evento_id,
     )
     if not cur.fetchone():

@@ -23,7 +23,9 @@
     <tbody>
       {% for s in solicitudes %}
       {% set id, nombre, telefono, fecha, hora, tipo_ev, personas, estado = s %}
-      <tr>
+      <tr data-nombre="{{ nombre }}" data-telefono="{{ telefono }}" data-fecha="{{ fecha }}"
+        data-hora="{{ hora or '—' }}" data-tipo="{{ tipo_ev or '—' }}"
+        data-personas="{{ personas or '—' }}" data-estado="{{ estado }}">
         <td>{{ nombre }}</td>
         <td>{{ telefono }}</td>
         <td>{{ fecha }}</td>
@@ -36,9 +38,7 @@
              href="https://wa.me/{{ telefono|replace(' ','')|replace('+','')|replace('-','') }}">
              Contactar por WhatsApp
           </a>
-          {% if estado == 'PENDIENTE' %}
-            <a class="btn-mini" href="{{ url_for('marcar_contactado', solicitud_id=id) }}">Marcar contactado</a>
-          {% endif %}
+          <button type="button" class="btn-mini" onclick="verDetalleSolicitud(this)">Ver detalles</button>
           <a class="btn-mini btn-confirmar" href="{{ url_for('confirmar_solicitud', solicitud_id=id) }}">Confirmar</a>
           <a class="btn-mini btn-rechazar" href="{{ url_for('rechazar_solicitud', solicitud_id=id) }}"
              onclick="return confirm('¿Seguro que quieres rechazar esta solicitud?')">Rechazar</a>
@@ -64,6 +64,7 @@
         <th>Personas</th>
         <th>Evento</th>
         <th>Cupos del evento</th>
+        <th>Enlace de reserva</th>
         <th>Acciones</th>
       </tr>
     </thead>
@@ -108,6 +109,7 @@
         <th>Fin</th>
         <th>Cupos</th>
         <th>Público</th>
+        <th>Enlace de reserva</th>
         <th>Acciones</th>
       </tr>
     </thead>
@@ -126,7 +128,7 @@
         <td>{{ fin or "—" }}</td>
         <td>
           {% if aforo_total %}
-            {{ aforo_disp }} / {{ aforo_total }} disponibles
+            {{ aforo_total - aforo_disp }} confirmadas de {{ aforo_total }}
           {% else %}
             —
           {% endif %}
@@ -137,6 +139,9 @@
           {% else %}
             <span class="badge badge-rechazado">Oculto</span>
           {% endif %}
+        </td>
+        <td>
+          <button type="button" class="btn-mini" onclick="copiarEnlace(this, '{{ id }}')">Copiar enlace</button>
         </td>
         <td class="acciones">
           <a class="btn-mini" href="{{ url_for('toggle_visible_evento', evento_id=id) }}">
@@ -149,5 +154,42 @@
   </table>
   {% endif %}
 </section>
+
+<div id="modal-detalle" class="modal-overlay hidden" onclick="if(event.target===this) this.classList.add('hidden')">
+  <div class="modal-box">
+    <button class="modal-cerrar" onclick="document.getElementById('modal-detalle').classList.add('hidden')">×</button>
+    <h3>Detalle de la solicitud</h3>
+    <p><b>Nombre:</b> <span id="dd-nombre"></span></p>
+    <p><b>Teléfono:</b> <span id="dd-telefono"></span></p>
+    <p><b>Fecha deseada:</b> <span id="dd-fecha"></span></p>
+    <p><b>Hora aprox:</b> <span id="dd-hora"></span></p>
+    <p><b>Tipo de evento:</b> <span id="dd-tipo"></span></p>
+    <p><b>Personas:</b> <span id="dd-personas"></span></p>
+    <p><b>Estado:</b> <span id="dd-estado"></span></p>
+  </div>
+</div>
+
+<script>
+function verDetalleSolicitud(btn){
+  const tr = btn.closest('tr');
+  document.getElementById('dd-nombre').textContent = tr.dataset.nombre;
+  document.getElementById('dd-telefono').textContent = tr.dataset.telefono;
+  document.getElementById('dd-fecha').textContent = tr.dataset.fecha;
+  document.getElementById('dd-hora').textContent = tr.dataset.hora;
+  document.getElementById('dd-tipo').textContent = tr.dataset.tipo;
+  document.getElementById('dd-personas').textContent = tr.dataset.personas;
+  document.getElementById('dd-estado').textContent = tr.dataset.estado;
+  document.getElementById('modal-detalle').classList.remove('hidden');
+}
+
+function copiarEnlace(btn, eventoId){
+  const url = `${window.location.origin}/evento/${eventoId}/reservar`;
+  navigator.clipboard.writeText(url).then(() => {
+    const original = btn.textContent;
+    btn.textContent = "¡Copiado!";
+    setTimeout(() => btn.textContent = original, 1500);
+  });
+}
+</script>
 
 {% endblock %}

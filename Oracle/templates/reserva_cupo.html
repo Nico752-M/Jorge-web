@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Reservar cupo — {{ evento[1] }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- reutiliza el mismo look de login.html si quieres -->
+</head>
+<body data-evento-id="{{ evento[0] }}">
+  <div class="reserva-box">
+    <h2>{{ evento[1] }}</h2>
+    <p>{{ evento[2] or '' }}</p>
+    <p id="cupos-info"></p>
+
+    <form id="form-reserva">
+      <input type="text" id="nombre" placeholder="Nombre" required>
+      <input type="text" id="apellido" placeholder="Apellido">
+      <input type="tel" id="telefono" placeholder="Teléfono" required>
+      <input type="number" id="num_personas" min="1" value="1" required>
+      <button type="submit">Confirmar asistencia</button>
+    </form>
+    <div id="msg"></div>
+  </div>
+
+  <script>
+    const EVENTO_ID = Number(document.body.dataset.eventoId);
+    document.getElementById('cupos-info').textContent =
+      "{{ evento[6] }} de {{ evento[5] }} cupos disponibles";
+
+    document.getElementById('form-reserva').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const body = {
+        evento_id: EVENTO_ID,
+        nombre: document.getElementById('nombre').value,
+        apellido: document.getElementById('apellido').value,
+        telefono: document.getElementById('telefono').value,
+        num_personas: document.getElementById('num_personas').value,
+      };
+      const res = await fetch('/api/reservas-cupo', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      const msg = document.getElementById('msg');
+      if (data.confirmado) {
+        msg.textContent = "¡Listo! Tu cupo quedó confirmado.";
+      } else if (data.ok) {
+        msg.textContent = data.mensaje;
+      } else {
+        msg.textContent = data.error || "Hubo un error.";
+      }
+    });
+  </script>
+</body>
+</html>
