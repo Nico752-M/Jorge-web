@@ -15,19 +15,21 @@
         <th>Fecha deseada</th>
         <th>Hora aprox.</th>
         <th>Tipo de evento</th>
+        <th>Personas</th>
         <th>Estado</th>
         <th>Acciones</th>
       </tr>
     </thead>
     <tbody>
       {% for s in solicitudes %}
-      {% set id, nombre, telefono, fecha, hora, tipo_ev, estado = s %}
+      {% set id, nombre, telefono, fecha, hora, tipo_ev, personas, estado = s %}
       <tr>
         <td>{{ nombre }}</td>
         <td>{{ telefono }}</td>
         <td>{{ fecha }}</td>
         <td>{{ hora or "—" }}</td>
         <td>{{ tipo_ev or "—" }}</td>
+        <td>{{ personas or "—" }}</td>
         <td><span class="badge badge-{{ estado|lower }}">{{ estado }}</span></td>
         <td class="acciones">
           <a class="btn-mini btn-wa" target="_blank"
@@ -111,10 +113,15 @@
     </thead>
     <tbody>
       {% for e in eventos %}
-      {% set id, tipo, titulo, inicio, fin, aforo_disp, aforo_total, visible = e %}
+      {% set id, tipo, titulo, descripcion, inicio, fin, aforo_disp, aforo_total, visible = e %}
       <tr>
         <td><span class="badge badge-tipo-{{ tipo|lower }}">{{ tipo }}</span></td>
-        <td>{{ titulo }}</td>
+        <td>
+          <details>
+            <summary>{{ titulo }}</summary>
+            <p class="ayuda" style="margin-top:8px;">{{ descripcion or "Sin descripción." }}</p>
+          </details>
+        </td>
         <td>{{ inicio }}</td>
         <td>{{ fin or "—" }}</td>
         <td>

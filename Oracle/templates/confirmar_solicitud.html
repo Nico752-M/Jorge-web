@@ -2,7 +2,7 @@
 {% block title %}Confirmar alquiler · Café Real{% endblock %}
 {% block contenido %}
 
-{% set id, nombre, telefono, fecha_deseada, hora_aprox, tipo_evento = s %}
+{% set id, nombre, telefono, fecha_deseada, hora_aprox, tipo_evento, num_personas = s %}
 
 <section class="bloque bloque-angosto">
   <h2>Confirmar solicitud de alquiler</h2>
@@ -11,6 +11,7 @@
     <p><b>Fecha pedida:</b> {{ fecha_deseada }}</p>
     <p><b>Hora aproximada que pidió:</b> {{ hora_aprox or "no especificó" }}</p>
     <p><b>Motivo:</b> {{ tipo_evento or "no especificó" }}</p>
+    <p><b>Número de personas que pidió:</b> {{ num_personas or "no especificó" }}</p>
   </div>
 
   <p class="ayuda">Llena esto después de haber negociado por WhatsApp la hora exacta y el precio final.</p>
