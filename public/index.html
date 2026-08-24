@@ -322,6 +322,24 @@ section{padding:110px 8vw;}
 .tertulia-card span{font-size:.8rem; color:var(--concreto);}
 @media (max-width:860px){.tertulias-list{grid-template-columns:1fr;}}
 
+.modal-overlay{
+  position:fixed; inset:0; background:rgba(10,8,5,.75); z-index:2000;
+  display:flex; align-items:center; justify-content:center; padding:20px;
+}
+.modal-overlay.hidden{display:none;}
+.modal-box{
+  width:100%; max-width:420px; background:var(--hierro-2); border:1px solid var(--linea);
+  border-radius:10px; padding:28px; position:relative;
+}
+.modal-box h3{margin-top:0; font-family:'Fraunces',serif;}
+.modal-cerrar{
+  position:absolute; top:14px; right:14px; background:none; border:none; color:var(--concreto);
+  font-size:1.3rem; cursor:pointer; line-height:1;
+}
+.modal-msg{margin-top:16px; font-size:.88rem; line-height:1.5;}
+.modal-msg.ok{color:var(--oro-suave);}
+.modal-msg.warn{color:#e6a99b;}
+
 /* HORARIO PILL */
 .horario-pill{display:inline-flex; align-items:center; gap:8px; font-size:.72rem; letter-spacing:.04em; color:var(--concreto); margin-left:18px; padding:6px 12px; border:1px solid var(--linea); border-radius:20px;}
 .horario-pill .dot{width:7px; height:7px; border-radius:50%; background:#7ec97e;}
@@ -860,6 +878,40 @@ footer{padding:60px 8vw 40px; border-top:1px solid var(--linea); color:var(--con
   </div>
 </div>
 
+<!-- ============ MODAL: RESERVAR CUPO ============ -->
+<div id="modal-reserva-cupo" class="modal-overlay hidden">
+  <div class="modal-box">
+    <button class="modal-cerrar" onclick="cerrarModalReserva()" aria-label="Cerrar">×</button>
+    <h3 id="modal-titulo-evento">Reservar cupo</h3>
+    <form id="form-reserva-cupo" onsubmit="return enviarReservaCupo(event)">
+      <div class="campo-row">
+        <div class="campo">
+          <label for="rc-nombre">Nombre</label>
+          <input type="text" id="rc-nombre" required placeholder="Tu nombre">
+        </div>
+        <div class="campo">
+          <label for="rc-apellido">Apellido</label>
+          <input type="text" id="rc-apellido" placeholder="Tu apellido">
+        </div>
+      </div>
+      <div class="campo-row">
+        <div class="campo">
+          <label for="rc-telefono">Teléfono / WhatsApp</label>
+          <input type="tel" id="rc-telefono" required placeholder="Ej. 3001234567">
+        </div>
+        <div class="campo">
+          <label for="rc-personas">Número de personas</label>
+          <input type="number" id="rc-personas" min="1" value="1" required>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-solid" id="rc-submit-btn">Confirmar mi cupo</button>
+      <div id="modal-msg" class="modal-msg"></div>
+    </form>
+  </div>
+</div>
+
+<!-- ============ BOTONES FLOTANTES ============ -->
+
 <!-- ============ BOTONES FLOTANTES ============ -->
 <div id="floating-actions" class="hidden">
   <a class="fab-instagram" href="https://www.instagram.com/caferealtulua?utm_source=ig_web_button_share_sheet&igsi=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener" aria-label="Instagram">
@@ -901,28 +953,43 @@ document.getElementById('g5').src = PHOTOS.g5;
 document.getElementById('g6').src = PHOTOS.g6;
 
 /* =========================================================
-   DATA — Auditorio: dejar vacío AUDITORIO_EVENTOS = []
-   para que se muestre el aviso de "disponible para rentar".
-   Con un evento en la lista, se muestra la info del evento.
+   DATA — Auditorio: se llena con los eventos reales que el
+   admin marcó como "visibles al público" desde el panel.
    ========================================================= */
-const AUDITORIO_EVENTOS = [
-  { titulo: "Tertulia literaria: Café y Letras", fecha: "Sábado 6 de septiembre · 5:00 p.m.", cupos: "Entrada libre · cupo limitado" }
-];
+let EVENTOS_PUBLICOS = [];
+
+function formatearFechaEvento(iso){
+  if(!iso) return "";
+  const d = new Date(iso);
+  const texto = d.toLocaleDateString('es-CO', { weekday:'long', day:'numeric', month:'long' });
+  const hora = d.toLocaleTimeString('es-CO', { hour:'numeric', minute:'2-digit' });
+  return `${texto.charAt(0).toUpperCase()}${texto.slice(1)} · ${hora}`;
+}
+
+function textoCupos(ev){
+  if(ev.aforo_total == null) return "Entrada libre";
+  if(ev.aforo_disponible <= 0) return "Cupos agotados";
+  return `${ev.aforo_disponible} de ${ev.aforo_total} cupos disponibles`;
+}
 
 function renderAuditorio(){
   const el = document.getElementById('auditorio-info');
-  if(AUDITORIO_EVENTOS.length > 0){
-    const ev = AUDITORIO_EVENTOS[0];
+  if(EVENTOS_PUBLICOS.length > 0){
+    const ev = EVENTOS_PUBLICOS[0];
+    const agotado = ev.aforo_total != null && ev.aforo_disponible <= 0;
     el.innerHTML = `
-      <span class="status-pill evento"><span class="dot"></span>Próxima tertulia</span>
+      <span class="status-pill evento"><span class="dot"></span>Próximo evento</span>
       <h3>${ev.titulo}</h3>
-      <p>Reserva tu cupo y acompáñanos en una nueva conversación en el auditorio de Café Real.</p>
+      <p>${ev.descripcion || 'Acompáñanos en el auditorio de Café Real.'}</p>
       <div class="auditorio-meta">
-        <div><b>Fecha</b>${ev.fecha}</div>
-        <div><b>Cupos</b>${ev.cupos}</div>
+        <div><b>Fecha</b>${formatearFechaEvento(ev.fecha_inicio)}</div>
+        <div><b>Cupos</b>${textoCupos(ev)}</div>
       </div>
-      <div style="margin-top:26px;"><button class="btn btn-solid" onclick="goToReserva('Tertulia')">Reservar mi cupo</button></div>
-      <div class="demo-toggle">Vista de ejemplo · <button onclick="toggleDemo()">alternar estado (con/sin evento)</button></div>
+      <div style="margin-top:26px;">
+        <button class="btn btn-solid" ${agotado ? 'disabled' : ''} onclick="abrirModalReserva(${ev.id}, '${ev.titulo.replace(/'/g,"\\'")}')">
+          ${agotado ? 'Cupos agotados' : 'Reservar mi cupo'}
+        </button>
+      </div>
     `;
   } else {
     el.innerHTML = `
@@ -934,16 +1001,36 @@ function renderAuditorio(){
         <div><b>Incluye</b>Proyector · sonido · montaje tipo salón</div>
       </div>
       <div style="margin-top:26px;"><button class="btn btn-solid" onclick="goToReserva('Auditorio (conferencia, capacitación o evento)')">Cotizar el auditorio</button></div>
-      <div class="demo-toggle">Vista de ejemplo · <button onclick="toggleDemo()">alternar estado (con/sin evento)</button></div>
     `;
   }
 }
-function toggleDemo(){
-  if(AUDITORIO_EVENTOS.length > 0){ AUDITORIO_EVENTOS.length = 0; }
-  else { AUDITORIO_EVENTOS.push({ titulo:"Tertulia literaria: Café y Letras", fecha:"Sábado 6 de septiembre · 5:00 p.m.", cupos:"Entrada libre · cupo limitado" }); }
-  renderAuditorio();
+
+function renderTertulias(){
+  const el = document.getElementById('tertulias-list');
+  if(!el) return;
+  const resto = EVENTOS_PUBLICOS.slice(1);
+  if(resto.length === 0){ el.innerHTML = ''; return; }
+  el.innerHTML = resto.map(ev => `
+    <div class="tertulia-card">
+      <div class="fecha">${formatearFechaEvento(ev.fecha_inicio)}</div>
+      <b>${ev.titulo}</b>
+      <span>${textoCupos(ev)}</span>
+    </div>
+  `).join('');
 }
-renderAuditorio();
+
+async function cargarEventosPublicos(){
+  try{
+    const res = await fetch('/api/eventos-publicos');
+    EVENTOS_PUBLICOS = await res.json();
+  }catch(err){
+    console.error('No se pudieron cargar los eventos:', err);
+    EVENTOS_PUBLICOS = [];
+  }
+  renderAuditorio();
+  renderTertulias();
+}
+cargarEventosPublicos();
 
 /* =========================================================
    HORARIO — Lunes a sábado 8:00-22:00 · Domingo 9:00-18:00
@@ -1268,6 +1355,76 @@ function scrollToSection(id){
   const el = document.getElementById(id);
   if(el) el.scrollIntoView({ behavior:'smooth', block:'start' });
 }
+
+
+/* =========================================================
+   MODAL — Reservar cupo de un evento
+   ========================================================= */
+let EVENTO_ID_ACTUAL = null;
+
+function abrirModalReserva(eventoId, tituloEvento){
+  EVENTO_ID_ACTUAL = eventoId;
+  document.getElementById('modal-titulo-evento').textContent = `Reservar cupo — ${tituloEvento}`;
+  document.getElementById('modal-msg').textContent = '';
+  document.getElementById('modal-msg').className = 'modal-msg';
+  document.getElementById('form-reserva-cupo').reset();
+  document.getElementById('rc-submit-btn').disabled = false;
+  document.getElementById('modal-reserva-cupo').classList.remove('hidden');
+}
+
+function cerrarModalReserva(){
+  document.getElementById('modal-reserva-cupo').classList.add('hidden');
+  EVENTO_ID_ACTUAL = null;
+}
+
+async function enviarReservaCupo(e){
+  e.preventDefault();
+  const btn = document.getElementById('rc-submit-btn');
+  const msg = document.getElementById('modal-msg');
+  btn.disabled = true;
+  msg.textContent = 'Enviando...';
+  msg.className = 'modal-msg';
+
+  const payload = {
+    evento_id: EVENTO_ID_ACTUAL,
+    nombre: document.getElementById('rc-nombre').value.trim(),
+    apellido: document.getElementById('rc-apellido').value.trim(),
+    telefono: document.getElementById('rc-telefono').value.trim(),
+    num_personas: document.getElementById('rc-personas').value
+  };
+
+  try{
+    const res = await fetch('/api/reservas-cupo', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+
+    if(data.ok && data.confirmado){
+      msg.textContent = '¡Listo! Tu cupo quedó confirmado. Te esperamos.';
+      msg.className = 'modal-msg ok';
+      document.getElementById('form-reserva-cupo').querySelectorAll('input').forEach(i => i.disabled = true);
+      cargarEventosPublicos();
+      setTimeout(cerrarModalReserva, 2500);
+    } else if(data.ok && !data.confirmado){
+      msg.textContent = data.mensaje;
+      msg.className = 'modal-msg warn';
+      btn.disabled = true;
+    } else {
+      msg.textContent = data.error || 'No se pudo enviar la reserva, intenta de nuevo.';
+      msg.className = 'modal-msg warn';
+      btn.disabled = false;
+    }
+  }catch(err){
+    console.error(err);
+    msg.textContent = 'No se pudo conectar. Revisa tu internet e intenta de nuevo.';
+    msg.className = 'modal-msg warn';
+    btn.disabled = false;
+  }
+  return false;
+}
+
 </script>
 </body>
 </html>
