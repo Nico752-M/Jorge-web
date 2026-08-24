@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Crear evento · Café Real{% endblock %}
+{% block contenido %}
+
+<section class="bloque bloque-angosto">
+  <h2>Crear evento con cupos</h2>
+  <p class="ayuda">Para eventos organizados por el local (no alquileres externos — esos se confirman desde la bandeja de solicitudes).</p>
+
+  <form method="POST" class="form-confirmar">
+    <label for="titulo">Título del evento</label>
+    <input type="text" id="titulo" name="titulo" required placeholder="Ej: Noche de jazz">
+
+    <label for="descripcion">Descripción (opcional, la ve el público)</label>
+    <input type="text" id="descripcion" name="descripcion" placeholder="Breve descripción del evento">
+
+    <label for="fecha_inicio">Fecha</label>
+    <input type="date" id="fecha_inicio" name="fecha_inicio" required>
+
+    <div class="fila-doble">
+      <div>
+        <label for="hora_inicio">Hora de inicio</label>
+        <input type="time" id="hora_inicio" name="hora_inicio" required>
+      </div>
+      <div>
+        <label for="hora_fin">Hora de fin</label>
+        <input type="time" id="hora_fin" name="hora_fin" required>
+      </div>
+    </div>
+
+    <label for="aforo_total">Aforo total (cupos disponibles)</label>
+    <input type="number" id="aforo_total" name="aforo_total" min="1" step="1" required placeholder="Ej: 60">
+
+    <label>
+      <input type="checkbox" id="visible_publico" name="visible_publico" checked>
+      Mostrar este evento en la página pública desde ya
+    </label>
+
+    <button type="submit" class="btn-solid">Crear evento</button>
+  </form>
+  <a class="volver" href="{{ url_for('dashboard') }}">← Volver a la bandeja</a>
+</section>
+
+{% endblock %}
