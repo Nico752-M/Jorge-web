@@ -1150,7 +1150,7 @@ function renderAuditorio(){
 function renderTertulias(){
   const el = document.getElementById('tertulias-list');
   if(!el) return;
-  const resto = EVENTOS_PUBLICOS.slice(1);
+  const resto = EVENTOS_PUBLICOS; 
   if(resto.length === 0){ el.innerHTML = ''; return; }
   el.innerHTML = resto.map(ev => `
     <div class="tertulia-card">
@@ -1196,26 +1196,8 @@ function actualizarHorario(){
 }
 actualizarHorario();
 
-/* =========================================================
-   PRÓXIMAS TERTULIAS (calendario mini)
-   ========================================================= */
-const PROXIMAS_TERTULIAS = [
-  { fecha:"Sáb 6 sep", titulo:"Café y Letras", nota:"Tertulia literaria · 5:00 p.m." },
-  { fecha:"Sáb 20 sep", titulo:"Charla de liderazgo", nota:"Con invitado especial · 5:00 p.m." },
-  { fecha:"Vie 3 oct", titulo:"Noche de negocios", nota:"Networking Centro de Negocios · 6:00 p.m." },
-];
-function renderTertulias(){
-  const el = document.getElementById('tertulias-list');
-  if(!el) return;
-  el.innerHTML = PROXIMAS_TERTULIAS.map(t=>`
-    <div class="tertulia-card">
-      <div class="fecha">${t.fecha}</div>
-      <b>${t.titulo}</b>
-      <span>${t.nota}</span>
-    </div>
-  `).join('');
-}
-renderTertulias();
+
+
 /* =========================================================
    DATA — MENU (extraído de la carta física)
    ========================================================= */
@@ -1783,3 +1765,4 @@ function jugarMovimientoCoffe(){
 </script>
 </body>
 </html>
+
