@@ -115,18 +115,26 @@ def dashboard():
     solicitudes = cur.fetchall()
 
     cur.execute(
-        """SELECT ID, TIPO, TITULO, FECHA_INICIO, FECHA_FIN, AFORO_DISPONIBLE, AFORO_TOTAL
+        """SELECT ID, TIPO, TITULO, FECHA_INICIO, FECHA_FIN, AFORO_DISPONIBLE, AFORO_TOTAL, VISIBLE_PUBLICO
            FROM EVENTOS
            WHERE ESTADO = 'ACTIVO'
            ORDER BY FECHA_INICIO"""
     )
     eventos = cur.fetchall()
 
+    cur.execute(
+        """SELECT r.ID, r.NOMBRE, r.APELLIDO, r.TELEFONO, r.NUM_PERSONAS, r.FECHA_RESERVA,
+                  e.ID, e.TITULO, e.AFORO_TOTAL, e.AFORO_DISPONIBLE
+           FROM RESERVAS_CUPOS r
+           JOIN EVENTOS e ON e.ID = r.EVENTO_ID
+           WHERE r.ESTADO = 'EXCEDENTE'
+           ORDER BY r.FECHA_RESERVA"""
+    )
+    excedentes = cur.fetchall()
+
     cur.close()
     conn.close()
-    return render_template("dashboard.html", solicitudes=solicitudes, eventos=eventos)
-
-
+    return render_template("dashboard.html", solicitudes=solicitudes, eventos=eventos, excedentes=excedentes)
 # =========================================================
 # ACCIONES SOBRE SOLICITUDES DE ALQUILER
 # =========================================================
@@ -172,6 +180,8 @@ def confirmar_solicitud(solicitud_id):
         hora_fin = request.form["hora_fin"]
         precio = request.form["precio_final"]
         titulo = request.form["titulo"].strip()
+        aforo_total = request.form["aforo_total"]
+        visible_publico = 1 if request.form.get("visible_publico") == "on" else 0
 
         fecha_inicio_str = f"{fecha} {hora_inicio}"
         fecha_fin_str = f"{fecha} {hora_fin}"
@@ -193,18 +203,20 @@ def confirmar_solicitud(solicitud_id):
             conn.close()
             return redirect(url_for("confirmar_solicitud", solicitud_id=solicitud_id))
 
-        # --- Crear el evento tipo ALQUILER ---
+        # --- Crear el evento tipo ALQUILER (con aforo, como cualquier evento con cupos) ---
         nuevo_id_var = cur.var(oracledb.NUMBER)
         cur.execute(
-            """INSERT INTO EVENTOS (TIPO, TITULO, FECHA_INICIO, FECHA_FIN, PRECIO_FINAL, CREADO_POR)
+            """INSERT INTO EVENTOS (TIPO, TITULO, FECHA_INICIO, FECHA_FIN, AFORO_TOTAL, AFORO_DISPONIBLE, VISIBLE_PUBLICO, PRECIO_FINAL, CREADO_POR)
                VALUES ('ALQUILER', :titulo,
                        TO_TIMESTAMP(:inicio, 'YYYY-MM-DD HH24:MI'),
                        TO_TIMESTAMP(:fin, 'YYYY-MM-DD HH24:MI'),
-                       :precio, :admin_id)
+                       :aforo, :aforo, :visible, :precio, :admin_id)
                RETURNING ID INTO :nuevo_id""",
             titulo=titulo,
             inicio=fecha_inicio_str,
             fin=fecha_fin_str,
+            aforo=aforo_total,
+            visible=visible_publico,
             precio=precio,
             admin_id=session["admin_id"],
             nuevo_id=nuevo_id_var,

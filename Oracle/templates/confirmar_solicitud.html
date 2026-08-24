@@ -33,8 +33,16 @@
       </div>
     </div>
 
-    <label for="precio_final">Precio final acordado (COP)</label>
+      <label for="precio_final">Precio final acordado (COP)</label>
     <input type="number" id="precio_final" name="precio_final" min="0" step="1000" required placeholder="Ej: 350000">
+
+    <label for="aforo_total">Aforo máximo para este evento (cupos)</label>
+    <input type="number" id="aforo_total" name="aforo_total" min="1" step="1" required placeholder="Ej: 80">
+
+    <label>
+      <input type="checkbox" id="visible_publico" name="visible_publico">
+      Mostrar este evento en la página pública (si la persona que alquiló no quiere desconocidos, déjalo sin marcar)
+    </label>
 
     <button type="submit" class="btn-solid">Confirmar y bloquear ese horario</button>
   </form>
