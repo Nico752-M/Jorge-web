@@ -116,3 +116,18 @@ a{color:inherit; text-decoration:none;}
   position:absolute; top:12px; right:12px; background:none; border:none;
   color:inherit; font-size:1.4rem; cursor:pointer; line-height:1;
 }
+
+.btn-mini{
+  background:transparent;
+  color:#e0c27a;        /* var(--oro-suave) */
+  border:1px solid #c9a24b;  /* var(--oro) */
+  padding:6px 10px;
+  border-radius:2px;
+  font-size:.82rem;
+  cursor:pointer;
+  font-family:inherit;
+}
+.btn-mini:hover{
+  background:#c9a24b;
+  color:#1a1512;
+}

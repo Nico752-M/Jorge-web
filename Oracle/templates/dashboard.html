@@ -158,6 +158,33 @@
   {% endif %}
 </section>
 
+<section class="bloque">
+  <details>
+    <summary><h2 style="display:inline;">Historial de eventos finalizados</h2></summary>
+    {% if not eventos_finalizados %}
+      <p class="vacio">Todavía no hay eventos finalizados.</p>
+    {% else %}
+    <table class="tabla">
+      <thead>
+        <tr><th>Tipo</th><th>Título</th><th>Inicio</th><th>Fin</th><th>Cupos</th></tr>
+      </thead>
+      <tbody>
+        {% for e in eventos_finalizados %}
+        {% set id, tipo, titulo, descripcion, inicio, fin, aforo_disp, aforo_total, visible = e %}
+        <tr>
+          <td><span class="badge badge-tipo-{{ tipo|lower }}">{{ tipo }}</span></td>
+          <td>{{ titulo }}</td>
+          <td>{{ inicio }}</td>
+          <td>{{ fin }}</td>
+          <td>{% if aforo_total %}{{ aforo_total - aforo_disp }} confirmadas de {{ aforo_total }}{% else %}—{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+  </details>
+</section>
+
 <div id="modal-detalle" class="modal-overlay hidden" onclick="if(event.target===this) this.classList.add('hidden')">
   <div class="modal-box">
     <button class="modal-cerrar" onclick="document.getElementById('modal-detalle').classList.add('hidden')">×</button>

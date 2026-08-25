@@ -118,11 +118,21 @@ def dashboard():
 
     cur.execute(
         """SELECT ID, TIPO, TITULO, DESCRIPCION, FECHA_INICIO, FECHA_FIN, AFORO_DISPONIBLE, AFORO_TOTAL, VISIBLE_PUBLICO
-           FROM EVENTOS
-           WHERE ESTADO = 'ACTIVO'
-           ORDER BY FECHA_INICIO"""
+        FROM EVENTOS
+        WHERE ESTADO = 'ACTIVO'
+        AND (FECHA_FIN IS NULL OR FECHA_FIN >= SYSTIMESTAMP)
+        ORDER BY FECHA_INICIO"""
     )
     eventos = cur.fetchall()
+
+    cur.execute(
+        """SELECT ID, TIPO, TITULO, DESCRIPCION, FECHA_INICIO, FECHA_FIN, AFORO_DISPONIBLE, AFORO_TOTAL, VISIBLE_PUBLICO
+        FROM EVENTOS
+        WHERE ESTADO = 'ACTIVO'
+        AND FECHA_FIN IS NOT NULL AND FECHA_FIN < SYSTIMESTAMP
+        ORDER BY FECHA_FIN DESC"""
+    )
+    eventos_finalizados = cur.fetchall()
 
     cur.execute(
         """SELECT r.ID, r.NOMBRE, r.APELLIDO, r.TELEFONO, r.NUM_PERSONAS, r.FECHA_RESERVA,
@@ -136,7 +146,7 @@ def dashboard():
 
     cur.close()
     conn.close()
-    return render_template("dashboard.html", solicitudes=solicitudes, eventos=eventos, excedentes=excedentes)
+    return render_template("dashboard.html", solicitudes=solicitudes, eventos=eventos, eventos_finalizados=eventos_finalizados, excedentes=excedentes)
 # =========================================================
 # ACCIONES SOBRE SOLICITUDES DE ALQUILER
 # =========================================================
