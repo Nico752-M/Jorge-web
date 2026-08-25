@@ -324,6 +324,83 @@ def evento_nuevo():
 
     return render_template("evento_nuevo.html")
 
+@app.route(f"{ADMIN_PREFIX}/evento/<int:evento_id>/editar", methods=["GET", "POST"])
+@login_required
+def editar_evento(evento_id):
+    conn = get_connection()
+    cur = conn.cursor()
+
+    if request.method == "POST":
+        titulo = request.form.get("titulo", "").strip()
+        descripcion = request.form.get("descripcion", "").strip()
+        inicio_str = request.form.get("fecha_inicio", "").replace("T", " ")
+        fin_str = request.form.get("fecha_fin", "").replace("T", " ")
+        aforo_total = int(request.form.get("aforo_total"))
+
+        cur.execute("SELECT AFORO_TOTAL, AFORO_DISPONIBLE FROM EVENTOS WHERE ID = :id", id=evento_id)
+        total_actual, disp_actual = cur.fetchone()
+        confirmados = total_actual - disp_actual   # gente que ya tiene su cupo, no se puede tocar
+
+        if aforo_total < confirmados:
+            flash(f"No puedes bajar el aforo a menos de {confirmados}, ya hay esa cantidad confirmada.")
+            cur.close(); conn.close()
+            return redirect(url_for("editar_evento", evento_id=evento_id))
+
+        cur.execute(
+            """UPDATE EVENTOS
+               SET TITULO=:titulo, DESCRIPCION=:descripcion,
+                   FECHA_INICIO=TO_TIMESTAMP(:inicio,'YYYY-MM-DD HH24:MI'),
+                   FECHA_FIN=TO_TIMESTAMP(:fin,'YYYY-MM-DD HH24:MI'),
+                   AFORO_TOTAL=:aforo_total, AFORO_DISPONIBLE=:aforo_disp
+               WHERE ID=:id""",
+            titulo=titulo, descripcion=descripcion, inicio=inicio_str, fin=fin_str,
+            aforo_total=aforo_total, aforo_disp=(aforo_total - confirmados), id=evento_id,
+        )
+        conn.commit()
+        cur.close(); conn.close()
+        flash("Evento actualizado.")
+        return redirect(url_for("dashboard"))
+
+    cur.execute(
+        """SELECT ID, TITULO, DESCRIPCION, FECHA_INICIO, FECHA_FIN, AFORO_TOTAL, AFORO_DISPONIBLE
+           FROM EVENTOS WHERE ID=:id""", id=evento_id,
+    )
+    evento = cur.fetchone()
+    cur.close(); conn.close()
+    return render_template("evento_editar.html", evento=evento)
+
+@app.route(f"{ADMIN_PREFIX}/evento/<int:evento_id>/eliminar")
+@login_required
+def eliminar_evento(evento_id):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT COUNT(*) FROM RESERVAS_CUPOS WHERE EVENTO_ID=:id", id=evento_id)
+    tiene_reservas = cur.fetchone()[0] > 0
+
+    if tiene_reservas:
+        cur.execute("UPDATE EVENTOS SET ESTADO='ELIMINADO' WHERE ID=:id", id=evento_id)
+    else:
+        cur.execute("DELETE FROM EVENTOS WHERE ID=:id", id=evento_id)
+
+    conn.commit()
+    cur.close(); conn.close()
+    flash("Evento eliminado.")
+    return redirect(url_for("dashboard"))
+
+@app.route(f"{ADMIN_PREFIX}/evento/<int:evento_id>/reservas")
+@login_required
+def ver_reservas_evento(evento_id):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        """SELECT NOMBRE, APELLIDO, TELEFONO, NUM_PERSONAS, ESTADO
+           FROM RESERVAS_CUPOS WHERE EVENTO_ID=:id AND ESTADO='CONFIRMADA'
+           ORDER BY FECHA_RESERVA""", id=evento_id,
+    )
+    filas = cur.fetchall()
+    cur.close(); conn.close()
+    return jsonify([{"nombre": f[0], "apellido": f[1], "telefono": f[2], "personas": f[3]} for f in filas])
+
 @app.route(f"{ADMIN_PREFIX}/evento/<int:evento_id>/toggle_visible")
 @login_required
 def toggle_visible_evento(evento_id):

@@ -42,6 +42,7 @@
           <a class="btn-mini btn-confirmar" href="{{ url_for('confirmar_solicitud', solicitud_id=id) }}">Confirmar</a>
           <a class="btn-mini btn-rechazar" href="{{ url_for('rechazar_solicitud', solicitud_id=id) }}"
              onclick="return confirm('¿Seguro que quieres rechazar esta solicitud?')">Rechazar</a>
+        
         </td>
       </tr>
       {% endfor %}
@@ -96,10 +97,12 @@
 <section class="bloque">
   <h2>Eventos activos</h2>
   <p><a class="btn-mini btn-confirmar" href="{{ url_for('evento_nuevo') }}">+ Crear evento con cupos</a></p>
+  <input type="text" id="buscador-eventos" placeholder="Buscar evento por nombre..."
+         oninput="filtrarEventos()" style="margin-bottom:10px; width:100%; max-width:320px;">
   {% if not eventos %}
     <p class="vacio">Todavía no hay eventos creados.</p>
   {% else %}
-  <table class="tabla">
+  <table class="tabla" id="tabla-eventos">
     <thead>
       <tr>
         <th>Tipo</th>
@@ -115,7 +118,7 @@
     <tbody>
       {% for e in eventos %}
       {% set id, tipo, titulo, descripcion, inicio, fin, aforo_disp, aforo_total, visible = e %}
-      <tr data-tipo="{{ tipo }}" data-titulo="{{ titulo }}" data-descripcion="{{ descripcion or 'Sin descripción.' }}"
+      <tr data-id="{{ id }}" data-tipo="{{ tipo }}" data-titulo="{{ titulo }}" data-descripcion="{{ descripcion or 'Sin descripción.' }}"
           data-inicio="{{ inicio }}" data-fin="{{ fin or '—' }}"
           data-confirmadas="{{ aforo_total - aforo_disp if aforo_total else '—' }}"
           data-total="{{ aforo_total or '—' }}" data-visible="{{ 'Visible' if visible == 1 else 'Oculto' }}">
@@ -147,9 +150,12 @@
         </td>
         <td class="acciones">
           <button type="button" class="btn-mini" onclick="verDetalleEvento(this)">Ver detalles</button>
+          <a class="btn-mini" href="{{ url_for('editar_evento', evento_id=id) }}">Editar</a>
           <a class="btn-mini" href="{{ url_for('toggle_visible_evento', evento_id=id) }}">
             {% if visible == 1 %}Ocultar del sitio{% else %}Mostrar al público{% endif %}
           </a>
+          <a class="btn-mini btn-rechazar" href="{{ url_for('eliminar_evento', evento_id=id) }}"
+             onclick="return confirm('¿Seguro que quieres eliminar este evento?')">Eliminar</a>
         </td>
       </tr>
       {% endfor %}
@@ -166,7 +172,7 @@
     {% else %}
     <table class="tabla">
       <thead>
-        <tr><th>Tipo</th><th>Título</th><th>Inicio</th><th>Fin</th><th>Cupos</th></tr>
+        <tr><th>Tipo</th><th>Título</th><th>Inicio</th><th>Fin</th><th>Cupos</th><th>Acciones</th></tr>
       </thead>
       <tbody>
         {% for e in eventos_finalizados %}
@@ -177,6 +183,10 @@
           <td>{{ inicio }}</td>
           <td>{{ fin }}</td>
           <td>{% if aforo_total %}{{ aforo_total - aforo_disp }} confirmadas de {{ aforo_total }}{% else %}—{% endif %}</td>
+          <td class="acciones">
+            <a class="btn-mini btn-rechazar" href="{{ url_for('eliminar_evento', evento_id=id) }}"
+               onclick="return confirm('¿Seguro que quieres eliminar este evento del historial?')">Eliminar</a>
+          </td>
         </tr>
         {% endfor %}
       </tbody>
@@ -210,6 +220,8 @@
     <p><b>Fin:</b> <span id="de-fin"></span></p>
     <p><b>Cupos:</b> <span id="de-cupos"></span></p>
     <p><b>Visible al público:</b> <span id="de-visible"></span></p>
+    <button type="button" class="btn-mini" id="btn-ver-personas">Ver personas registradas</button>
+    <div id="de-personas-lista" style="margin-top:10px;"></div>
   </div>
 </div>
 
@@ -235,8 +247,28 @@ function verDetalleEvento(btn){
   document.getElementById('de-fin').textContent = tr.dataset.fin;
   document.getElementById('de-cupos').textContent = tr.dataset.confirmadas + " confirmadas de " + tr.dataset.total;
   document.getElementById('de-visible').textContent = tr.dataset.visible;
+  document.getElementById('modal-detalle-evento').dataset.eventoId = tr.dataset.id;
+  document.getElementById('de-personas-lista').innerHTML = "";
   document.getElementById('modal-detalle-evento').classList.remove('hidden');
 }
+
+document.getElementById('btn-ver-personas').addEventListener('click', function(){
+  const eventoId = document.getElementById('modal-detalle-evento').dataset.eventoId;
+  const lista = document.getElementById('de-personas-lista');
+  lista.innerHTML = "Cargando...";
+  fetch("{{ url_for('ver_reservas_evento', evento_id=0) }}".replace('0', eventoId))
+    .then(r => r.json())
+    .then(personas => {
+      if (!personas.length){
+        lista.innerHTML = "<p class='vacio'>Nadie ha confirmado aún.</p>";
+        return;
+      }
+      lista.innerHTML = personas.map(p =>
+        `<p>${p.nombre} ${p.apellido || ''} — ${p.personas} pers. — 
+         <a href="https://wa.me/${p.telefono.replace(/\D/g,'')}" target="_blank">${p.telefono}</a></p>`
+      ).join('');
+    });
+});
 
 function copiarEnlace(btn, eventoId){
   const url = `${window.location.origin}/evento/${eventoId}/reservar`;
@@ -258,6 +290,13 @@ document.querySelectorAll('a.btn-mini, a.btn-confirmar, a.btn-rechazar').forEach
     }, 0);
   });
 });
+
+function filtrarEventos(){
+  const q = document.getElementById('buscador-eventos').value.toLowerCase();
+  document.querySelectorAll('#tabla-eventos tbody tr').forEach(tr => {
+    tr.style.display = tr.dataset.titulo.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
 </script>
 
 {% endblock %}
