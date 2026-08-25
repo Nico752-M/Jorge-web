@@ -131,3 +131,22 @@ a{color:inherit; text-decoration:none;}
   background:#c9a24b;
   color:#1a1512;
 }
+
+.login-card input, .form-confirmar input,
+.form-confirmar textarea, .form-confirmar select{
+  background:var(--hierro); border:1px solid var(--linea); color:var(--crema);
+  padding:10px 12px; border-radius:4px; font-size:.95rem;
+  font-family:inherit; width:100%;
+}
+.login-card input:focus, .form-confirmar input:focus,
+.form-confirmar textarea:focus{outline:1px solid var(--oro);}
+
+.form-confirmar textarea{resize:vertical; min-height:80px;}
+
+/* estiliza el ícono del datetime-local para que no quede blanco */
+.form-confirmar input[type="datetime-local"]::-webkit-calendar-picker-indicator{
+  filter: invert(70%) sepia(30%) saturate(500%) hue-rotate(360deg);
+  cursor:pointer;
+}
+
+.acciones-form{display:flex; gap:10px; margin-top:20px;}

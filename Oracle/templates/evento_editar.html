@@ -1,27 +1,35 @@
 {% extends "base.html" %}
 {% block title %}Editar evento · Café Real{% endblock %}
 {% block contenido %}
-<section class="bloque">
+<section class="bloque bloque-angosto">
   <h2>Editar evento</h2>
   <p class="ayuda">Ya hay {{ evento[5] - evento[6] }} personas confirmadas — no puedes bajar el aforo total por debajo de ese número.</p>
-  <form method="POST" action="{{ url_for('editar_evento', evento_id=evento[0]) }}">
+
+  <form method="POST" action="{{ url_for('editar_evento', evento_id=evento[0]) }}" class="form-confirmar">
     <label>Título</label>
     <input type="text" name="titulo" value="{{ evento[1] }}" required>
 
     <label>Descripción</label>
     <textarea name="descripcion">{{ evento[2] or "" }}</textarea>
 
-    <label>Inicio</label>
-    <input type="datetime-local" name="fecha_inicio" value="{{ evento[3].strftime('%Y-%m-%dT%H:%M') }}" required>
-
-    <label>Fin</label>
-    <input type="datetime-local" name="fecha_fin" value="{{ evento[4].strftime('%Y-%m-%dT%H:%M') }}" required>
+    <div class="fila-doble">
+      <div>
+        <label>Inicio</label>
+        <input type="datetime-local" name="fecha_inicio" value="{{ evento[3].strftime('%Y-%m-%dT%H:%M') }}" required>
+      </div>
+      <div>
+        <label>Fin</label>
+        <input type="datetime-local" name="fecha_fin" value="{{ evento[4].strftime('%Y-%m-%dT%H:%M') }}" required>
+      </div>
+    </div>
 
     <label>Aforo total</label>
     <input type="number" name="aforo_total" min="{{ evento[5] - evento[6] }}" value="{{ evento[5] }}" required>
 
-    <button type="submit" class="btn-mini btn-confirmar">Guardar cambios</button>
-    <a class="btn-mini" href="{{ url_for('dashboard') }}">Cancelar</a>
+    <div class="acciones-form">
+      <button type="submit" class="btn-mini btn-confirmar">Guardar cambios</button>
+      <a class="btn-mini" href="{{ url_for('dashboard') }}">Cancelar</a>
+    </div>
   </form>
 </section>
 {% endblock %}
