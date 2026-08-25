@@ -361,6 +361,40 @@ function filtrarEventos(){
     tr.style.display = tr.dataset.titulo.toLowerCase().includes(q) ? '' : 'none';
   });
 }
+
+/* =========================================================
+   AUTO-REFRESH — vuelve a pedir el dashboard cada 20s y
+   reemplaza solo las tablas, sin recargar la página.
+   ========================================================= */
+async function refrescarDashboard(){
+  // no interrumpir si el admin está viendo la lista de personas registradas
+  if(!document.getElementById('vista-personas').classList.contains('oculto')) return;
+  // no interrumpir si hay un modal abierto
+  if(!document.getElementById('modal-detalle').classList.contains('hidden')) return;
+  if(!document.getElementById('modal-detalle-evento').classList.contains('hidden')) return;
+
+  const buscador = document.getElementById('buscador-eventos');
+  const valorBusqueda = buscador ? buscador.value : '';
+
+  try{
+    const res = await fetch(window.location.href, { cache: 'no-store' });
+    const html = await res.text();
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const nuevoContenido = doc.getElementById('vista-dashboard');
+    if(nuevoContenido){
+      document.getElementById('vista-dashboard').innerHTML = nuevoContenido.innerHTML;
+      const nuevoBuscador = document.getElementById('buscador-eventos');
+      if(nuevoBuscador && valorBusqueda){
+        nuevoBuscador.value = valorBusqueda;
+        filtrarEventos();
+      }
+    }
+  }catch(err){
+    console.error('No se pudo refrescar el dashboard:', err);
+  }
+}
+setInterval(refrescarDashboard, 20000);
+
 </script>
 
 {% endblock %}

@@ -1177,6 +1177,7 @@ async function cargarEventosPublicos(){
   renderTertulias();
 }
 cargarEventosPublicos();
+setInterval(cargarEventosPublicos, 20000);
 
 /* =========================================================
    HORARIO — Lunes a sábado 8:00-22:00 · Domingo 9:00-18:00

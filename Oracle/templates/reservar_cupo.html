@@ -59,7 +59,6 @@
       <input type="text" id="nombre" placeholder="Nombre" required>
       <input type="text" id="apellido" placeholder="Apellido">
       <input type="tel" id="telefono" placeholder="Teléfono" required>
-      <input type="number" id="num_personas" min="1" value="1" required>
       <button type="submit">Confirmar asistencia</button>
     </form>
     <div id="msg"></div>
@@ -81,7 +80,7 @@
         nombre: document.getElementById('nombre').value,
         apellido: document.getElementById('apellido').value,
         telefono: document.getElementById('telefono').value,
-        num_personas: document.getElementById('num_personas').value,
+        num_personas: 1,
       };
       const res = await fetch('/api/reservas-cupo', {
         method: 'POST',
