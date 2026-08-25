@@ -67,6 +67,7 @@
       e.preventDefault();
       const btn = e.target.querySelector('button');
       btn.disabled = true;
+      btn.textContent = "Enviando...";
       const body = {
         evento_id: EVENTO_ID,
         nombre: document.getElementById('nombre').value,
