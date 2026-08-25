@@ -954,7 +954,7 @@ footer{padding:60px 8vw 40px; border-top:1px solid var(--linea); color:var(--con
   </div>
 
   <div class="reserva-body">
-    <form id="form-reserva" onsubmit="return enviarReserva(event)">
+    <form id="form-reserva" onsubmit="enviarReserva(event); return false;">
       <div class="campo-row">
         <div class="campo">
           <label for="r-nombre">Nombre</label>
@@ -974,13 +974,10 @@ footer{padding:60px 8vw 40px; border-top:1px solid var(--linea); color:var(--con
       <div class="campo">
         <label for="r-motivo">¿Para qué quieres reservar?</label>
         <select id="r-motivo">
-          <option value="Mesa / terraza">Mesa / terraza</option>
-          <option value="Auditorio (conferencia, capacitación o evento)" data-alquiler="1">Auditorio (conferencia, capacitación o evento)</option>
-          <option value="Tertulia">Inscripción a una tertulia</option>
-          <option value="Segundo piso (cumpleaños, ver partido, etc.)">Segundo piso (cumpleaños, ver partido, etc.)</option>
-          <option value="Otro">Otro</option>
+          <option value="Auditorio (conferencia, capacitación o evento)" data-alquiler="1" selected>Auditorio (conferencia, capacitación o evento)</option>
         </select>
       </div>
+
       <div class="campo-row">
         <div class="campo">
           <label for="r-fecha">Fecha deseada</label>
@@ -1132,9 +1129,10 @@ function renderAuditorio(){
         <div><b>Cupos</b>${textoCupos(ev)}</div>
       </div>
       <div style="margin-top:26px;">
-        <button class="btn btn-solid" ${agotado ? 'disabled' : ''} onclick="abrirModalReserva(${ev.id}, '${ev.titulo.replace(/'/g,"\\'")}')">
-          ${agotado ? 'Cupos agotados' : 'Reservar mi cupo'}
-        </button>
+        ${agotado
+          ? `<button class="btn btn-solid" disabled>Cupos agotados</button>`
+          : `<a class="btn btn-solid" href="/evento/${ev.id}/reservar">Reservar mi cupo</a>`
+        }
       </div>
     `;
   } else {
@@ -1438,7 +1436,7 @@ function goToReserva(motivo){
 }
 const WHATSAPP_NUMERO = "573114311472"; // Ejemplo — reemplazar por el número real de Café Real
 
-function enviarReserva(e){
+async function enviarReserva(e){
   e.preventDefault();
   const nombre = document.getElementById('r-nombre').value.trim();
   const apellido = document.getElementById('r-apellido').value.trim();
@@ -1451,6 +1449,29 @@ function enviarReserva(e){
   const horaInicio = document.getElementById('r-hora-inicio').value;
   const horaFin = document.getElementById('r-hora-fin').value;
   const mensaje = document.getElementById('r-mensaje').value.trim();
+
+  if(esAlquilerCompleto && fecha && horaInicio && horaFin){
+    const inicioDeseado = new Date(`${fecha}T${horaInicio}`);
+    const finDeseado = new Date(`${fecha}T${horaFin}`);
+
+    try{
+      const res = await fetch('/api/eventos-ocupados');
+      const ocupados = await res.json();
+      const hayChoque = ocupados.some(ev => {
+        const inicioEv = new Date(ev.inicio);
+        const finEv = ev.fin ? new Date(ev.fin) : inicioEv;
+        return inicioDeseado < finEv && finDeseado > inicioEv;
+      });
+
+      if(hayChoque){
+        alert('Ese horario ya está ocupado por otro evento. Por favor elige otra fecha u hora.');
+        return false;
+      }
+    }catch(err){
+      console.error('No se pudo verificar disponibilidad:', err);
+      // si falla la verificación, se deja continuar — el admin hace la validación final igual
+    }
+  }
 
   // Solo el alquiler del auditorio completo se guarda en el panel admin.
   // Si falla, no bloquea el envío por WhatsApp (por eso no se espera con await).
@@ -1483,6 +1504,7 @@ function enviarReserva(e){
   window.open(url, '_blank');
   return false;
 }
+
 function backToGate(){
   document.getElementById('site-view').classList.add('hidden');
   document.getElementById('menu-view').classList.add('hidden');

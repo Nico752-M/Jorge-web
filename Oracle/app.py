@@ -561,6 +561,22 @@ def eventos_publicos():
     ]
     return jsonify(eventos)
 
+@app.route("/api/eventos-ocupados")
+def eventos_ocupados():
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        """SELECT FECHA_INICIO, FECHA_FIN FROM EVENTOS
+           WHERE ESTADO = 'ACTIVO' AND FECHA_FIN >= SYSTIMESTAMP"""
+    )
+    filas = cur.fetchall()
+    cur.close()
+    conn.close()
+    return jsonify([
+        {"inicio": f[0].isoformat(), "fin": f[1].isoformat() if f[1] else None}
+        for f in filas
+    ])
+
 
 @app.route("/api/reservas-cupo", methods=["POST"])
 def crear_reserva_cupo():
