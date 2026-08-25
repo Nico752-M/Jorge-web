@@ -406,22 +406,19 @@ def eliminar_evento(evento_id):
     conn = get_connection()
     cur = conn.cursor()
 
-    cur.execute("SELECT COUNT(*) FROM RESERVAS_CUPOS WHERE EVENTO_ID=:id", id=evento_id)
-    tiene_reservas = cur.fetchone()[0] > 0
+    # Las solicitudes de alquiler no se borran (es el historial de contacto),
+    # solo se desvinculan del evento que se va a eliminar.
+    cur.execute("UPDATE SOLICITUDES_ALQUILER SET EVENTO_ID = NULL WHERE EVENTO_ID=:id", id=evento_id)
 
-    cur.execute("SELECT COUNT(*) FROM SOLICITUDES_ALQUILER WHERE EVENTO_ID=:id", id=evento_id)
-    tiene_solicitud = cur.fetchone()[0] > 0
+    # Se borran todas las reservas de cupos de este evento.
+    cur.execute("DELETE FROM RESERVAS_CUPOS WHERE EVENTO_ID=:id", id=evento_id)
 
-    if tiene_reservas or tiene_solicitud:
-        cur.execute("UPDATE EVENTOS SET ESTADO='CANCELADO' WHERE ID=:id", id=evento_id)
-        mensaje = "Este evento tenía reservas o una solicitud vinculada, así que se marcó como cancelado en vez de borrarse."
-    else:
-        cur.execute("DELETE FROM EVENTOS WHERE ID=:id", id=evento_id)
-        mensaje = "Evento eliminado."
+    # Se borra el evento.
+    cur.execute("DELETE FROM EVENTOS WHERE ID=:id", id=evento_id)
 
     conn.commit()
     cur.close(); conn.close()
-    flash(mensaje)
+    flash("Evento y todas sus reservas fueron eliminados definitivamente.")
     return redirect(url_for("dashboard"))
 
 @app.route(f"{ADMIN_PREFIX}/evento/<int:evento_id>/reservas")

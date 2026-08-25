@@ -163,7 +163,7 @@
             {% if visible == 1 %}Ocultar del sitio{% else %}Mostrar al público{% endif %}
           </a>
           <a class="btn-mini btn-rechazar" href="{{ url_for('eliminar_evento', evento_id=id) }}"
-             onclick="return confirm('¿Seguro que quieres eliminar este evento?')">Eliminar</a>
+             onclick="return confirm('Vas a eliminar este evento y TODAS sus reservas de forma permanente. Esto no se puede deshacer. ¿Seguro que quieres continuar?')">Eliminar</a>
         </td>
       </tr>
       {% endfor %}
