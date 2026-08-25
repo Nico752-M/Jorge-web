@@ -382,7 +382,7 @@ def eliminar_evento(evento_id):
     tiene_reservas = cur.fetchone()[0] > 0
 
     if tiene_reservas:
-        cur.execute("UPDATE EVENTOS SET ESTADO='ELIMINADO' WHERE ID=:id", id=evento_id)
+        cur.execute("UPDATE EVENTOS SET ESTADO='CANCELADO' WHERE ID=:id", id=evento_id)
     else:
         cur.execute("DELETE FROM EVENTOS WHERE ID=:id", id=evento_id)
 
