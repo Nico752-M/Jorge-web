@@ -219,6 +219,7 @@
         <th>Apellido</th>
         <th>Teléfono</th>
         <th>Pago</th>
+        <th>Ingresó</th>
       </tr>
     </thead>
     <tbody id="vp-tbody"></tbody>
@@ -312,6 +313,7 @@ function mostrarVistaPersonas(eventoId, titulo){
               ${p.pagado ? 'Pagó' : 'No ha pagado'}
             </button>
           </td>
+          <td>${p.ingreso ? '✅ Ingresó' : '—'}</td>
         </tr>
       `).join('');
     });

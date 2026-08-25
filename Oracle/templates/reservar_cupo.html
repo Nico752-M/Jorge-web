@@ -64,7 +64,9 @@
     <div id="msg"></div>
     <div id="ticket-qr" style="display:none; text-align:center; margin-top:16px;">
       <img id="ticket-qr-img" src="" alt="Código QR de tu reserva" style="max-width:220px; width:100%; border-radius:2px;">
-      <p style="color:var(--concreto); font-size:.85rem; margin:10px 0;">Guarda este código, lo necesitarás en la entrada.</p>
+      <p id="ticket-codigo" style="font-family:'IBM Plex Mono', monospace; font-size:.8rem; color:var(--oro-suave); word-break:break-all; margin:10px 0;"></p>
+      <p style="color:var(--concreto); font-size:.85rem; margin:0 0 12px;">Guarda este código, lo necesitarás en la entrada.</p>
+      <a id="btn-descargar-ticket" href="#" class="btn-volver" style="display:block; margin-bottom:8px;">Descargar QR</a>
       <a id="btn-whatsapp-ticket" href="#" target="_blank" class="btn-volver" style="display:block;">Enviarme este link por WhatsApp</a>
     </div>
     <a id="btn-volver" href="/" class="btn-volver">Volver al inicio</a>
@@ -74,6 +76,31 @@
     const EVENTO_ID = {{ evento[0] }};
     document.getElementById('cupos-info').textContent =
       "{{ evento[6] }} de {{ evento[5] }} cupos disponibles";
+
+    function formatearTelWA(tel) {
+      let limpio = tel.replace(/\D/g, '');
+      if (limpio.length === 10 && limpio.startsWith('3')) {
+        limpio = '57' + limpio;
+      }
+      return limpio;
+    }
+
+    async function descargarQR(url, nombreArchivo) {
+      try {
+        const res = await fetch(url);
+        const blob = await res.blob();
+        const objectUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = objectUrl;
+        a.download = nombreArchivo;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(objectUrl);
+      } catch (err) {
+        window.open(url, '_blank');
+      }
+    }
 
     document.getElementById('form-reserva').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -101,10 +128,19 @@
         document.getElementById('btn-volver').style.display = "block";
 
         if (data.codigo && data.link) {
-          document.getElementById('ticket-qr-img').src =
-            "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=" + encodeURIComponent(data.codigo);
+          const urlQr = "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=" + encodeURIComponent(data.codigo);
+          document.getElementById('ticket-qr-img').src = urlQr;
+          document.getElementById('ticket-codigo').textContent = data.codigo;
+
+          const telLimpio = formatearTelWA(document.getElementById('telefono').value);
           document.getElementById('btn-whatsapp-ticket').href =
-            "https://wa.me/?text=" + encodeURIComponent("Guardo el link de mi reserva a " + "{{ evento[1] }}" + ": " + data.link);
+            "https://wa.me/" + telLimpio + "?text=" + encodeURIComponent("Guardo el link de mi reserva a " + "{{ evento[1] }}" + ": " + data.link);
+
+          document.getElementById('btn-descargar-ticket').addEventListener('click', (ev) => {
+            ev.preventDefault();
+            descargarQR(urlQr, 'ticket-' + data.codigo + '.png');
+          });
+
           document.getElementById('ticket-qr').style.display = "block";
         }
     } else if (data.ok) {

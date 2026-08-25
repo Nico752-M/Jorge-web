@@ -4,11 +4,23 @@
 
 <section class="bloque">
   <h2>Check-in con QR</h2>
-  <p class="ayuda">Apunta la cámara al código QR del cliente. Si no escanea, usa el campo manual de abajo.</p>
+  <p class="ayuda">Selecciona el evento, apunta la cámara al código QR del cliente. Si no escanea, usa el campo manual de abajo.</p>
+
+  <div style="max-width:420px; margin:0 auto 16px;">
+    <select id="select-evento" style="width:100%; padding:10px; background:var(--hierro); color:var(--crema); border:1px solid var(--linea); border-radius:2px;">
+      <option value="">-- Elige un evento --</option>
+      {% for ev in eventos %}
+      <option value="{{ ev.id }}" data-confirmadas="{{ ev.confirmadas }}" data-ingresadas="{{ ev.ingresadas }}">
+        {{ ev.titulo }}
+      </option>
+      {% endfor %}
+    </select>
+    <p id="contador-evento" style="text-align:center; font-family:'IBM Plex Mono', monospace; color:var(--oro); margin-top:10px;"></p>
+  </div>
 
   <div id="qr-reader" style="max-width:420px; margin:0 auto;"></div>
 
-  <div id="checkin-resultado" style="margin-top:18px; text-align:center; min-height:2em;"></div>
+  <div id="checkin-banner" style="display:none; position:fixed; top:0; left:0; right:0; padding:22px; text-align:center; font-size:1.3rem; font-weight:700; z-index:999;"></div>
 
   <details style="margin-top:24px; max-width:420px; margin-left:auto; margin-right:auto;">
     <summary>Ingresar código manualmente</summary>
@@ -23,15 +35,31 @@
 <script>
 let escaneando = true;
 
-function mostrarResultado(ok, mensaje, nombre, apellido) {
-  const div = document.getElementById('checkin-resultado');
-  const nombreCompleto = nombre ? `${nombre} ${apellido || ''}`.trim() : '';
-  div.innerHTML = `
-    <div style="padding:14px; border:1px solid ${ok ? 'var(--oro)' : '#e6a99b'}; border-radius:2px;">
-      <strong style="color:${ok ? 'var(--oro-suave)' : '#e6a99b'};">${ok ? '✅' : '⚠️'} ${mensaje}</strong>
-      ${nombreCompleto ? `<p style="margin:6px 0 0;">${nombreCompleto}</p>` : ''}
-    </div>
-  `;
+function actualizarContador(confirmadas, ingresadas) {
+  const faltan = confirmadas - ingresadas;
+  document.getElementById('contador-evento').textContent =
+    `Ingresados: ${ingresadas} / ${confirmadas} — Faltan: ${faltan}`;
+}
+
+document.getElementById('select-evento').addEventListener('change', function(){
+  const opt = this.options[this.selectedIndex];
+  if (!opt.value) {
+    document.getElementById('contador-evento').textContent = '';
+    return;
+  }
+  actualizarContador(Number(opt.dataset.confirmadas), Number(opt.dataset.ingresadas));
+});
+
+function mostrarBanner(ok, mensaje) {
+  const banner = document.getElementById('checkin-banner');
+  banner.style.background = ok ? '#2e7d4f' : '#a13d33';
+  banner.style.color = '#fff';
+  banner.textContent = (ok ? '✅ ' : '⚠️ ') + mensaje;
+  banner.style.display = 'block';
+
+  if (navigator.vibrate) navigator.vibrate(ok ? 200 : [100, 80, 100]);
+
+  setTimeout(() => { banner.style.display = 'none'; }, 2200);
 }
 
 async function procesarCodigo(codigo) {
@@ -41,12 +69,25 @@ async function procesarCodigo(codigo) {
   try {
     const res = await fetch("{{ url_for('api_checkin', codigo='__CODIGO__') }}".replace('__CODIGO__', encodeURIComponent(codigo)));
     const data = await res.json();
-    mostrarResultado(data.ok, data.mensaje, data.nombre, data.apellido);
+    const nombreCompleto = data.nombre ? `${data.nombre} ${data.apellido || ''}`.trim() : '';
+    mostrarBanner(data.ok, data.ok ? `Ingresó: ${nombreCompleto}` : (nombreCompleto ? `${nombreCompleto} — ${data.mensaje}` : data.mensaje));
+
+    if (data.evento_id) {
+      const select = document.getElementById('select-evento');
+      const opt = [...select.options].find(o => o.value == data.evento_id);
+      if (opt) {
+        opt.dataset.confirmadas = data.confirmadas ?? opt.dataset.confirmadas;
+        opt.dataset.ingresadas = data.ingresadas ?? opt.dataset.ingresadas;
+        if (select.value == data.evento_id) {
+          actualizarContador(Number(opt.dataset.confirmadas), Number(opt.dataset.ingresadas));
+        }
+      }
+    }
   } catch (err) {
-    mostrarResultado(false, "Error de conexión. Intenta de nuevo.");
+    mostrarBanner(false, "Error de conexión. Intenta de nuevo.");
   }
 
-  setTimeout(() => { escaneando = true; }, 2500);
+  setTimeout(() => { escaneando = true; }, 2200);
 }
 
 const scanner = new Html5Qrcode("qr-reader");

@@ -156,7 +156,27 @@ def dashboard():
 @app.route(f"{ADMIN_PREFIX}/checkin")
 @login_required
 def checkin():
-    return render_template("checkin.html")
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        """SELECT e.ID, e.TITULO,
+                  SUM(CASE WHEN r.ESTADO = 'CONFIRMADA' THEN 1 ELSE 0 END) AS confirmadas,
+                  SUM(CASE WHEN r.ESTADO = 'CONFIRMADA' AND r.USADO = 1 THEN 1 ELSE 0 END) AS ingresadas
+           FROM EVENTOS e
+           LEFT JOIN RESERVAS_CUPOS r ON r.EVENTO_ID = e.ID
+           WHERE e.ESTADO = 'ACTIVO'
+           GROUP BY e.ID, e.TITULO
+           ORDER BY e.TITULO"""
+    )
+    filas = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    eventos = [
+        {"id": f[0], "titulo": f[1], "confirmadas": f[2] or 0, "ingresadas": f[3] or 0}
+        for f in filas
+    ]
+    return render_template("checkin.html", eventos=eventos)
 
 # =========================================================
 # ACCIONES SOBRE SOLICITUDES DE ALQUILER
@@ -404,13 +424,16 @@ def ver_reservas_evento(evento_id):
     conn = get_connection()
     cur = conn.cursor()
     cur.execute(
-        """SELECT ID, NOMBRE, APELLIDO, TELEFONO, PAGADO
+        """SELECT ID, NOMBRE, APELLIDO, TELEFONO, PAGADO, USADO
            FROM RESERVAS_CUPOS WHERE EVENTO_ID=:id AND ESTADO='CONFIRMADA'
            ORDER BY FECHA_RESERVA""", id=evento_id,
     )
     filas = cur.fetchall()
     cur.close(); conn.close()
-    return jsonify([{"id": f[0], "nombre": f[1], "apellido": f[2], "telefono": f[3], "pagado": bool(f[4])} for f in filas])
+    return jsonify([
+        {"id": f[0], "nombre": f[1], "apellido": f[2], "telefono": f[3], "pagado": bool(f[4]), "ingreso": bool(f[5])}
+        for f in filas
+    ])
 
 @app.route(f"{ADMIN_PREFIX}/reserva-cupo/<int:reserva_id>/toggle_pagado", methods=["POST"])
 @login_required
@@ -620,7 +643,7 @@ def mi_reserva(codigo):
     conn = get_connection()
     cur = conn.cursor()
     cur.execute(
-        """SELECT r.NOMBRE, r.APELLIDO, r.NUM_PERSONAS, r.ESTADO, r.USADO, r.FECHA_CHECKIN,
+        """SELECT r.NOMBRE, r.APELLIDO, r.TELEFONO, r.NUM_PERSONAS, r.ESTADO, r.USADO, r.FECHA_CHECKIN,
                   e.TITULO, e.FECHA_INICIO
            FROM RESERVAS_CUPOS r
            JOIN EVENTOS e ON e.ID = r.EVENTO_ID
@@ -634,13 +657,14 @@ def mi_reserva(codigo):
     if not fila:
         return render_template("mi_reserva.html", encontrada=False)
 
-    nombre, apellido, num_personas, estado, usado, fecha_checkin, evento_titulo, evento_inicio = fila
+    nombre, apellido, telefono, num_personas, estado, usado, fecha_checkin, evento_titulo, evento_inicio = fila
 
     return render_template(
         "mi_reserva.html",
         encontrada=True,
         nombre=nombre,
         apellido=apellido,
+        telefono=telefono,
         num_personas=num_personas,
         usado=usado,
         fecha_checkin=fecha_checkin,
@@ -648,7 +672,6 @@ def mi_reserva(codigo):
         evento_inicio=evento_inicio,
         codigo=codigo,
     )
-
 # =========================================================
 # CHECK-IN CON QR (protegido — lo usa el personal en checkin.html)
 # =========================================================
@@ -658,8 +681,11 @@ def api_checkin(codigo):
     conn = get_connection()
     cur = conn.cursor()
     cur.execute(
-        """SELECT ID, NOMBRE, APELLIDO, NUM_PERSONAS, USADO, FECHA_CHECKIN
-           FROM RESERVAS_CUPOS WHERE CODIGO = :codigo""",
+        """SELECT r.ID, r.NOMBRE, r.APELLIDO, r.NUM_PERSONAS, r.USADO, r.FECHA_CHECKIN,
+                  r.EVENTO_ID, e.TITULO
+           FROM RESERVAS_CUPOS r
+           JOIN EVENTOS e ON e.ID = r.EVENTO_ID
+           WHERE r.CODIGO = :codigo""",
         codigo=codigo,
     )
     fila = cur.fetchone()
@@ -669,7 +695,7 @@ def api_checkin(codigo):
         conn.close()
         return jsonify({"ok": False, "mensaje": "Código no encontrado."}), 404
 
-    reserva_id, nombre, apellido, num_personas, usado, fecha_checkin = fila
+    reserva_id, nombre, apellido, num_personas, usado, fecha_checkin, evento_id, evento_titulo = fila
 
     if usado == 1:
         cur.close()
@@ -679,6 +705,8 @@ def api_checkin(codigo):
             "mensaje": f"Ya ingresó antes ({fecha_checkin}).",
             "nombre": nombre,
             "apellido": apellido,
+            "evento_id": evento_id,
+            "evento_titulo": evento_titulo,
         })
 
     cur.execute(
@@ -686,6 +714,14 @@ def api_checkin(codigo):
         id=reserva_id,
     )
     conn.commit()
+
+    cur.execute(
+        """SELECT SUM(CASE WHEN ESTADO = 'CONFIRMADA' THEN 1 ELSE 0 END),
+                  SUM(CASE WHEN ESTADO = 'CONFIRMADA' AND USADO = 1 THEN 1 ELSE 0 END)
+           FROM RESERVAS_CUPOS WHERE EVENTO_ID = :evento_id""",
+        evento_id=evento_id,
+    )
+    confirmadas, ingresadas = cur.fetchone()
     cur.close()
     conn.close()
 
@@ -695,6 +731,10 @@ def api_checkin(codigo):
         "nombre": nombre,
         "apellido": apellido,
         "num_personas": num_personas,
+        "evento_id": evento_id,
+        "evento_titulo": evento_titulo,
+        "confirmadas": confirmadas or 0,
+        "ingresadas": ingresadas or 0,
     })
 
 

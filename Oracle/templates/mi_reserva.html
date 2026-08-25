@@ -12,14 +12,47 @@
   {% if usado == 1 %}
     <p class="vacio">✅ Este código ya fue usado para ingresar ({{ fecha_checkin }}).</p>
   {% else %}
-    <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data={{ codigo }}" alt="Código QR de tu reserva">
-    <p>Muestra este código en la entrada del evento.</p>
+    <div style="text-align:center;">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data={{ codigo }}" alt="Código QR de tu reserva" style="max-width:250px; width:100%;">
+      <p style="font-family:monospace; font-size:.85rem; word-break:break-all;">{{ codigo }}</p>
+      <p>Muestra este código en la entrada del evento.</p>
+      <button type="button" class="btn-mini" onclick="descargarQR('https://api.qrserver.com/v1/create-qr-code/?size=250x250&data={{ codigo }}', 'ticket-{{ codigo }}.png')">Descargar QR</button>
+      <a id="btn-wa" href="#" target="_blank" class="btn-mini btn-wa">Enviarme este link por WhatsApp</a>
+    </div>
   {% endif %}
-
-  <a class="btn-mini btn-wa" target="_blank"
-     href="https://wa.me/?text={{ ('Guardo el link de mi reserva a ' ~ evento_titulo ~ ': ' ~ request.url) | urlencode }}">
-     Enviarme este link por WhatsApp
-  </a>
 {% endif %}
+
+<script>
+function formatearTelWA(tel) {
+  let limpio = (tel || '').replace(/\D/g, '');
+  if (limpio.length === 10 && limpio.startsWith('3')) {
+    limpio = '57' + limpio;
+  }
+  return limpio;
+}
+
+async function descargarQR(url, nombreArchivo) {
+  try {
+    const res = await fetch(url);
+    const blob = await res.blob();
+    const objectUrl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = objectUrl;
+    a.download = nombreArchivo;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(objectUrl);
+  } catch (err) {
+    window.open(url, '_blank');
+  }
+}
+
+{% if encontrada and usado != 1 %}
+const telLimpio = formatearTelWA("{{ telefono }}");
+document.getElementById('btn-wa').href =
+  "https://wa.me/" + telLimpio + "?text=" + encodeURIComponent("Guardo el link de mi reserva a {{ evento_titulo }}: {{ request.url }}");
+{% endif %}
+</script>
 
 {% endblock %}
