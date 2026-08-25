@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Check-in · Café Real{% endblock %}
+{% block contenido %}
+
+<section class="bloque">
+  <h2>Check-in con QR</h2>
+  <p class="ayuda">Apunta la cámara al código QR del cliente. Si no escanea, usa el campo manual de abajo.</p>
+
+  <div id="qr-reader" style="max-width:420px; margin:0 auto;"></div>
+
+  <div id="checkin-resultado" style="margin-top:18px; text-align:center; min-height:2em;"></div>
+
+  <details style="margin-top:24px; max-width:420px; margin-left:auto; margin-right:auto;">
+    <summary>Ingresar código manualmente</summary>
+    <div style="display:flex; gap:8px; margin-top:10px;">
+      <input type="text" id="input-manual" placeholder="Pega o escribe el código" style="flex:1;">
+      <button type="button" class="btn-mini btn-confirmar" onclick="procesarCodigo(document.getElementById('input-manual').value.trim())">Verificar</button>
+    </div>
+  </details>
+</section>
+
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script>
+let escaneando = true;
+
+function mostrarResultado(ok, mensaje, nombre, apellido) {
+  const div = document.getElementById('checkin-resultado');
+  const nombreCompleto = nombre ? `${nombre} ${apellido || ''}`.trim() : '';
+  div.innerHTML = `
+    <div style="padding:14px; border:1px solid ${ok ? 'var(--oro)' : '#e6a99b'}; border-radius:2px;">
+      <strong style="color:${ok ? 'var(--oro-suave)' : '#e6a99b'};">${ok ? '✅' : '⚠️'} ${mensaje}</strong>
+      ${nombreCompleto ? `<p style="margin:6px 0 0;">${nombreCompleto}</p>` : ''}
+    </div>
+  `;
+}
+
+async function procesarCodigo(codigo) {
+  if (!codigo || !escaneando) return;
+  escaneando = false;
+
+  try {
+    const res = await fetch("{{ url_for('api_checkin', codigo='__CODIGO__') }}".replace('__CODIGO__', encodeURIComponent(codigo)));
+    const data = await res.json();
+    mostrarResultado(data.ok, data.mensaje, data.nombre, data.apellido);
+  } catch (err) {
+    mostrarResultado(false, "Error de conexión. Intenta de nuevo.");
+  }
+
+  setTimeout(() => { escaneando = true; }, 2500);
+}
+
+const scanner = new Html5Qrcode("qr-reader");
+scanner.start(
+  { facingMode: "environment" },
+  { fps: 10, qrbox: 250 },
+  (codigoDecodificado) => procesarCodigo(codigoDecodificado),
+  (error) => { /* se ignoran los errores de frames sin QR detectado */ }
+).catch((err) => {
+  document.getElementById('qr-reader').innerHTML =
+    "<p class='vacio'>No se pudo acceder a la cámara. Usa el campo manual.</p>";
+});
+</script>
+
+{% endblock %}

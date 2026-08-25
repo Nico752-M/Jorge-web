@@ -101,7 +101,10 @@
 
 <section class="bloque">
   <h2>Eventos activos</h2>
-  <p><a class="btn-mini btn-confirmar" href="{{ url_for('evento_nuevo') }}">+ Crear evento con cupos</a></p>
+  <p>
+    <a class="btn-mini btn-confirmar" href="{{ url_for('evento_nuevo') }}">+ Crear evento con cupos</a>
+    <a class="btn-mini" href="{{ url_for('checkin') }}">📷 Check-in con QR</a>
+  </p>
   <input type="text" id="buscador-eventos" placeholder="Buscar evento por nombre..."
          oninput="filtrarEventos()" style="margin-bottom:10px; width:100%; max-width:320px;">
   {% if not eventos %}

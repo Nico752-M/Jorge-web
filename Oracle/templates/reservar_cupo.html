@@ -62,6 +62,11 @@
       <button type="submit">Confirmar asistencia</button>
     </form>
     <div id="msg"></div>
+    <div id="ticket-qr" style="display:none; text-align:center; margin-top:16px;">
+      <img id="ticket-qr-img" src="" alt="Código QR de tu reserva" style="max-width:220px; width:100%; border-radius:2px;">
+      <p style="color:var(--concreto); font-size:.85rem; margin:10px 0;">Guarda este código, lo necesitarás en la entrada.</p>
+      <a id="btn-whatsapp-ticket" href="#" target="_blank" class="btn-volver" style="display:block;">Enviarme este link por WhatsApp</a>
+    </div>
     <a id="btn-volver" href="/" class="btn-volver">Volver al inicio</a>
   </div>
 
@@ -93,7 +98,15 @@
         msg.textContent = "¡Listo! Tu cupo quedó confirmado.";
         msg.className = "ok";
         e.target.style.display = "none";
-        document.getElementById('btn-volver').style.display = "block";   
+        document.getElementById('btn-volver').style.display = "block";
+
+        if (data.codigo && data.link) {
+          document.getElementById('ticket-qr-img').src =
+            "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=" + encodeURIComponent(data.codigo);
+          document.getElementById('btn-whatsapp-ticket').href =
+            "https://wa.me/?text=" + encodeURIComponent("Guardo el link de mi reserva a " + "{{ evento[1] }}" + ": " + data.link);
+          document.getElementById('ticket-qr').style.display = "block";
+        }
     } else if (data.ok) {
         msg.textContent = data.mensaje;
         msg.className = "warn";

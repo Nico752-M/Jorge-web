@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Mi reserva · Café Real{% endblock %}
+{% block contenido %}
+
+{% if not encontrada %}
+  <p class="vacio">No encontramos ninguna reserva con ese código.</p>
+{% else %}
+  <h2>Tu reserva — {{ evento_titulo }}</h2>
+  <p>{{ evento_inicio }}</p>
+  <p><b>{{ nombre }} {{ apellido or "" }}</b> — {{ num_personas }} persona(s)</p>
+
+  {% if usado == 1 %}
+    <p class="vacio">✅ Este código ya fue usado para ingresar ({{ fecha_checkin }}).</p>
+  {% else %}
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data={{ codigo }}" alt="Código QR de tu reserva">
+    <p>Muestra este código en la entrada del evento.</p>
+  {% endif %}
+
+  <a class="btn-mini btn-wa" target="_blank"
+     href="https://wa.me/?text={{ ('Guardo el link de mi reserva a ' ~ evento_titulo ~ ': ' ~ request.url) | urlencode }}">
+     Enviarme este link por WhatsApp
+  </a>
+{% endif %}
+
+{% endblock %}

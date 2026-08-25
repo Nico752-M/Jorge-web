@@ -4,6 +4,7 @@ Ruta oculta: cámbiala en ADMIN_PREFIX por algo que solo ustedes conozcan
 (no dejes '/panel-cr8x', invéntate otra combinación).
 """
 import os
+import secrets
 from datetime import datetime
 
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
@@ -151,6 +152,12 @@ def dashboard():
     cur.close()
     conn.close()
     return render_template("dashboard.html", solicitudes=solicitudes, eventos=eventos, eventos_finalizados=eventos_finalizados, excedentes=excedentes)
+
+@app.route(f"{ADMIN_PREFIX}/checkin")
+@login_required
+def checkin():
+    return render_template("checkin.html")
+
 # =========================================================
 # ACCIONES SOBRE SOLICITUDES DE ALQUILER
 # =========================================================
@@ -573,15 +580,18 @@ def crear_reserva_cupo():
     alcanzo = cur.rowcount == 1
     estado_reserva = "CONFIRMADA" if alcanzo else "EXCEDENTE"
 
+    codigo_reserva = secrets.token_urlsafe(12) if alcanzo else None
+
     cur.execute(
-        """INSERT INTO RESERVAS_CUPOS (EVENTO_ID, NOMBRE, APELLIDO, TELEFONO, NUM_PERSONAS, ESTADO)
-           VALUES (:evento_id, :nombre, :apellido, :telefono, :num_personas, :estado)""",
+        """INSERT INTO RESERVAS_CUPOS (EVENTO_ID, NOMBRE, APELLIDO, TELEFONO, NUM_PERSONAS, ESTADO, CODIGO)
+           VALUES (:evento_id, :nombre, :apellido, :telefono, :num_personas, :estado, :codigo)""",
         evento_id=evento_id,
         nombre=nombre,
         apellido=apellido or None,
         telefono=telefono,
         num_personas=num_personas,
         estado=estado_reserva,
+        codigo=codigo_reserva,
     )
 
     conn.commit()
@@ -589,12 +599,102 @@ def crear_reserva_cupo():
     conn.close()
 
     if alcanzo:
-        return jsonify({"ok": True, "confirmado": True})
+        return jsonify({
+            "ok": True,
+            "confirmado": True,
+            "codigo": codigo_reserva,
+            "link": url_for("mi_reserva", codigo=codigo_reserva, _external=True)
+        })
 
     return jsonify({
         "ok": True,
         "confirmado": False,
         "mensaje": "Por ahora no quedan cupos suficientes. Guardamos tu solicitud — estamos viendo si se puede ampliar el aforo y te contactaremos."
+    })
+
+# =========================================================
+# TICKET PERMANENTE DEL CLIENTE (sin login — link que se guarda)
+# =========================================================
+@app.route("/mi-reserva/<codigo>")
+def mi_reserva(codigo):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        """SELECT r.NOMBRE, r.APELLIDO, r.NUM_PERSONAS, r.ESTADO, r.USADO, r.FECHA_CHECKIN,
+                  e.TITULO, e.FECHA_INICIO
+           FROM RESERVAS_CUPOS r
+           JOIN EVENTOS e ON e.ID = r.EVENTO_ID
+           WHERE r.CODIGO = :codigo""",
+        codigo=codigo,
+    )
+    fila = cur.fetchone()
+    cur.close()
+    conn.close()
+
+    if not fila:
+        return render_template("mi_reserva.html", encontrada=False)
+
+    nombre, apellido, num_personas, estado, usado, fecha_checkin, evento_titulo, evento_inicio = fila
+
+    return render_template(
+        "mi_reserva.html",
+        encontrada=True,
+        nombre=nombre,
+        apellido=apellido,
+        num_personas=num_personas,
+        usado=usado,
+        fecha_checkin=fecha_checkin,
+        evento_titulo=evento_titulo,
+        evento_inicio=evento_inicio,
+        codigo=codigo,
+    )
+
+# =========================================================
+# CHECK-IN CON QR (protegido — lo usa el personal en checkin.html)
+# =========================================================
+@app.route(f"{ADMIN_PREFIX}/api/checkin/<codigo>")
+@login_required
+def api_checkin(codigo):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        """SELECT ID, NOMBRE, APELLIDO, NUM_PERSONAS, USADO, FECHA_CHECKIN
+           FROM RESERVAS_CUPOS WHERE CODIGO = :codigo""",
+        codigo=codigo,
+    )
+    fila = cur.fetchone()
+
+    if not fila:
+        cur.close()
+        conn.close()
+        return jsonify({"ok": False, "mensaje": "Código no encontrado."}), 404
+
+    reserva_id, nombre, apellido, num_personas, usado, fecha_checkin = fila
+
+    if usado == 1:
+        cur.close()
+        conn.close()
+        return jsonify({
+            "ok": False,
+            "mensaje": f"Ya ingresó antes ({fecha_checkin}).",
+            "nombre": nombre,
+            "apellido": apellido,
+        })
+
+    cur.execute(
+        "UPDATE RESERVAS_CUPOS SET USADO = 1, FECHA_CHECKIN = SYSTIMESTAMP WHERE ID = :id",
+        id=reserva_id,
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return jsonify({
+        "ok": True,
+        "mensaje": "Ingreso registrado.",
+        "nombre": nombre,
+        "apellido": apellido,
+        "num_personas": num_personas,
     })
 
 
