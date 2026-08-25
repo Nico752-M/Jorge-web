@@ -3,6 +3,7 @@
 {% block contenido %}
 
 <section class="bloque">
+  <p><a class="btn-mini" href="{{ url_for('dashboard') }}">← Volver al panel</a></p>
   <h2>Check-in con QR</h2>
   <p class="ayuda">Selecciona el evento, apunta la cámara al código QR del cliente. Si no escanea, usa el campo manual de abajo.</p>
 
@@ -70,8 +71,14 @@ async function procesarCodigo(codigo) {
     const res = await fetch("{{ url_for('api_checkin', codigo='__CODIGO__') }}".replace('__CODIGO__', encodeURIComponent(codigo)));
     const data = await res.json();
     const nombreCompleto = data.nombre ? `${data.nombre} ${data.apellido || ''}`.trim() : '';
-    mostrarBanner(data.ok, data.ok ? `Ingresó: ${nombreCompleto}` : (nombreCompleto ? `${nombreCompleto} — ${data.mensaje}` : data.mensaje));
-
+    const estadoPago = data.pagado ? 'Pagó ✔' : 'No ha pagado ✖';
+    mostrarBanner(
+      data.ok,
+      data.ok
+        ? `Ingresó: ${nombreCompleto} — ${estadoPago}`
+        : (nombreCompleto ? `${nombreCompleto} — ${data.mensaje} (${estadoPago})` : data.mensaje)
+    );
+    
     if (data.evento_id) {
       const select = document.getElementById('select-evento');
       const opt = [...select.options].find(o => o.value == data.evento_id);

@@ -682,7 +682,7 @@ def api_checkin(codigo):
     cur = conn.cursor()
     cur.execute(
         """SELECT r.ID, r.NOMBRE, r.APELLIDO, r.NUM_PERSONAS, r.USADO, r.FECHA_CHECKIN,
-                  r.EVENTO_ID, e.TITULO
+                  r.EVENTO_ID, e.TITULO, r.PAGADO
            FROM RESERVAS_CUPOS r
            JOIN EVENTOS e ON e.ID = r.EVENTO_ID
            WHERE r.CODIGO = :codigo""",
@@ -695,7 +695,7 @@ def api_checkin(codigo):
         conn.close()
         return jsonify({"ok": False, "mensaje": "Código no encontrado."}), 404
 
-    reserva_id, nombre, apellido, num_personas, usado, fecha_checkin, evento_id, evento_titulo = fila
+    reserva_id, nombre, apellido, num_personas, usado, fecha_checkin, evento_id, evento_titulo, pagado = fila
 
     if usado == 1:
         cur.close()
@@ -707,6 +707,7 @@ def api_checkin(codigo):
             "apellido": apellido,
             "evento_id": evento_id,
             "evento_titulo": evento_titulo,
+            "pagado": bool(pagado),
         })
 
     cur.execute(
@@ -735,8 +736,8 @@ def api_checkin(codigo):
         "evento_titulo": evento_titulo,
         "confirmadas": confirmadas or 0,
         "ingresadas": ingresadas or 0,
+        "pagado": bool(pagado),
     })
-
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
