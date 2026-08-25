@@ -2,6 +2,8 @@
 {% block title %}Panel · Café Real{% endblock %}
 {% block contenido %}
 
+<div id="vista-dashboard">
+
 <section class="bloque">
   <h2>Bandeja de solicitudes de alquiler</h2>
   {% if not solicitudes %}
@@ -177,13 +179,17 @@
       <tbody>
         {% for e in eventos_finalizados %}
         {% set id, tipo, titulo, descripcion, inicio, fin, aforo_disp, aforo_total, visible = e %}
-        <tr>
+        <tr data-id="{{ id }}" data-tipo="{{ tipo }}" data-titulo="{{ titulo }}" data-descripcion="{{ descripcion or 'Sin descripción.' }}"
+            data-inicio="{{ inicio }}" data-fin="{{ fin or '—' }}"
+            data-confirmadas="{{ aforo_total - aforo_disp if aforo_total else '—' }}"
+            data-total="{{ aforo_total or '—' }}" data-visible="{{ 'Visible' if visible == 1 else 'Oculto' }}">
           <td><span class="badge badge-tipo-{{ tipo|lower }}">{{ tipo }}</span></td>
           <td>{{ titulo }}</td>
           <td>{{ inicio }}</td>
           <td>{{ fin }}</td>
           <td>{% if aforo_total %}{{ aforo_total - aforo_disp }} confirmadas de {{ aforo_total }}{% else %}—{% endif %}</td>
           <td class="acciones">
+            <button type="button" class="btn-mini" onclick="verDetalleEvento(this)">Ver detalles</button>
             <a class="btn-mini btn-rechazar" href="{{ url_for('eliminar_evento', evento_id=id) }}"
                onclick="return confirm('¿Seguro que quieres eliminar este evento del historial?')">Eliminar</a>
           </td>
@@ -193,6 +199,24 @@
     </table>
     {% endif %}
   </details>
+</section>
+
+</div>
+
+<section class="bloque oculto" id="vista-personas">
+  <button type="button" class="btn-mini" onclick="volverAEventos()">← Volver a eventos</button>
+  <h2 style="margin-top:16px;">Personas registradas — <span id="vp-titulo-evento"></span></h2>
+  <table class="tabla" id="tabla-personas">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>Personas</th>
+        <th>Teléfono</th>
+      </tr>
+    </thead>
+    <tbody id="vp-tbody"></tbody>
+  </table>
 </section>
 
 <div id="modal-detalle" class="modal-overlay hidden" onclick="if(event.target===this) this.classList.add('hidden')">
@@ -221,7 +245,6 @@
     <p><b>Cupos:</b> <span id="de-cupos"></span></p>
     <p><b>Visible al público:</b> <span id="de-visible"></span></p>
     <button type="button" class="btn-mini" id="btn-ver-personas">Ver personas registradas</button>
-    <div id="de-personas-lista" style="margin-top:10px;"></div>
   </div>
 </div>
 
@@ -248,27 +271,44 @@ function verDetalleEvento(btn){
   document.getElementById('de-cupos').textContent = tr.dataset.confirmadas + " confirmadas de " + tr.dataset.total;
   document.getElementById('de-visible').textContent = tr.dataset.visible;
   document.getElementById('modal-detalle-evento').dataset.eventoId = tr.dataset.id;
-  document.getElementById('de-personas-lista').innerHTML = "";
   document.getElementById('modal-detalle-evento').classList.remove('hidden');
 }
 
 document.getElementById('btn-ver-personas').addEventListener('click', function(){
   const eventoId = document.getElementById('modal-detalle-evento').dataset.eventoId;
-  const lista = document.getElementById('de-personas-lista');
-  lista.innerHTML = "Cargando...";
+  const titulo = document.getElementById('de-titulo').textContent;
+  document.getElementById('modal-detalle-evento').classList.add('hidden');
+  mostrarVistaPersonas(eventoId, titulo);
+});
+
+function mostrarVistaPersonas(eventoId, titulo){
+  document.getElementById('vista-dashboard').classList.add('oculto');
+  document.getElementById('vista-personas').classList.remove('oculto');
+  document.getElementById('vp-titulo-evento').textContent = titulo;
+  const tbody = document.getElementById('vp-tbody');
+  tbody.innerHTML = "<tr><td colspan='4' class='vacio'>Cargando...</td></tr>";
   fetch("{{ url_for('ver_reservas_evento', evento_id=0) }}".replace('0', eventoId))
     .then(r => r.json())
     .then(personas => {
       if (!personas.length){
-        lista.innerHTML = "<p class='vacio'>Nadie ha confirmado aún.</p>";
+        tbody.innerHTML = "<tr><td colspan='4' class='vacio'>Nadie ha confirmado aún.</td></tr>";
         return;
       }
-      lista.innerHTML = personas.map(p =>
-        `<p>${p.nombre} ${p.apellido || ''} — ${p.personas} pers. — 
-         <a href="https://wa.me/${p.telefono.replace(/\D/g,'')}" target="_blank">${p.telefono}</a></p>`
-      ).join('');
+      tbody.innerHTML = personas.map(p => `
+        <tr>
+          <td>${p.nombre}</td>
+          <td>${p.apellido || '—'}</td>
+          <td>${p.personas}</td>
+          <td><a href="https://wa.me/${p.telefono.replace(/\D/g,'')}" target="_blank">${p.telefono}</a></td>
+        </tr>
+      `).join('');
     });
-});
+}
+
+function volverAEventos(){
+  document.getElementById('vista-personas').classList.add('oculto');
+  document.getElementById('vista-dashboard').classList.remove('oculto');
+}
 
 function copiarEnlace(btn, eventoId){
   const url = `${window.location.origin}/evento/${eventoId}/reservar`;

@@ -150,3 +150,21 @@ a{color:inherit; text-decoration:none;}
 }
 
 .acciones-form{display:flex; gap:10px; margin-top:20px;}
+
+#vista-personas.oculto{display:none;}
+
+.volver-btn{
+  background:transparent; border:1px solid var(--linea); color:var(--concreto);
+  padding:8px 14px; border-radius:4px; font-size:.85rem; cursor:pointer;
+  font-family:inherit; margin-bottom:20px; display:inline-flex; align-items:center; gap:6px;
+}
+.volver-btn:hover{border-color:var(--oro); color:var(--oro-suave);}
+
+.tabla-personas-header{
+  display:flex; align-items:baseline; justify-content:space-between;
+  margin-bottom:20px; flex-wrap:wrap; gap:10px;
+}
+.tabla-personas-header h2{margin:0;}
+.tabla-personas-header .conteo{color:var(--concreto); font-size:.85rem;}
+
+.oculto{display:none;}
