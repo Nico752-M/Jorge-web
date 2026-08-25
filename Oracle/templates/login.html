@@ -1,73 +1,98 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Panel · Café Real</title>
-<link rel="manifest" href="/manifest.json"> <link rel="apple-touch-icon" href="/icon-192.png"> <meta name="theme-color" content="#15120e">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-:root{
-  --hierro:#15120e; --hierro-2:#1d1a15; --oro:#d3a24e; --oro-suave:#e8cd97;
-  --concreto:#8a8177; --crema:#ece2ce; --linea:rgba(211,162,78,.22); --rojo:#c76a5a;
-}
-*{box-sizing:border-box;}
-body{
-  margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
-  background:radial-gradient(ellipse at 50% 35%, #221c14 0%, var(--hierro) 70%);
-  color:var(--crema); font-family:'Public Sans', sans-serif;
-}
-.card{
-  width:100%; max-width:360px; padding:44px 38px; text-align:center;
-  border:1px solid var(--linea); border-radius:10px; background:var(--hierro-2);
-}
-.eyebrow{font-size:.68rem; letter-spacing:.32em; text-transform:uppercase; color:var(--oro); margin-bottom:14px;}
-h1{font-family:'Fraunces', serif; font-weight:600; font-size:1.6rem; margin:0;}
-.subt{margin-top:8px; font-size:.88rem; color:var(--concreto); font-style:italic; font-family:'Fraunces', serif; font-weight:300;}
-form{margin-top:32px; text-align:left; display:flex; flex-direction:column; gap:16px;}
-label{display:block; font-size:.68rem; letter-spacing:.14em; text-transform:uppercase; color:var(--oro); margin-bottom:8px;}
-input{
-  width:100%; background:var(--hierro); border:1px solid var(--linea); color:var(--crema);
-  padding:12px 14px; border-radius:6px; font-family:inherit; font-size:.95rem;
-}
-input:focus{outline:2px solid var(--oro); outline-offset:2px;}
-input::placeholder{color:var(--concreto);}
-button{
-  margin-top:6px; width:100%; padding:14px; border:none; border-radius:6px;
-  background:var(--oro); color:var(--hierro); font-weight:600; font-size:.85rem;
-  letter-spacing:.06em; text-transform:uppercase; cursor:pointer; transition:.2s;
-}
-button:hover{background:var(--oro-suave); transform:translateY(-1px);}
-.flash{
-  margin-top:22px; padding:12px 14px; border:1px solid var(--rojo); border-radius:6px;
-  color:#e6a99b; font-size:.82rem; text-align:left;
-}
-</style>
+  <meta charset="UTF-8">
+  <title>Reservar cupo — {{ evento[1] }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root{ --hierro:#161311; --hierro-2:#1d1a17; --crema:#f3ece2; --concreto:#a99c8c;
+           --oro:#c9a24b; --oro-suave:#e0c27a; --linea:#332d27; }
+    *{box-sizing:border-box;}
+    body{
+      margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+      background:var(--hierro); color:var(--crema);
+      font-family:'Public Sans', Arial, sans-serif; padding:24px;
+    }
+    .reserva-box{
+      width:100%; max-width:420px; background:var(--hierro-2);
+      border:1px solid var(--linea); padding:36px 30px; border-radius:2px;
+    }
+    .reserva-box h2{ margin:0 0 6px; font-size:1.4rem; }
+    .reserva-box p{ color:var(--concreto); font-size:.9rem; line-height:1.5; margin:0 0 18px; }
+    #cupos-info{
+      display:inline-block; font-family:'IBM Plex Mono', monospace; font-size:.78rem;
+      color:var(--oro); border:1px solid var(--linea); padding:5px 10px; margin-bottom:22px;
+    }
+    form{ display:flex; flex-direction:column; gap:12px; }
+    input{
+      background:var(--hierro); border:1px solid var(--linea); color:var(--crema);
+      padding:12px 14px; font-size:.92rem; border-radius:2px; outline:none;
+    }
+    input:focus{ border-color:var(--oro); }
+    button{
+      margin-top:6px; background:var(--oro); color:#1a1512; border:none;
+      padding:13px; font-size:.92rem; font-weight:600; cursor:pointer; border-radius:2px;
+    }
+    button:hover{ background:var(--oro-suave); }
+    button:disabled{ opacity:.5; cursor:not-allowed; }
+    #msg{ margin-top:16px; font-size:.88rem; line-height:1.5; min-height:1.2em; }
+    #msg.ok{ color:var(--oro-suave); }
+    #msg.warn{ color:#e6a99b; }
+  </style>
 </head>
 <body>
-  <div class="card">
-    <div class="eyebrow">Café Real</div>
-    <h1>Panel de administración</h1>
-    <p class="subt">Solo para el equipo del local</p>
+  <div class="reserva-box">
+    <h2>{{ evento[1] }}</h2>
+    <p>{{ evento[2] or 'Confirma tu asistencia a este evento.' }}</p>
+    <span id="cupos-info"></span>
 
-    {% with mensajes = get_flashed_messages() %}
-      {% if mensajes %}
-        <div class="flash">{% for m in mensajes %}{{ m }}{% endfor %}</div>
-      {% endif %}
-    {% endwith %}
-
-    <form method="POST">
-      <div>
-        <label for="usuario">Usuario</label>
-        <input type="text" id="usuario" name="usuario" required autofocus placeholder="tu usuario">
-      </div>
-      <div>
-        <label for="password">Contraseña</label>
-        <input type="password" id="password" name="password" required placeholder="••••••••">
-      </div>
-      <button type="submit">Entrar</button>
+    <form id="form-reserva">
+      <input type="text" id="nombre" placeholder="Nombre" required>
+      <input type="text" id="apellido" placeholder="Apellido">
+      <input type="tel" id="telefono" placeholder="Teléfono" required>
+      <input type="number" id="num_personas" min="1" value="1" required>
+      <button type="submit">Confirmar asistencia</button>
     </form>
+    <div id="msg"></div>
   </div>
+
+  <script>
+    const EVENTO_ID = {{ evento[0] }};
+    document.getElementById('cupos-info').textContent =
+      "{{ evento[6] }} de {{ evento[5] }} cupos disponibles";
+
+    document.getElementById('form-reserva').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = e.target.querySelector('button');
+      btn.disabled = true;
+      const body = {
+        evento_id: EVENTO_ID,
+        nombre: document.getElementById('nombre').value,
+        apellido: document.getElementById('apellido').value,
+        telefono: document.getElementById('telefono').value,
+        num_personas: document.getElementById('num_personas').value,
+      };
+      const res = await fetch('/api/reservas-cupo', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      const msg = document.getElementById('msg');
+      if (data.confirmado) {
+        msg.textContent = "¡Listo! Tu cupo quedó confirmado.";
+        msg.className = "ok";
+        e.target.style.display = "none";
+      } else if (data.ok) {
+        msg.textContent = data.mensaje;
+        msg.className = "warn";
+        e.target.style.display = "none";
+      } else {
+        msg.textContent = data.error || "Hubo un error.";
+        msg.className = "warn";
+        btn.disabled = false;
+      }
+    });
+  </script>
 </body>
 </html>
