@@ -1762,6 +1762,18 @@ function jugarMovimientoCoffe(){
     programarMovimientoCoffe();
   }, duracion);
 }
+
+document.querySelectorAll('a.btn-mini, a.btn-confirmar, a.btn-rechazar').forEach(link => {
+  link.addEventListener('click', function(e){
+    if (this.dataset.noLoading) return; // por si algún link no debe mostrar loading
+    const original = this.textContent;
+    setTimeout(() => {
+      this.textContent = "Un momento...";
+      this.style.pointerEvents = "none";
+      this.style.opacity = "0.6";
+    }, 0);
+  });
+});
 </script>
 </body>
 </html>

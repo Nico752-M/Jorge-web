@@ -4,13 +4,49 @@
   <meta charset="UTF-8">
   <title>Reservar cupo — {{ evento[1] }}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- reutiliza el mismo look de login.html si quieres -->
+  <style>
+    :root{ --hierro:#161311; --hierro-2:#1d1a17; --crema:#f3ece2; --concreto:#a99c8c;
+           --oro:#c9a24b; --oro-suave:#e0c27a; --linea:#332d27; }
+    *{box-sizing:border-box;}
+    body{
+      margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+      background:var(--hierro); color:var(--crema);
+      font-family:'Public Sans', Arial, sans-serif; padding:24px;
+    }
+    .reserva-box{
+      width:100%; max-width:420px; background:var(--hierro-2);
+      border:1px solid var(--linea); padding:36px 30px; border-radius:2px;
+    }
+    .reserva-box h2{ margin:0 0 6px; font-size:1.4rem; color:var(--crema); }
+    .reserva-box p{ color:var(--concreto); font-size:.9rem; line-height:1.5; margin:0 0 18px; }
+    #cupos-info{
+      display:inline-block; font-family:'IBM Plex Mono', monospace; font-size:.78rem;
+      color:var(--oro); border:1px solid var(--linea); padding:5px 10px; margin-bottom:22px;
+    }
+    form{ display:flex; flex-direction:column; gap:12px; }
+    input{
+      width:100%; background:var(--hierro); border:1px solid var(--linea); color:var(--crema);
+      padding:12px 14px; font-size:.92rem; border-radius:2px; outline:none; font-family:inherit;
+    }
+    input::placeholder{ color:var(--concreto); }
+    input:focus{ border-color:var(--oro); }
+    button{
+      margin-top:6px; background:var(--oro); color:#1a1512; border:none;
+      padding:13px; font-size:.92rem; font-weight:600; cursor:pointer; border-radius:2px;
+      font-family:inherit;
+    }
+    button:hover{ background:var(--oro-suave); }
+    button:disabled{ opacity:.5; cursor:not-allowed; }
+    #msg{ margin-top:16px; font-size:.88rem; line-height:1.5; min-height:1.2em; }
+    #msg.ok{ color:var(--oro-suave); }
+    #msg.warn{ color:#e6a99b; }
+  </style>
 </head>
-<body data-evento-id="{{ evento[0] }}">
+<body>
   <div class="reserva-box">
     <h2>{{ evento[1] }}</h2>
-    <p>{{ evento[2] or '' }}</p>
-    <p id="cupos-info"></p>
+    <p>{{ evento[2] or 'Confirma tu asistencia a este evento.' }}</p>
+    <span id="cupos-info"></span>
 
     <form id="form-reserva">
       <input type="text" id="nombre" placeholder="Nombre" required>
@@ -23,12 +59,14 @@
   </div>
 
   <script>
-    const EVENTO_ID = Number(document.body.dataset.eventoId);
+    const EVENTO_ID = {{ evento[0] }};
     document.getElementById('cupos-info').textContent =
       "{{ evento[6] }} de {{ evento[5] }} cupos disponibles";
 
     document.getElementById('form-reserva').addEventListener('submit', async (e) => {
       e.preventDefault();
+      const btn = e.target.querySelector('button');
+      btn.disabled = true;
       const body = {
         evento_id: EVENTO_ID,
         nombre: document.getElementById('nombre').value,
@@ -45,11 +83,29 @@
       const msg = document.getElementById('msg');
       if (data.confirmado) {
         msg.textContent = "¡Listo! Tu cupo quedó confirmado.";
+        msg.className = "ok";
+        e.target.style.display = "none";
       } else if (data.ok) {
         msg.textContent = data.mensaje;
+        msg.className = "warn";
+        e.target.style.display = "none";
       } else {
         msg.textContent = data.error || "Hubo un error.";
+        msg.className = "warn";
+        btn.disabled = false;
       }
+    });
+
+    document.querySelectorAll('a.btn-mini, a.btn-confirmar, a.btn-rechazar').forEach(link => {
+      link.addEventListener('click', function(e){
+        if (this.dataset.noLoading) return; // por si algún link no debe mostrar loading
+        const original = this.textContent;
+        setTimeout(() => {
+          this.textContent = "Un momento...";
+          this.style.pointerEvents = "none";
+          this.style.opacity = "0.6";
+        }, 0);
+      });
     });
   </script>
 </body>

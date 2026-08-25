@@ -117,14 +117,12 @@ def dashboard():
     solicitudes = cur.fetchall()
 
     cur.execute(
-        """SELECT r.ID, r.NOMBRE, r.APELLIDO, r.TELEFONO, r.NUM_PERSONAS, r.FECHA_RESERVA,
-                  e.ID, e.TITULO, e.AFORO_TOTAL, e.AFORO_DISPONIBLE
-           FROM RESERVAS_CUPOS r
-           JOIN EVENTOS e ON e.ID = r.EVENTO_ID
-           WHERE r.ESTADO = 'EXCEDENTE'
-           ORDER BY r.FECHA_RESERVA"""
+        """SELECT ID, TIPO, TITULO, DESCRIPCION, FECHA_INICIO, FECHA_FIN, AFORO_DISPONIBLE, AFORO_TOTAL, VISIBLE_PUBLICO
+           FROM EVENTOS
+           WHERE ESTADO = 'ACTIVO'
+           ORDER BY FECHA_INICIO"""
     )
-    excedentes = cur.fetchall()
+    eventos = cur.fetchall()
 
     cur.execute(
         """SELECT r.ID, r.NOMBRE, r.APELLIDO, r.TELEFONO, r.NUM_PERSONAS, r.FECHA_RESERVA,
