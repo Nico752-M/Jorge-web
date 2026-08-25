@@ -73,6 +73,8 @@ def crear_solicitud_alquiler():
     nombre = (data.get("nombre") or "").strip()
     telefono = (data.get("telefono") or "").strip()
     fecha_deseada = data.get("fecha_deseada") or None
+    hora_inicio = (data.get("hora_inicio") or "").strip() or None
+    hora_fin = (data.get("hora_fin") or "").strip() or None
     rango_hora = (data.get("rango_hora_aprox") or "").strip()
     tipo_evento = (data.get("tipo_evento") or "").strip()
     num_personas = data.get("num_personas") or None
@@ -84,11 +86,13 @@ def crear_solicitud_alquiler():
     cur = conn.cursor()
     cur.execute(
         """INSERT INTO SOLICITUDES_ALQUILER
-               (NOMBRE, TELEFONO, FECHA_DESEADA, RANGO_HORA_APROX, TIPO_EVENTO, NUM_PERSONAS, ESTADO)
-           VALUES (:nombre, :telefono, TO_DATE(:fecha, 'YYYY-MM-DD'), :rango, :tipo, :personas, 'PENDIENTE')""",
+               (NOMBRE, TELEFONO, FECHA_DESEADA, HORA_INICIO, HORA_FIN, RANGO_HORA_APROX, TIPO_EVENTO, NUM_PERSONAS, ESTADO)
+           VALUES (:nombre, :telefono, TO_DATE(:fecha, 'YYYY-MM-DD'), :h_inicio, :h_fin, :rango, :tipo, :personas, 'PENDIENTE')""",
         nombre=nombre,
         telefono=telefono,
         fecha=fecha_deseada,
+        h_inicio=hora_inicio,
+        h_fin=hora_fin,
         rango=rango_hora,
         tipo=tipo_evento,
         personas=num_personas,
@@ -109,7 +113,7 @@ def dashboard():
     cur = conn.cursor()
 
     cur.execute(
-        """SELECT ID, NOMBRE, TELEFONO, FECHA_DESEADA, RANGO_HORA_APROX, TIPO_EVENTO, NUM_PERSONAS, ESTADO
+        """SELECT ID, NOMBRE, TELEFONO, FECHA_DESEADA, HORA_INICIO, HORA_FIN, RANGO_HORA_APROX, TIPO_EVENTO, NUM_PERSONAS, ESTADO
            FROM SOLICITUDES_ALQUILER
            WHERE ESTADO IN ('PENDIENTE', 'CONTACTADO')
            ORDER BY FECHA_SOLICITUD DESC"""
@@ -251,7 +255,7 @@ def confirmar_solicitud(solicitud_id):
 
     # GET: mostrar el formulario con los datos de la solicitud
     cur.execute(
-        """SELECT ID, NOMBRE, TELEFONO, FECHA_DESEADA, RANGO_HORA_APROX, TIPO_EVENTO, NUM_PERSONAS
+        """SELECT ID, NOMBRE, TELEFONO, FECHA_DESEADA, HORA_INICIO, HORA_FIN, RANGO_HORA_APROX, TIPO_EVENTO, NUM_PERSONAS
            FROM SOLICITUDES_ALQUILER WHERE ID = :id""",
         id=solicitud_id,
     )
@@ -393,13 +397,30 @@ def ver_reservas_evento(evento_id):
     conn = get_connection()
     cur = conn.cursor()
     cur.execute(
-        """SELECT NOMBRE, APELLIDO, TELEFONO, NUM_PERSONAS, ESTADO
+        """SELECT ID, NOMBRE, APELLIDO, TELEFONO, PAGADO
            FROM RESERVAS_CUPOS WHERE EVENTO_ID=:id AND ESTADO='CONFIRMADA'
            ORDER BY FECHA_RESERVA""", id=evento_id,
     )
     filas = cur.fetchall()
     cur.close(); conn.close()
-    return jsonify([{"nombre": f[0], "apellido": f[1], "telefono": f[2], "personas": f[3]} for f in filas])
+    return jsonify([{"id": f[0], "nombre": f[1], "apellido": f[2], "telefono": f[3], "pagado": bool(f[4])} for f in filas])
+
+@app.route(f"{ADMIN_PREFIX}/reserva-cupo/<int:reserva_id>/toggle_pagado", methods=["POST"])
+@login_required
+def toggle_pagado_reserva(reserva_id):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE RESERVAS_CUPOS SET PAGADO = 1 - PAGADO WHERE ID = :id",
+        id=reserva_id,
+    )
+    conn.commit()
+    cur.execute("SELECT PAGADO FROM RESERVAS_CUPOS WHERE ID = :id", id=reserva_id)
+    nuevo_valor = cur.fetchone()[0]
+    cur.close()
+    conn.close()
+    return jsonify({"ok": True, "pagado": bool(nuevo_valor)})
+
 
 @app.route(f"{ADMIN_PREFIX}/evento/<int:evento_id>/toggle_visible")
 @login_required

@@ -991,6 +991,16 @@ footer{padding:60px 8vw 40px; border-top:1px solid var(--linea); color:var(--con
           <input type="number" id="r-personas" min="1" placeholder="Ej. 4">
         </div>
       </div>
+      <div class="campo-row">
+        <div class="campo">
+          <label for="r-hora-inicio">Hora de inicio</label>
+          <input type="time" id="r-hora-inicio">
+        </div>
+        <div class="campo">
+          <label for="r-hora-fin">Hora de fin</label>
+          <input type="time" id="r-hora-fin">
+        </div>
+      </div>
       <div class="campo">
         <label for="r-mensaje">Cuéntanos más (opcional)</label>
         <textarea id="r-mensaje" placeholder="Hora aproximada, detalles del evento, etc."></textarea>
@@ -1017,15 +1027,9 @@ footer{padding:60px 8vw 40px; border-top:1px solid var(--linea); color:var(--con
           <input type="text" id="rc-apellido" placeholder="Tu apellido">
         </div>
       </div>
-      <div class="campo-row">
-        <div class="campo">
-          <label for="rc-telefono">Teléfono / WhatsApp</label>
-          <input type="tel" id="rc-telefono" required placeholder="Ej. 3001234567">
-        </div>
-        <div class="campo">
-          <label for="rc-personas">Número de personas</label>
-          <input type="number" id="rc-personas" min="1" value="1" required>
-        </div>
+      <div class="campo">
+        <label for="rc-telefono">Teléfono / WhatsApp</label>
+        <input type="tel" id="rc-telefono" required placeholder="Ej. 3001234567">
       </div>
       <button type="submit" class="btn btn-solid" id="rc-submit-btn">Confirmar mi cupo</button>
       <div id="modal-msg" class="modal-msg"></div>
@@ -1443,6 +1447,8 @@ function enviarReserva(e){
   const esAlquilerCompleto = motivoSelect.selectedOptions[0].dataset.alquiler === '1';
   const fecha = document.getElementById('r-fecha').value;
   const personas = document.getElementById('r-personas').value;
+  const horaInicio = document.getElementById('r-hora-inicio').value;
+  const horaFin = document.getElementById('r-hora-fin').value;
   const mensaje = document.getElementById('r-mensaje').value.trim();
 
   // Solo el alquiler del auditorio completo se guarda en el panel admin.
@@ -1452,13 +1458,15 @@ function enviarReserva(e){
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        nombre: `${nombre} ${apellido}`.trim(),
-        telefono: telefono,
-        fecha_deseada: fecha || null,
-        rango_hora_aprox: mensaje || null,
-        tipo_evento: motivo,
-        num_personas: personas || null
-      })
+      nombre: `${nombre} ${apellido}`.trim(),
+      telefono: telefono,
+      fecha_deseada: fecha || null,
+      hora_inicio: horaInicio || null,
+      hora_fin: horaFin || null,
+      rango_hora_aprox: mensaje || null,
+      tipo_evento: motivo,
+      num_personas: personas || null
+    })
     }).catch(err => console.error('No se pudo guardar la solicitud en el panel:', err));
   }
 
@@ -1466,7 +1474,7 @@ function enviarReserva(e){
   texto += `Nombre: ${nombre} ${apellido}\n`;
   texto += `Teléfono: ${telefono}\n`;
   texto += `Motivo: ${motivo}\n`;
-  if(fecha) texto += `Fecha deseada: ${fecha}\n`;
+  if(horaInicio && horaFin) texto += `Horario: ${horaInicio} a ${horaFin}\n`;
   if(personas) texto += `Número de personas: ${personas}\n`;
   if(mensaje) texto += `Detalles: ${mensaje}\n`;
 
@@ -1518,7 +1526,7 @@ async function enviarReservaCupo(e){
     nombre: document.getElementById('rc-nombre').value.trim(),
     apellido: document.getElementById('rc-apellido').value.trim(),
     telefono: document.getElementById('rc-telefono').value.trim(),
-    num_personas: document.getElementById('rc-personas').value
+    num_personas: 1
   };
 
   try{

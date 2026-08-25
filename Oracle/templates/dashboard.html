@@ -15,7 +15,8 @@
         <th>Nombre</th>
         <th>Teléfono</th>
         <th>Fecha deseada</th>
-        <th>Hora aprox.</th>
+        <th>Horario</th>
+        <th>Notas</th>
         <th>Tipo de evento</th>
         <th>Personas</th>
         <th>Estado</th>
@@ -24,13 +25,15 @@
     </thead>
     <tbody>
       {% for s in solicitudes %}
-      {% set id, nombre, telefono, fecha, hora, tipo_ev, personas, estado = s %}
+      {% set id, nombre, telefono, fecha, hora_inicio, hora_fin, hora, tipo_ev, personas, estado = s %}
       <tr data-nombre="{{ nombre }}" data-telefono="{{ telefono }}" data-fecha="{{ fecha }}"
+        data-horario="{{ (hora_inicio ~ ' - ' ~ hora_fin) if hora_inicio and hora_fin else '—' }}"
         data-hora="{{ hora or '—' }}" data-tipo="{{ tipo_ev or '—' }}"
         data-personas="{{ personas or '—' }}" data-estado="{{ estado }}">
         <td>{{ nombre }}</td>
         <td>{{ telefono }}</td>
         <td>{{ fecha }}</td>
+        <td>{{ (hora_inicio ~ ' - ' ~ hora_fin) if hora_inicio and hora_fin else "—" }}</td>
         <td>{{ hora or "—" }}</td>
         <td>{{ tipo_ev or "—" }}</td>
         <td>{{ personas or "—" }}</td>
@@ -211,8 +214,8 @@
       <tr>
         <th>Nombre</th>
         <th>Apellido</th>
-        <th>Personas</th>
         <th>Teléfono</th>
+        <th>Pago</th>
       </tr>
     </thead>
     <tbody id="vp-tbody"></tbody>
@@ -226,6 +229,7 @@
     <p><b>Nombre:</b> <span id="dd-nombre"></span></p>
     <p><b>Teléfono:</b> <span id="dd-telefono"></span></p>
     <p><b>Fecha deseada:</b> <span id="dd-fecha"></span></p>
+     <p><b>Horario:</b> <span id="dd-horario"></span></p>
     <p><b>Hora aprox:</b> <span id="dd-hora"></span></p>
     <p><b>Tipo de evento:</b> <span id="dd-tipo"></span></p>
     <p><b>Personas:</b> <span id="dd-personas"></span></p>
@@ -254,6 +258,7 @@ function verDetalleSolicitud(btn){
   document.getElementById('dd-nombre').textContent = tr.dataset.nombre;
   document.getElementById('dd-telefono').textContent = tr.dataset.telefono;
   document.getElementById('dd-fecha').textContent = tr.dataset.fecha;
+  document.getElementById('dd-horario').textContent = tr.dataset.horario;
   document.getElementById('dd-hora').textContent = tr.dataset.hora;
   document.getElementById('dd-tipo').textContent = tr.dataset.tipo;
   document.getElementById('dd-personas').textContent = tr.dataset.personas;
@@ -298,12 +303,31 @@ function mostrarVistaPersonas(eventoId, titulo){
         <tr>
           <td>${p.nombre}</td>
           <td>${p.apellido || '—'}</td>
-          <td>${p.personas}</td>
           <td><a href="https://wa.me/${p.telefono.replace(/\D/g,'')}" target="_blank">${p.telefono}</a></td>
+          <td>
+            <button type="button" class="btn-mini ${p.pagado ? 'btn-confirmar' : 'btn-rechazar'}" onclick="togglePagado(this, ${p.id})">
+              ${p.pagado ? 'Pagó' : 'No ha pagado'}
+            </button>
+          </td>
         </tr>
       `).join('');
     });
 }
+
+function togglePagado(btn, reservaId){
+  btn.disabled = true;
+  fetch("{{ url_for('toggle_pagado_reserva', reserva_id=0) }}".replace('0', reservaId), { method: 'POST' })
+    .then(r => r.json())
+    .then(data => {
+      btn.disabled = false;
+      if(!data.ok) return;
+      btn.textContent = data.pagado ? 'Pagó' : 'No ha pagado';
+      btn.classList.toggle('btn-confirmar', data.pagado);
+      btn.classList.toggle('btn-rechazar', !data.pagado);
+    })
+    .catch(() => { btn.disabled = false; });
+}
+
 
 function volverAEventos(){
   document.getElementById('vista-personas').classList.add('oculto');
