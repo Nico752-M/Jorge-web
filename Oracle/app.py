@@ -117,12 +117,14 @@ def dashboard():
     solicitudes = cur.fetchall()
 
     cur.execute(
-        """SELECT ID, TIPO, TITULO, DESCRIPCION, FECHA_INICIO, FECHA_FIN, AFORO_DISPONIBLE, AFORO_TOTAL, VISIBLE_PUBLICO
-           FROM EVENTOS
-           WHERE ESTADO = 'ACTIVO' AND FECHA_FIN >= SYSTIMESTAMP
-           ORDER BY FECHA_INICIO"""
+        """SELECT r.ID, r.NOMBRE, r.APELLIDO, r.TELEFONO, r.NUM_PERSONAS, r.FECHA_RESERVA,
+                  e.ID, e.TITULO, e.AFORO_TOTAL, e.AFORO_DISPONIBLE
+           FROM RESERVAS_CUPOS r
+           JOIN EVENTOS e ON e.ID = r.EVENTO_ID
+           WHERE r.ESTADO = 'EXCEDENTE'
+           ORDER BY r.FECHA_RESERVA"""
     )
-    eventos = cur.fetchall()
+    excedentes = cur.fetchall()
 
     cur.execute(
         """SELECT r.ID, r.NOMBRE, r.APELLIDO, r.TELEFONO, r.NUM_PERSONAS, r.FECHA_RESERVA,
@@ -191,9 +193,9 @@ def confirmar_solicitud(solicitud_id):
         # --- Validar que no se cruce con otro alquiler ya confirmado ---
         cur.execute(
             """SELECT COUNT(*) FROM EVENTOS
-               WHERE TIPO = 'ALQUILER' AND ESTADO = 'ACTIVO'
-               AND FECHA_INICIO < TO_TIMESTAMP(:fin, 'YYYY-MM-DD HH24:MI')
-               AND FECHA_FIN     > TO_TIMESTAMP(:inicio, 'YYYY-MM-DD HH24:MI')""",
+            WHERE ESTADO = 'ACTIVO'
+            AND FECHA_INICIO < TO_TIMESTAMP(:fin, 'YYYY-MM-DD HH24:MI')
+            AND FECHA_FIN     > TO_TIMESTAMP(:inicio, 'YYYY-MM-DD HH24:MI')""",
             fin=fecha_fin_str,
             inicio=fecha_inicio_str,
         )
@@ -273,9 +275,25 @@ def evento_nuevo():
 
         inicio_str = f"{fecha_inicio} {hora_inicio}"
         fin_str = f"{fecha_fin} {hora_fin}"
+        
 
         conn = get_connection()
         cur = conn.cursor()
+
+        cur.execute(
+            """SELECT COUNT(*) FROM EVENTOS
+               WHERE ESTADO = 'ACTIVO'
+               AND FECHA_INICIO < TO_TIMESTAMP(:fin, 'YYYY-MM-DD HH24:MI')
+               AND FECHA_FIN     > TO_TIMESTAMP(:inicio, 'YYYY-MM-DD HH24:MI')""",
+            fin=fin_str,
+            inicio=inicio_str,
+        )
+        if cur.fetchone()[0] > 0:
+            flash("Ese horario se cruza con otro evento ya activo. Elige otra hora.")
+            cur.close()
+            conn.close()
+            return redirect(url_for("evento_nuevo"))
+
         cur.execute(
             """INSERT INTO EVENTOS (TIPO, TITULO, DESCRIPCION, FECHA_INICIO, FECHA_FIN,
                                      AFORO_TOTAL, AFORO_DISPONIBLE, VISIBLE_PUBLICO, CREADO_POR)

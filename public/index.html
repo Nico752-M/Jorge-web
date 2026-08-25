@@ -1152,12 +1152,12 @@ function renderTertulias(){
   if(!el) return;
   const resto = EVENTOS_PUBLICOS; 
   if(resto.length === 0){ el.innerHTML = ''; return; }
-  el.innerHTML = resto.map(ev => `
-    <div class="tertulia-card">
+    el.innerHTML = resto.map(ev => `
+    <a class="tertulia-card" href="/evento/${ev.id}/reservar">
       <div class="fecha">${formatearFechaEvento(ev.fecha_inicio)}</div>
       <b>${ev.titulo}</b>
       <span>${textoCupos(ev)}</span>
-    </div>
+    </a>
   `).join('');
 }
 
