@@ -23,7 +23,8 @@
 
   <div id="checkin-detalle" style="display:none; max-width:420px; margin:16px auto 0; padding:14px; border:1px solid var(--linea); border-radius:2px; text-align:center;">
     <p id="checkin-detalle-nombre" style="margin:0 0 10px; font-weight:600;"></p>
-    <button type="button" id="checkin-detalle-btn" class="btn-mini" onclick="togglePagoCheckin()"></button>
+    <p id="checkin-detalle-pagado" style="display:none; margin:0; color:#2e7d4f; font-weight:600;">✔ Ya pagó</p>
+    <button type="button" id="checkin-detalle-btn" class="btn-mini btn-confirmar" onclick="marcarComoPagado()">Marcar como pagado</button>
   </div>
 
   <div id="checkin-banner" style="display:none; position:fixed; top:0; left:0; right:0; padding:22px; text-align:center; font-size:1.3rem; font-weight:700; z-index:999;"></div>
@@ -113,12 +114,25 @@ async function procesarCodigo(codigo) {
 
 function actualizarBotonPago() {
   const btn = document.getElementById('checkin-detalle-btn');
-  btn.textContent = RESERVA_ACTUAL.pagado ? 'Pagó — tocar para cambiar' : 'No ha pagado — tocar para cambiar';
-  btn.className = 'btn-mini ' + (RESERVA_ACTUAL.pagado ? 'btn-confirmar' : 'btn-rechazar');
+  const label = document.getElementById('checkin-detalle-pagado');
+
+  if (RESERVA_ACTUAL.pagado) {
+    // Ya pagó: no se ofrece forma de revertirlo desde el check-in.
+    // Si hubo un error, se corrige desde el panel de admin (dashboard).
+    btn.style.display = 'none';
+    label.style.display = 'block';
+  } else {
+    btn.style.display = 'inline-block';
+    label.style.display = 'none';
+  }
 }
 
-async function togglePagoCheckin() {
-  if (!RESERVA_ACTUAL) return;
+async function marcarComoPagado() {
+  if (!RESERVA_ACTUAL || RESERVA_ACTUAL.pagado) return;
+
+  const confirmado = confirm('¿Confirmas que esta persona ya pagó? Esto no se puede deshacer desde aquí.');
+  if (!confirmado) return;
+
   const btn = document.getElementById('checkin-detalle-btn');
   btn.disabled = true;
   try {
@@ -131,7 +145,7 @@ async function togglePagoCheckin() {
       actualizarBotonPago();
     }
   } catch (err) {
-    console.error('No se pudo cambiar el estado de pago:', err);
+    console.error('No se pudo marcar como pagado:', err);
   }
   btn.disabled = false;
 }
