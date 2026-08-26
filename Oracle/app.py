@@ -4,6 +4,7 @@ Ruta oculta: cámbiala en ADMIN_PREFIX por algo que solo ustedes conozcan
 (no dejes '/panel-cr8x', invéntate otra combinación).
 """
 import os
+import re
 import secrets
 from datetime import datetime
 
@@ -27,6 +28,25 @@ app.secret_key = os.environ.get("SECRET_KEY", "cambia-esto-por-algo-largo-y-alea
 
 # ---- Ruta oculta del panel: cámbiala antes de publicar el sitio ----
 ADMIN_PREFIX = "/panel-cr8x"
+
+
+def leer_entrada_desde_form(form):
+    """Lee ENTRADA_ESTADO y PRECIO_ENTRADA del formulario de un evento.
+    entrada_estado debe venir como 'LIBRE', 'POR_CONFIRMAR' o 'PAGO'.
+    El precio solo se guarda si el estado es 'PAGO'; se limpian puntos/comas
+    por si el navegador manda el número ya formateado (ej. "40.000")."""
+    entrada_estado = form.get("entrada_estado", "POR_CONFIRMAR")
+    if entrada_estado not in ("LIBRE", "POR_CONFIRMAR", "PAGO"):
+        entrada_estado = "POR_CONFIRMAR"
+
+    precio_entrada = None
+    if entrada_estado == "PAGO":
+        precio_raw = re.sub(r"[^\d]", "", form.get("precio_entrada", ""))
+        precio_entrada = int(precio_raw) if precio_raw else None
+        if precio_entrada is None:
+            entrada_estado = "POR_CONFIRMAR"  # eligió "tiene costo" pero no puso número
+
+    return entrada_estado, precio_entrada
 
 
 # =========================================================
@@ -225,6 +245,7 @@ def confirmar_solicitud(solicitud_id):
         titulo = request.form["titulo"].strip()
         aforo_total = request.form["aforo_total"]
         visible_publico = 1 if request.form.get("visible_publico") == "on" else 0
+        entrada_estado, precio_entrada = leer_entrada_desde_form(request.form)
 
         fecha_inicio_str = f"{fecha} {hora_inicio}"
         fecha_fin_str = f"{fecha} {hora_fin}"
@@ -249,11 +270,11 @@ def confirmar_solicitud(solicitud_id):
         # --- Crear el evento tipo ALQUILER (con aforo, como cualquier evento con cupos) ---
         nuevo_id_var = cur.var(oracledb.NUMBER)
         cur.execute(
-            """INSERT INTO EVENTOS (TIPO, TITULO, FECHA_INICIO, FECHA_FIN, AFORO_TOTAL, AFORO_DISPONIBLE, VISIBLE_PUBLICO, PRECIO_FINAL, CREADO_POR)
+            """INSERT INTO EVENTOS (TIPO, TITULO, FECHA_INICIO, FECHA_FIN, AFORO_TOTAL, AFORO_DISPONIBLE, VISIBLE_PUBLICO, PRECIO_FINAL, ENTRADA_ESTADO, PRECIO_ENTRADA, CREADO_POR)
                VALUES ('ALQUILER', :titulo,
                        TO_TIMESTAMP(:inicio, 'YYYY-MM-DD HH24:MI'),
                        TO_TIMESTAMP(:fin, 'YYYY-MM-DD HH24:MI'),
-                       :aforo, :aforo, :visible, :precio, :admin_id)
+                       :aforo, :aforo, :visible, :precio, :entrada_estado, :precio_entrada, :admin_id)
                RETURNING ID INTO :nuevo_id""",
             titulo=titulo,
             inicio=fecha_inicio_str,
@@ -261,6 +282,8 @@ def confirmar_solicitud(solicitud_id):
             aforo=aforo_total,
             visible=visible_publico,
             precio=precio,
+            entrada_estado=entrada_estado,
+            precio_entrada=precio_entrada,
             admin_id=session["admin_id"],
             nuevo_id=nuevo_id_var,
         )
@@ -311,6 +334,7 @@ def evento_nuevo():
         hora_fin = request.form.get("hora_fin") or hora_inicio
         aforo_total = request.form["aforo_total"]
         visible_publico = 1 if request.form.get("visible_publico") == "on" else 0
+        entrada_estado, precio_entrada = leer_entrada_desde_form(request.form)
 
         inicio_str = f"{fecha_inicio} {hora_inicio}"
         fin_str = f"{fecha_fin} {hora_fin}"
@@ -335,17 +359,19 @@ def evento_nuevo():
 
         cur.execute(
             """INSERT INTO EVENTOS (TIPO, TITULO, DESCRIPCION, FECHA_INICIO, FECHA_FIN,
-                                     AFORO_TOTAL, AFORO_DISPONIBLE, VISIBLE_PUBLICO, CREADO_POR)
+                                     AFORO_TOTAL, AFORO_DISPONIBLE, VISIBLE_PUBLICO, ENTRADA_ESTADO, PRECIO_ENTRADA, CREADO_POR)
                VALUES ('CUPOS', :titulo, :descripcion,
                        TO_TIMESTAMP(:inicio, 'YYYY-MM-DD HH24:MI'),
                        TO_TIMESTAMP(:fin, 'YYYY-MM-DD HH24:MI'),
-                       :aforo, :aforo, :visible, :admin_id)""",
+                       :aforo, :aforo, :visible, :entrada_estado, :precio_entrada, :admin_id)""",
             titulo=titulo,
             descripcion=descripcion or None,
             inicio=inicio_str,
             fin=fin_str,
             aforo=aforo_total,
             visible=visible_publico,
+            entrada_estado=entrada_estado,
+            precio_entrada=precio_entrada,
             admin_id=session["admin_id"],
         )
         conn.commit()
@@ -367,6 +393,7 @@ def editar_evento(evento_id):
         inicio_str = request.form.get("fecha_inicio", "").replace("T", " ")
         fin_str = request.form.get("fecha_fin", "").replace("T", " ")
         aforo_total = int(request.form.get("aforo_total"))
+        entrada_estado, precio_entrada = leer_entrada_desde_form(request.form)
 
         cur.execute("SELECT AFORO_TOTAL, AFORO_DISPONIBLE FROM EVENTOS WHERE ID = :id", id=evento_id)
         total_actual, disp_actual = cur.fetchone()
@@ -382,10 +409,12 @@ def editar_evento(evento_id):
                SET TITULO=:titulo, DESCRIPCION=:descripcion,
                    FECHA_INICIO=TO_TIMESTAMP(:inicio,'YYYY-MM-DD HH24:MI'),
                    FECHA_FIN=TO_TIMESTAMP(:fin,'YYYY-MM-DD HH24:MI'),
-                   AFORO_TOTAL=:aforo_total, AFORO_DISPONIBLE=:aforo_disp
+                   AFORO_TOTAL=:aforo_total, AFORO_DISPONIBLE=:aforo_disp,
+                   ENTRADA_ESTADO=:entrada_estado, PRECIO_ENTRADA=:precio_entrada
                WHERE ID=:id""",
             titulo=titulo, descripcion=descripcion, inicio=inicio_str, fin=fin_str,
             aforo_total=aforo_total, aforo_disp=(aforo_total - confirmados), id=evento_id,
+            entrada_estado=entrada_estado, precio_entrada=precio_entrada,
         )
         conn.commit()
         cur.close(); conn.close()
@@ -393,7 +422,8 @@ def editar_evento(evento_id):
         return redirect(url_for("dashboard"))
 
     cur.execute(
-        """SELECT ID, TITULO, DESCRIPCION, FECHA_INICIO, FECHA_FIN, AFORO_TOTAL, AFORO_DISPONIBLE
+        """SELECT ID, TITULO, DESCRIPCION, FECHA_INICIO, FECHA_FIN, AFORO_TOTAL, AFORO_DISPONIBLE,
+                  ENTRADA_ESTADO, PRECIO_ENTRADA
            FROM EVENTOS WHERE ID=:id""", id=evento_id,
     )
     evento = cur.fetchone()
@@ -520,7 +550,8 @@ def formulario_reserva(evento_id):
     conn = get_connection()
     cur = conn.cursor()
     cur.execute(
-        """SELECT ID, TITULO, DESCRIPCION, FECHA_INICIO, FECHA_FIN, AFORO_TOTAL, AFORO_DISPONIBLE
+        """SELECT ID, TITULO, DESCRIPCION, FECHA_INICIO, FECHA_FIN, AFORO_TOTAL, AFORO_DISPONIBLE,
+                  ENTRADA_ESTADO, PRECIO_ENTRADA
            FROM EVENTOS WHERE ID = :id AND ESTADO = 'ACTIVO' AND FECHA_FIN >= SYSTIMESTAMP""",
         id=evento_id,
     )
@@ -538,7 +569,8 @@ def eventos_publicos():
     conn = get_connection()
     cur = conn.cursor()
     cur.execute(
-        """SELECT ID, TITULO, DESCRIPCION, FECHA_INICIO, FECHA_FIN, AFORO_TOTAL, AFORO_DISPONIBLE
+        """SELECT ID, TITULO, DESCRIPCION, FECHA_INICIO, FECHA_FIN, AFORO_TOTAL, AFORO_DISPONIBLE,
+                  ENTRADA_ESTADO, PRECIO_ENTRADA
            FROM EVENTOS
            WHERE VISIBLE_PUBLICO = 1 AND ESTADO = 'ACTIVO' AND FECHA_INICIO >= SYSTIMESTAMP
            ORDER BY FECHA_INICIO"""
@@ -556,6 +588,8 @@ def eventos_publicos():
             "fecha_fin": f[4].isoformat() if f[4] else None,
             "aforo_total": f[5],
             "aforo_disponible": f[6],
+            "entrada_estado": f[7],
+            "precio_entrada": f[8],
         }
         for f in filas
     ]
@@ -663,7 +697,7 @@ def mi_reserva(codigo):
     cur = conn.cursor()
     cur.execute(
         """SELECT r.NOMBRE, r.APELLIDO, r.TELEFONO, r.NUM_PERSONAS, r.ESTADO, r.USADO, r.FECHA_CHECKIN,
-                  e.TITULO, e.FECHA_INICIO
+                  e.TITULO, e.FECHA_INICIO, e.ENTRADA_ESTADO, e.PRECIO_ENTRADA
            FROM RESERVAS_CUPOS r
            JOIN EVENTOS e ON e.ID = r.EVENTO_ID
            WHERE r.CODIGO = :codigo""",
@@ -676,7 +710,8 @@ def mi_reserva(codigo):
     if not fila:
         return render_template("mi_reserva.html", encontrada=False)
 
-    nombre, apellido, telefono, num_personas, estado, usado, fecha_checkin, evento_titulo, evento_inicio = fila
+    (nombre, apellido, telefono, num_personas, estado, usado, fecha_checkin,
+     evento_titulo, evento_inicio, entrada_estado, precio_entrada) = fila
 
     return render_template(
         "mi_reserva.html",
@@ -689,6 +724,8 @@ def mi_reserva(codigo):
         fecha_checkin=fecha_checkin,
         evento_titulo=evento_titulo,
         evento_inicio=evento_inicio,
+        entrada_estado=entrada_estado,
+        precio_entrada=precio_entrada,
         codigo=codigo,
     )
 # =========================================================

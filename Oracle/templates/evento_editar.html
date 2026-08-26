@@ -26,10 +26,36 @@
     <label>Aforo total</label>
     <input type="number" name="aforo_total" min="{{ evento[5] - evento[6] }}" value="{{ evento[5] }}" required>
 
+    <label>¿Cobra entrada?</label>
+    <div class="opciones-entrada">
+      <label class="opcion-entrada">
+        <input type="radio" name="entrada_estado" value="LIBRE" {% if evento[7] == 'LIBRE' %}checked{% endif %}>
+        Entrada libre
+      </label>
+      <label class="opcion-entrada">
+        <input type="radio" name="entrada_estado" value="POR_CONFIRMAR" {% if evento[7] != 'LIBRE' and evento[7] != 'PAGO' %}checked{% endif %}>
+        Aún no sé — precio por confirmar
+      </label>
+      <label class="opcion-entrada">
+        <input type="radio" name="entrada_estado" value="PAGO" {% if evento[7] == 'PAGO' %}checked{% endif %}>
+        Tiene costo
+      </label>
+    </div>
+    <div id="precio-entrada-wrap" class="precio-entrada-wrap" {% if evento[7] != 'PAGO' %}hidden{% endif %}>
+      <label for="precio_entrada">Precio de entrada (COP)</label>
+      <input type="text" inputmode="numeric" id="precio_entrada" name="precio_entrada"
+             placeholder="Ej: 40.000"
+             value="{{ '{:,}'.format(evento[8]).replace(',', '.') if evento[8] else '' }}">
+    </div>
+
     <div class="acciones-form">
       <button type="submit" class="btn-mini btn-confirmar">Guardar cambios</button>
       <a class="btn-mini" href="{{ url_for('dashboard') }}">Cancelar</a>
     </div>
   </form>
 </section>
+
+<script>
+  inicializarSelectorEntrada('entrada_estado', 'precio-entrada-wrap', 'precio_entrada');
+</script>
 {% endblock %}

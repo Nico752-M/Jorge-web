@@ -336,31 +336,6 @@ function togglePagado(btn, reservaId){
     .catch(() => { btn.disabled = false; });
 }
 
-function refrescarPersonas(eventoId){
-  fetch("{{ url_for('ver_reservas_evento', evento_id=0) }}".replace('0', eventoId))
-    .then(r => r.json())
-    .then(personas => {
-      const tbody = document.getElementById('vp-tbody');
-      if (!personas.length){
-        tbody.innerHTML = "<tr><td colspan='4' class='vacio'>Nadie ha confirmado aún.</td></tr>";
-        return;
-      }
-      tbody.innerHTML = personas.map(p => `
-        <tr>
-          <td>${p.nombre}</td>
-          <td>${p.apellido || '—'}</td>
-          <td><a href="https://wa.me/${p.telefono.replace(/\D/g,'')}" target="_blank">${p.telefono}</a></td>
-          <td>
-            <button type="button" class="btn-mini ${p.pagado ? 'btn-confirmar' : 'btn-rechazar'}" onclick="togglePagado(this, ${p.id})">
-              ${p.pagado ? 'Pagó' : 'No ha pagado'}
-            </button>
-          </td>
-          <td>${p.ingreso ? '✅ Ingresó' : '—'}</td>
-        </tr>
-      `).join('');
-    })
-    .catch(err => console.error('No se pudo refrescar personas:', err));
-}
 
 function volverAEventos(){
   EVENTO_ACTUAL_PERSONAS = null;
@@ -401,11 +376,8 @@ function filtrarEventos(){
    reemplaza solo las tablas, sin recargar la página.
    ========================================================= */
 async function refrescarDashboard(){
-  // si está viendo la lista de personas registradas, refresca esa tabla en vez de saltarte todo
-  if(!document.getElementById('vista-personas').classList.contains('oculto')){
-    if(EVENTO_ACTUAL_PERSONAS) refrescarPersonas(EVENTO_ACTUAL_PERSONAS);
-    return;
-  }
+  // no interrumpir si el admin está viendo la lista de personas registradas
+  if(!document.getElementById('vista-personas').classList.contains('oculto')) return;
   // no interrumpir si hay un modal abierto
   if(!document.getElementById('modal-detalle').classList.contains('hidden')) return;
   if(!document.getElementById('modal-detalle-evento').classList.contains('hidden')) return;

@@ -21,7 +21,12 @@
     .reserva-box p{ color:var(--concreto); font-size:.9rem; line-height:1.5; margin:0 0 18px; }
     #cupos-info{
       display:inline-block; font-family:'IBM Plex Mono', monospace; font-size:.78rem;
-      color:var(--oro); border:1px solid var(--linea); padding:5px 10px; margin-bottom:22px;
+      color:var(--oro); border:1px solid var(--linea); padding:5px 10px; margin-bottom:8px;
+      margin-right:8px;
+    }
+    #precio-info{
+      display:inline-block; font-family:'IBM Plex Mono', monospace; font-size:.78rem;
+      color:var(--crema); border:1px solid var(--linea); padding:5px 10px; margin-bottom:22px;
     }
     form{ display:flex; flex-direction:column; gap:12px; }
     input{
@@ -54,6 +59,15 @@
     <h2>{{ evento[1] }}</h2>
     <p>{{ evento[2] or 'Confirma tu asistencia a este evento.' }}</p>
     <span id="cupos-info"></span>
+    <span id="precio-info">
+      {%- if evento[7] == 'PAGO' and evento[8] -%}
+        Entrada: ${{ '{:,}'.format(evento[8]).replace(',', '.') }} COP
+      {%- elif evento[7] == 'LIBRE' -%}
+        Entrada libre
+      {%- else -%}
+        Precio de entrada por confirmar
+      {%- endif -%}
+    </span>
 
     <form id="form-reserva">
       <input type="text" id="nombre" placeholder="Nombre" required>

@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{% block title %}Panel Café Real{% endblock %}</title>
 <link rel="stylesheet" href="/admin.css">
+<style>
+  /* --- Selector de estado de entrada (libre / por confirmar / pago) --- */
+  .opciones-entrada{ display:flex; flex-direction:column; gap:6px; margin:4px 0 2px; }
+  .opcion-entrada{ display:flex; align-items:center; gap:8px; font-weight:normal; cursor:pointer; }
+  .opcion-entrada input[type="radio"]{ width:auto; margin:0; }
+  .precio-entrada-wrap{ margin-top:4px; }
+  .precio-entrada-wrap[hidden]{ display:none; }
+</style>
 </head>
 <body>
   {% if session.get('admin_id') %}
@@ -27,5 +35,42 @@
     {% endwith %}
     {% block contenido %}{% endblock %}
   </main>
+
+  <script>
+    // --- Funciones compartidas para el campo "precio de entrada" ---
+    // Formatea un número como miles con puntos: 40000 -> "40.000"
+    function formatoMiles(valor) {
+      const limpio = (valor || "").replace(/\D/g, "");
+      if (!limpio) return "";
+      return new Intl.NumberFormat("es-CO").format(parseInt(limpio, 10));
+    }
+
+    // Conecta un grupo de radios (entrada_estado) con la casilla de precio:
+    // solo se muestra/habilita cuando el valor elegido es "PAGO", y formatea
+    // el número en miles mientras el usuario escribe.
+    function inicializarSelectorEntrada(nombreGrupo, wrapId, inputId) {
+      const radios = document.querySelectorAll(`input[name="${nombreGrupo}"]`);
+      const wrap = document.getElementById(wrapId);
+      const input = document.getElementById(inputId);
+      if (!radios.length || !wrap || !input) return;
+
+      function actualizar() {
+        const seleccion = document.querySelector(`input[name="${nombreGrupo}"]:checked`);
+        const esPago = !!seleccion && seleccion.value === "PAGO";
+        wrap.hidden = !esPago;
+        input.disabled = !esPago;
+        if (!esPago) input.value = "";
+      }
+
+      radios.forEach(r => r.addEventListener("change", actualizar));
+      input.addEventListener("input", () => {
+        const alFinal = input.selectionStart === input.value.length;
+        input.value = formatoMiles(input.value);
+        if (alFinal) input.setSelectionRange(input.value.length, input.value.length);
+      });
+
+      actualizar();
+    }
+  </script>
 </body>
 </html>
