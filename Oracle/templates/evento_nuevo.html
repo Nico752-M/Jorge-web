@@ -37,20 +37,16 @@
         Entrada libre
       </label>
       <label class="opcion-entrada">
-        <input type="radio" name="entrada_estado" value="POR_CONFIRMAR" checked>
-        Aún no sé — precio por confirmar
-      </label>
-      <label class="opcion-entrada">
-        <input type="radio" name="entrada_estado" value="PAGO">
-        Tiene costo
+        <input type="radio" name="entrada_estado" value="PAGO" checked>
+        Tiene entrada
       </label>
     </div>
-    <div id="precio-entrada-wrap" class="precio-entrada-wrap" hidden>
-      <label for="precio_entrada">Precio de entrada (COP)</label>
-      <input type="text" inputmode="numeric" id="precio_entrada" name="precio_entrada" placeholder="Ej: 40.000">
+    <div id="precio-entrada-wrap" class="precio-entrada-wrap">
+      <label for="precio_entrada">Precio de entrada (COP) — déjalo vacío si aún no lo defines</label>
+      <input type="text" inputmode="numeric" id="precio_entrada" name="precio_entrada" placeholder="Ej: 40.000 (opcional)">
     </div>
 
-    <label>
+    <label class="opcion-checkbox">
       <input type="checkbox" id="visible_publico" name="visible_publico" checked>
       Mostrar este evento en la página pública desde ya
     </label>

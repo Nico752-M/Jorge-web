@@ -33,18 +33,14 @@
         Entrada libre
       </label>
       <label class="opcion-entrada">
-        <input type="radio" name="entrada_estado" value="POR_CONFIRMAR" {% if evento[7] != 'LIBRE' and evento[7] != 'PAGO' %}checked{% endif %}>
-        Aún no sé — precio por confirmar
-      </label>
-      <label class="opcion-entrada">
-        <input type="radio" name="entrada_estado" value="PAGO" {% if evento[7] == 'PAGO' %}checked{% endif %}>
-        Tiene costo
+        <input type="radio" name="entrada_estado" value="PAGO" {% if evento[7] != 'LIBRE' %}checked{% endif %}>
+        Tiene entrada
       </label>
     </div>
-    <div id="precio-entrada-wrap" class="precio-entrada-wrap" {% if evento[7] != 'PAGO' %}hidden{% endif %}>
-      <label for="precio_entrada">Precio de entrada (COP)</label>
+    <div id="precio-entrada-wrap" class="precio-entrada-wrap" {% if evento[7] == 'LIBRE' %}hidden{% endif %}>
+      <label for="precio_entrada">Precio de entrada (COP) — déjalo vacío si aún no lo defines</label>
       <input type="text" inputmode="numeric" id="precio_entrada" name="precio_entrada"
-             placeholder="Ej: 40.000"
+             placeholder="Ej: 40.000 (opcional)"
              value="{{ '{:,}'.format(evento[8]).replace(',', '.') if evento[8] else '' }}">
     </div>
 

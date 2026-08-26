@@ -40,7 +40,7 @@
     <label for="aforo_total">Aforo máximo para este evento (cupos)</label>
     <input type="number" id="aforo_total" name="aforo_total" min="1" step="1" required placeholder="Ej: 80">
 
-    <hr>
+    <hr class="separador-form">
     <p class="ayuda">Esto es lo que verá el público que asista — es distinto al precio del alquiler de arriba.</p>
 
     <label>¿Se le cobra entrada al público que asiste?</label>
@@ -50,20 +50,16 @@
         Entrada libre
       </label>
       <label class="opcion-entrada">
-        <input type="radio" name="entrada_estado" value="POR_CONFIRMAR" checked>
-        Aún no sé — precio por confirmar
-      </label>
-      <label class="opcion-entrada">
-        <input type="radio" name="entrada_estado" value="PAGO">
-        Tiene costo
+        <input type="radio" name="entrada_estado" value="PAGO" checked>
+        Tiene entrada
       </label>
     </div>
-    <div id="precio-entrada-wrap" class="precio-entrada-wrap" hidden>
-      <label for="precio_entrada">Precio de entrada al público (COP)</label>
-      <input type="text" inputmode="numeric" id="precio_entrada" name="precio_entrada" placeholder="Ej: 40.000">
+    <div id="precio-entrada-wrap" class="precio-entrada-wrap">
+      <label for="precio_entrada">Precio de entrada al público (COP) — déjalo vacío si aún no lo defines</label>
+      <input type="text" inputmode="numeric" id="precio_entrada" name="precio_entrada" placeholder="Ej: 40.000 (opcional)">
     </div>
 
-    <label>
+    <label class="opcion-checkbox">
       <input type="checkbox" id="visible_publico" name="visible_publico">
       Mostrar este evento en la página pública (si la persona que alquiló no quiere desconocidos, déjalo sin marcar)
     </label>
