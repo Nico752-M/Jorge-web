@@ -722,6 +722,7 @@ def api_checkin(codigo):
         return jsonify({
             "ok": False,
             "mensaje": f"Ya ingresó antes ({fecha_checkin}).",
+            "reserva_id": reserva_id,
             "nombre": nombre,
             "apellido": apellido,
             "evento_id": evento_id,
@@ -748,6 +749,7 @@ def api_checkin(codigo):
     return jsonify({
         "ok": True,
         "mensaje": "Ingreso registrado.",
+        "reserva_id": reserva_id,
         "nombre": nombre,
         "apellido": apellido,
         "num_personas": num_personas,

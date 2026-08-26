@@ -21,6 +21,11 @@
 
   <div id="qr-reader" style="max-width:420px; margin:0 auto;"></div>
 
+  <div id="checkin-detalle" style="display:none; max-width:420px; margin:16px auto 0; padding:14px; border:1px solid var(--linea); border-radius:2px; text-align:center;">
+    <p id="checkin-detalle-nombre" style="margin:0 0 10px; font-weight:600;"></p>
+    <button type="button" id="checkin-detalle-btn" class="btn-mini" onclick="togglePagoCheckin()"></button>
+  </div>
+
   <div id="checkin-banner" style="display:none; position:fixed; top:0; left:0; right:0; padding:22px; text-align:center; font-size:1.3rem; font-weight:700; z-index:999;"></div>
 
   <details style="margin-top:24px; max-width:420px; margin-left:auto; margin-right:auto;">
@@ -63,6 +68,8 @@ function mostrarBanner(ok, mensaje) {
   setTimeout(() => { banner.style.display = 'none'; }, 2200);
 }
 
+let RESERVA_ACTUAL = null;
+
 async function procesarCodigo(codigo) {
   if (!codigo || !escaneando) return;
   escaneando = false;
@@ -78,7 +85,7 @@ async function procesarCodigo(codigo) {
         ? `Ingresó: ${nombreCompleto} — ${estadoPago}`
         : (nombreCompleto ? `${nombreCompleto} — ${data.mensaje} (${estadoPago})` : data.mensaje)
     );
-    
+
     if (data.evento_id) {
       const select = document.getElementById('select-evento');
       const opt = [...select.options].find(o => o.value == data.evento_id);
@@ -90,11 +97,43 @@ async function procesarCodigo(codigo) {
         }
       }
     }
+
+    if (data.reserva_id && nombreCompleto) {
+      RESERVA_ACTUAL = { id: data.reserva_id, pagado: data.pagado };
+      document.getElementById('checkin-detalle-nombre').textContent = nombreCompleto;
+      actualizarBotonPago();
+      document.getElementById('checkin-detalle').style.display = 'block';
+    }
   } catch (err) {
     mostrarBanner(false, "Error de conexión. Intenta de nuevo.");
   }
 
   setTimeout(() => { escaneando = true; }, 2200);
+}
+
+function actualizarBotonPago() {
+  const btn = document.getElementById('checkin-detalle-btn');
+  btn.textContent = RESERVA_ACTUAL.pagado ? 'Pagó — tocar para cambiar' : 'No ha pagado — tocar para cambiar';
+  btn.className = 'btn-mini ' + (RESERVA_ACTUAL.pagado ? 'btn-confirmar' : 'btn-rechazar');
+}
+
+async function togglePagoCheckin() {
+  if (!RESERVA_ACTUAL) return;
+  const btn = document.getElementById('checkin-detalle-btn');
+  btn.disabled = true;
+  try {
+    const res = await fetch(`{{ url_for('toggle_pagado_reserva', reserva_id=0) }}`.replace('0', RESERVA_ACTUAL.id), {
+      method: 'POST',
+    });
+    const data = await res.json();
+    if (data.ok) {
+      RESERVA_ACTUAL.pagado = data.pagado;
+      actualizarBotonPago();
+    }
+  } catch (err) {
+    console.error('No se pudo cambiar el estado de pago:', err);
+  }
+  btn.disabled = false;
 }
 
 const scanner = new Html5Qrcode("qr-reader");
