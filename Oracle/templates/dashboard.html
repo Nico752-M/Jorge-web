@@ -56,12 +56,7 @@
   {% endif %}
 </section>
 
-{% if request.args.get('wa_link') %}
-<div class="flash" style="background:rgba(76,140,90,.14); border-color:rgba(76,140,90,.4); color:var(--verde);">
-  Reserva confirmada. Ya puedes avisarle por WhatsApp:
-  <a class="btn-mini btn-wa" target="_blank" href="{{ request.args.get('wa_link') }}" style="margin-left:8px;">Avisar por WhatsApp</a>
-</div>
-{% endif %}
+
 
 <section class="bloque">
   <h2>Reservas de cupos por decidir</h2>
@@ -95,7 +90,7 @@
              Contactar por WhatsApp
           </a>
           <a class="btn-mini btn-confirmar" href="{{ url_for('ampliar_reserva_cupo', reserva_id=rid) }}"
-             onclick="return confirm('¿Ampliar el aforo en {{ personas }} cupos y confirmar esta reserva?')">Ampliar y confirmar</a>
+             onclick="return confirmarYAvisar(this)">Ampliar y confirmar</a>
           <a class="btn-mini btn-rechazar" href="{{ url_for('rechazar_reserva_cupo', reserva_id=rid) }}"
              onclick="return confirm('¿Seguro que quieres rechazar esta reserva?')">Rechazar</a>
         </td>
@@ -343,6 +338,20 @@ function togglePagado(btn, reservaId){
     .catch(() => { btn.disabled = false; });
 }
 
+function confirmarYAvisar(el){
+  if(!confirm('¿Ampliar el aforo y confirmar esta reserva? Se abrirá WhatsApp para avisarle.')) return false;
+  const url = el.getAttribute('href');
+  el.style.pointerEvents = 'none';
+  el.textContent = 'Confirmando...';
+  fetch(url)
+    .then(r => r.json())
+    .then(data => {
+      if(data.wa_link) window.open(data.wa_link, '_blank');
+      location.reload();
+    })
+    .catch(() => location.reload());
+  return false;
+}
 
 function volverAEventos(){
   EVENTO_ACTUAL_PERSONAS = null;

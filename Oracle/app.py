@@ -606,7 +606,7 @@ def ampliar_reserva_cupo(reserva_id):
         wa_link = f"https://wa.me/{tel_limpio}?text={quote(mensaje)}"
     cur.close()
     conn.close()
-    return redirect(url_for("dashboard", wa_link=wa_link) if wa_link else url_for("dashboard"))
+    return jsonify({"ok": bool(fila), "wa_link": wa_link})
 
 @app.route(f"{ADMIN_PREFIX}/reserva-cupo/<int:reserva_id>/rechazar")
 @login_required
