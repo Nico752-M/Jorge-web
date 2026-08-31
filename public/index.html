@@ -1109,6 +1109,18 @@ document.getElementById('g6').src = PHOTOS.g6;
    ========================================================= */
 let EVENTOS_PUBLICOS = [];
 let INDICE_EVENTO_ACTUAL = 0;
+let TIMER_CARRUSEL_AUDITORIO = null;
+
+function iniciarCarruselAutomatico(){
+  clearInterval(TIMER_CARRUSEL_AUDITORIO);
+  if(EVENTOS_PUBLICOS.length > 1){
+    TIMER_CARRUSEL_AUDITORIO = setInterval(() => {
+      INDICE_EVENTO_ACTUAL = (INDICE_EVENTO_ACTUAL + 1) % EVENTOS_PUBLICOS.length;
+      renderAuditorio();
+      renderTertulias();
+    }, 7000); // cambia de evento cada 7 segundos
+  }
+}
 
 function formatearFechaEvento(iso){
   if(!iso) return "";
@@ -1147,8 +1159,8 @@ function renderAuditorio(){
         <div><b>Cupos</b>${textoCupos(ev)}</div>
       </div>
       <div style="margin-top:26px;">
-        ${agotado
-          ? `<button class="btn btn-solid" disabled>Cupos agotados</button>`
+          ${agotado
+          ? `<a class="btn btn-solid" href="/evento/${ev.id}/reservar">Anotarme (cupos agotados)</a>`
           : `<a class="btn btn-solid" href="/evento/${ev.id}/reservar">Reservar mi cupo</a>`
         }
       </div>
@@ -1178,6 +1190,7 @@ function irAEventoCarrusel(indice){
   INDICE_EVENTO_ACTUAL = indice;
   renderAuditorio();
   renderTertulias();
+  iniciarCarruselAutomatico(); // si la persona lo cambia a mano, se reinicia el conteo desde ahí
 }
 
 function renderTertulias(){
@@ -1204,7 +1217,9 @@ async function cargarEventosPublicos(){
   }
   renderAuditorio();
   renderTertulias();
+  iniciarCarruselAutomatico();
 }
+
 cargarEventosPublicos();
 setInterval(cargarEventosPublicos, 20000);
 

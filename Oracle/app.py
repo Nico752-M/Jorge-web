@@ -583,6 +583,7 @@ def ampliar_reserva_cupo(reserva_id):
     fila = cur.fetchone()
     if fila:
         evento_id, num_personas = fila
+        codigo_reserva = secrets.token_urlsafe(12)
         # Se amplía el aforo total exactamente lo necesario para esta reserva;
         # como esos cupos nuevos ya quedan ocupados por ella, AFORO_DISPONIBLE no cambia.
         cur.execute(
@@ -590,8 +591,8 @@ def ampliar_reserva_cupo(reserva_id):
             n=num_personas, id=evento_id,
         )
         cur.execute(
-            "UPDATE RESERVAS_CUPOS SET ESTADO = 'CONFIRMADA' WHERE ID = :id",
-            id=reserva_id,
+            "UPDATE RESERVAS_CUPOS SET ESTADO = 'CONFIRMADA', CODIGO = :codigo WHERE ID = :id",
+            codigo=codigo_reserva, id=reserva_id,
         )
         conn.commit()
     cur.close()
