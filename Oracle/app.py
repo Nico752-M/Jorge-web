@@ -11,6 +11,8 @@ from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 
 import oracledb
+import cloudinary
+import cloudinary.uploader
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 
@@ -29,24 +31,61 @@ app.secret_key = os.environ.get("SECRET_KEY", "cambia-esto-por-algo-largo-y-alea
 # ---- Ruta oculta del panel: cámbiala antes de publicar el sitio ----
 ADMIN_PREFIX = "/panel-cr8x"
 
-# ---- Imágenes de eventos que sube el admin (opcional; si no sube ninguna se usa la foto por defecto) ----
-CARPETA_IMAGENES_EVENTOS = os.path.join(app.static_folder, "images", "eventos")
-os.makedirs(CARPETA_IMAGENES_EVENTOS, exist_ok=True)
+# ---- Imágenes de eventos que sube el admin (se guardan en Cloudinary, no en disco) ----
+cloudinary.config(
+    cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.environ.get("CLOUDINARY_API_KEY"),
+    api_secret=os.environ.get("CLOUDINARY_API_SECRET"),
+    secure=True,
+)
 EXTENSIONES_IMAGEN_PERMITIDAS = {"png", "jpg", "jpeg", "webp"}
 
 
-def guardar_imagen_evento(archivo):
-    """Guarda la imagen que subió el admin para un evento (si mandó una válida)
-    y devuelve la ruta relativa para guardar en IMAGEN_URL (ej: 'images/eventos/xxxx.jpg').
+def guardar_imagen_evento(archivo, imagen_anterior_url=None):
+    """Sube la imagen que subió el admin para un evento (si mandó una válida) a Cloudinary,
+    optimizándola automáticamente, y borra la imagen anterior si había una (para no acumular
+    fotos viejas sin usar). Devuelve la URL completa para guardar en IMAGEN_URL.
     Si no mandó archivo o la extensión no es válida, devuelve None."""
     if not archivo or not archivo.filename:
         return None
     extension = archivo.filename.rsplit(".", 1)[-1].lower() if "." in archivo.filename else ""
     if extension not in EXTENSIONES_IMAGEN_PERMITIDAS:
         return None
-    nombre_archivo = f"{secrets.token_hex(8)}.{extension}"
-    archivo.save(os.path.join(CARPETA_IMAGENES_EVENTOS, nombre_archivo))
-    return f"images/eventos/{nombre_archivo}"
+
+    nombre_archivo = secrets.token_hex(8)
+    resultado = cloudinary.uploader.upload(
+        archivo,
+        folder="cafereal/eventos",
+        public_id=nombre_archivo,
+        quality="auto",
+        fetch_format="auto",
+        transformation=[
+            {"width": 1600, "height": 1600, "crop": "limit"}
+        ],
+    )
+
+    peso_kb = round(resultado.get("bytes", 0) / 1024, 1)
+    ancho = resultado.get("width")
+    alto = resultado.get("height")
+    formato = resultado.get("format")
+    print(f"[Cloudinary] Imagen subida: {peso_kb} KB, {ancho}x{alto}px, formato {formato}")
+
+    if imagen_anterior_url:
+        borrar_imagen_evento(imagen_anterior_url)
+
+    return resultado["secure_url"]
+
+
+def borrar_imagen_evento(imagen_url):
+    """Borra de Cloudinary la imagen anterior de un evento cuando se reemplaza por una nueva."""
+    try:
+        partes = imagen_url.split("/cafereal/eventos/")
+        if len(partes) != 2:
+            return
+        public_id = "cafereal/eventos/" + partes[1].rsplit(".", 1)[0]
+        cloudinary.uploader.destroy(public_id)
+    except Exception:
+        pass
 
 def leer_entrada_desde_form(form):
     """Lee ENTRADA_ESTADO y PRECIO_ENTRADA del formulario de un evento.
@@ -621,7 +660,7 @@ def eventos_publicos():
             "aforo_disponible": f[6],
             "entrada_estado": f[7],
             "precio_entrada": f[8],
-            "imagen_url": f"/{f[9]}" if f[9] else None,
+            "imagen_url": f[9] if f[9] else None,
         }
         for f in filas
     ]
