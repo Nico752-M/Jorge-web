@@ -7,6 +7,7 @@ import os
 import re
 import secrets
 from datetime import datetime
+from urllib.parse import quote
 
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 
@@ -577,12 +578,15 @@ def ampliar_reserva_cupo(reserva_id):
     conn = get_connection()
     cur = conn.cursor()
     cur.execute(
-        "SELECT EVENTO_ID, NUM_PERSONAS FROM RESERVAS_CUPOS WHERE ID = :id AND ESTADO = 'EXCEDENTE'",
+        """SELECT r.EVENTO_ID, r.NUM_PERSONAS, r.NOMBRE, r.TELEFONO, e.TITULO
+           FROM RESERVAS_CUPOS r JOIN EVENTOS e ON e.ID = r.EVENTO_ID
+           WHERE r.ID = :id AND r.ESTADO = 'EXCEDENTE'""",
         id=reserva_id,
     )
     fila = cur.fetchone()
+    wa_link = None
     if fila:
-        evento_id, num_personas = fila
+        evento_id, num_personas, nombre, telefono, evento_titulo = fila
         codigo_reserva = secrets.token_urlsafe(12)
         # Se amplía el aforo total exactamente lo necesario para esta reserva;
         # como esos cupos nuevos ya quedan ocupados por ella, AFORO_DISPONIBLE no cambia.
@@ -595,10 +599,14 @@ def ampliar_reserva_cupo(reserva_id):
             codigo=codigo_reserva, id=reserva_id,
         )
         conn.commit()
+
+        link_reserva = url_for("mi_reserva", codigo=codigo_reserva, _external=True)
+        mensaje = f"¡Hola {nombre}! Tu cupo para \"{evento_titulo}\" ya quedó confirmado. Aquí está tu entrada: {link_reserva}"
+        tel_limpio = telefono.replace(" ", "").replace("+", "").replace("-", "")
+        wa_link = f"https://wa.me/{tel_limpio}?text={quote(mensaje)}"
     cur.close()
     conn.close()
-    return redirect(url_for("dashboard"))
-
+    return redirect(url_for("dashboard", wa_link=wa_link) if wa_link else url_for("dashboard"))
 
 @app.route(f"{ADMIN_PREFIX}/reserva-cupo/<int:reserva_id>/rechazar")
 @login_required

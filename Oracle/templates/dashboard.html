@@ -56,6 +56,13 @@
   {% endif %}
 </section>
 
+{% if request.args.get('wa_link') %}
+<div class="flash" style="background:rgba(76,140,90,.14); border-color:rgba(76,140,90,.4); color:var(--verde);">
+  Reserva confirmada. Ya puedes avisarle por WhatsApp:
+  <a class="btn-mini btn-wa" target="_blank" href="{{ request.args.get('wa_link') }}" style="margin-left:8px;">Avisar por WhatsApp</a>
+</div>
+{% endif %}
+
 <section class="bloque">
   <h2>Reservas de cupos por decidir</h2>
   <p class="ayuda">Estas personas quisieron apartar un cupo pero el evento ya no tenía suficientes. Decide si amplías el aforo o rechazas la reserva.</p>
