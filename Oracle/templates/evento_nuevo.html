@@ -6,7 +6,7 @@
   <h2>Crear evento con cupos</h2>
   <p class="ayuda">Para eventos organizados por el local (no alquileres externos — esos se confirman desde la bandeja de solicitudes).</p>
 
-  <form method="POST" class="form-confirmar">
+  <form method="POST" class="form-confirmar" enctype="multipart/form-data">
     <label for="titulo">Título del evento</label>
     <input type="text" id="titulo" name="titulo" required placeholder="Ej: Noche de jazz">
 
@@ -29,6 +29,9 @@
 
     <label for="aforo_total">Aforo total (cupos disponibles)</label>
     <input type="number" id="aforo_total" name="aforo_total" min="1" step="1" required placeholder="Ej: 60">
+
+    <label for="imagen">Imagen del evento (opcional — si no subes ninguna, se usa la foto del auditorio por defecto)</label>
+    <input type="file" id="imagen" name="imagen" accept="image/png, image/jpeg, image/webp">
 
     <label>¿Cobra entrada?</label>
     <div class="opciones-entrada">

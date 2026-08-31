@@ -5,7 +5,7 @@
   <h2>Editar evento</h2>
   <p class="ayuda">Ya hay {{ evento[5] - evento[6] }} personas confirmadas — no puedes bajar el aforo total por debajo de ese número.</p>
 
-  <form method="POST" action="{{ url_for('editar_evento', evento_id=evento[0]) }}" class="form-confirmar">
+    <form method="POST" action="{{ url_for('editar_evento', evento_id=evento[0]) }}" class="form-confirmar" enctype="multipart/form-data">  
     <label>Título</label>
     <input type="text" name="titulo" value="{{ evento[1] }}" required>
 
@@ -25,6 +25,16 @@
 
     <label>Aforo total</label>
     <input type="number" name="aforo_total" min="{{ evento[5] - evento[6] }}" value="{{ evento[5] }}" required>
+
+    <label>Imagen del evento (opcional)</label>
+    {% if evento[9] %}
+      <img src="/{{ evento[9] }}" alt="Imagen actual del evento" style="max-width:200px; border-radius:8px; margin:6px 0; display:block;">
+      <label class="opcion-checkbox">
+        <input type="checkbox" name="quitar_imagen">
+        Quitar esta imagen y usar la foto por defecto
+      </label>
+    {% endif %}
+    <input type="file" name="imagen" accept="image/png, image/jpeg, image/webp">
 
     <label>¿Cobra entrada?</label>
     <div class="opciones-entrada">

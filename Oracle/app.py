@@ -29,6 +29,24 @@ app.secret_key = os.environ.get("SECRET_KEY", "cambia-esto-por-algo-largo-y-alea
 # ---- Ruta oculta del panel: cámbiala antes de publicar el sitio ----
 ADMIN_PREFIX = "/panel-cr8x"
 
+# ---- Imágenes de eventos que sube el admin (opcional; si no sube ninguna se usa la foto por defecto) ----
+CARPETA_IMAGENES_EVENTOS = os.path.join(app.static_folder, "images", "eventos")
+os.makedirs(CARPETA_IMAGENES_EVENTOS, exist_ok=True)
+EXTENSIONES_IMAGEN_PERMITIDAS = {"png", "jpg", "jpeg", "webp"}
+
+
+def guardar_imagen_evento(archivo):
+    """Guarda la imagen que subió el admin para un evento (si mandó una válida)
+    y devuelve la ruta relativa para guardar en IMAGEN_URL (ej: 'images/eventos/xxxx.jpg').
+    Si no mandó archivo o la extensión no es válida, devuelve None."""
+    if not archivo or not archivo.filename:
+        return None
+    extension = archivo.filename.rsplit(".", 1)[-1].lower() if "." in archivo.filename else ""
+    if extension not in EXTENSIONES_IMAGEN_PERMITIDAS:
+        return None
+    nombre_archivo = f"{secrets.token_hex(8)}.{extension}"
+    archivo.save(os.path.join(CARPETA_IMAGENES_EVENTOS, nombre_archivo))
+    return f"images/eventos/{nombre_archivo}"
 
 def leer_entrada_desde_form(form):
     """Lee ENTRADA_ESTADO y PRECIO_ENTRADA del formulario de un evento.
@@ -335,6 +353,7 @@ def evento_nuevo():
         aforo_total = request.form["aforo_total"]
         visible_publico = 1 if request.form.get("visible_publico") == "on" else 0
         entrada_estado, precio_entrada = leer_entrada_desde_form(request.form)
+        imagen_url = guardar_imagen_evento(request.files.get("imagen"))
 
         inicio_str = f"{fecha_inicio} {hora_inicio}"
         fin_str = f"{fecha_fin} {hora_fin}"
@@ -359,11 +378,11 @@ def evento_nuevo():
 
         cur.execute(
             """INSERT INTO EVENTOS (TIPO, TITULO, DESCRIPCION, FECHA_INICIO, FECHA_FIN,
-                                     AFORO_TOTAL, AFORO_DISPONIBLE, VISIBLE_PUBLICO, ENTRADA_ESTADO, PRECIO_ENTRADA, CREADO_POR)
+                                     AFORO_TOTAL, AFORO_DISPONIBLE, VISIBLE_PUBLICO, ENTRADA_ESTADO, PRECIO_ENTRADA, IMAGEN_URL, CREADO_POR)
                VALUES ('CUPOS', :titulo, :descripcion,
                        TO_TIMESTAMP(:inicio, 'YYYY-MM-DD HH24:MI'),
                        TO_TIMESTAMP(:fin, 'YYYY-MM-DD HH24:MI'),
-                       :aforo, :aforo, :visible, :entrada_estado, :precio_entrada, :admin_id)""",
+                       :aforo, :aforo, :visible, :entrada_estado, :precio_entrada, :imagen_url, :admin_id)""",
             titulo=titulo,
             descripcion=descripcion or None,
             inicio=inicio_str,
@@ -372,6 +391,7 @@ def evento_nuevo():
             visible=visible_publico,
             entrada_estado=entrada_estado,
             precio_entrada=precio_entrada,
+            imagen_url=imagen_url,
             admin_id=session["admin_id"],
         )
         conn.commit()
@@ -395,8 +415,8 @@ def editar_evento(evento_id):
         aforo_total = int(request.form.get("aforo_total"))
         entrada_estado, precio_entrada = leer_entrada_desde_form(request.form)
 
-        cur.execute("SELECT AFORO_TOTAL, AFORO_DISPONIBLE FROM EVENTOS WHERE ID = :id", id=evento_id)
-        total_actual, disp_actual = cur.fetchone()
+        cur.execute("SELECT AFORO_TOTAL, AFORO_DISPONIBLE, IMAGEN_URL FROM EVENTOS WHERE ID = :id", id=evento_id)
+        total_actual, disp_actual, imagen_actual = cur.fetchone()
         confirmados = total_actual - disp_actual   # gente que ya tiene su cupo, no se puede tocar
 
         if aforo_total < confirmados:
@@ -404,17 +424,28 @@ def editar_evento(evento_id):
             cur.close(); conn.close()
             return redirect(url_for("editar_evento", evento_id=evento_id))
 
+        nueva_imagen = guardar_imagen_evento(request.files.get("imagen"))
+        quitar_imagen = request.form.get("quitar_imagen") == "on"
+        if nueva_imagen:
+            imagen_final = nueva_imagen
+        elif quitar_imagen:
+            imagen_final = None
+        else:
+            imagen_final = imagen_actual
+
         cur.execute(
             """UPDATE EVENTOS
                SET TITULO=:titulo, DESCRIPCION=:descripcion,
                    FECHA_INICIO=TO_TIMESTAMP(:inicio,'YYYY-MM-DD HH24:MI'),
                    FECHA_FIN=TO_TIMESTAMP(:fin,'YYYY-MM-DD HH24:MI'),
                    AFORO_TOTAL=:aforo_total, AFORO_DISPONIBLE=:aforo_disp,
-                   ENTRADA_ESTADO=:entrada_estado, PRECIO_ENTRADA=:precio_entrada
+                   ENTRADA_ESTADO=:entrada_estado, PRECIO_ENTRADA=:precio_entrada,
+                   IMAGEN_URL=:imagen_url
                WHERE ID=:id""",
             titulo=titulo, descripcion=descripcion, inicio=inicio_str, fin=fin_str,
             aforo_total=aforo_total, aforo_disp=(aforo_total - confirmados), id=evento_id,
             entrada_estado=entrada_estado, precio_entrada=precio_entrada,
+            imagen_url=imagen_final,
         )
         conn.commit()
         cur.close(); conn.close()
@@ -423,7 +454,7 @@ def editar_evento(evento_id):
 
     cur.execute(
         """SELECT ID, TITULO, DESCRIPCION, FECHA_INICIO, FECHA_FIN, AFORO_TOTAL, AFORO_DISPONIBLE,
-                  ENTRADA_ESTADO, PRECIO_ENTRADA
+                  ENTRADA_ESTADO, PRECIO_ENTRADA, IMAGEN_URL
            FROM EVENTOS WHERE ID=:id""", id=evento_id,
     )
     evento = cur.fetchone()
@@ -570,7 +601,7 @@ def eventos_publicos():
     cur = conn.cursor()
     cur.execute(
         """SELECT ID, TITULO, DESCRIPCION, FECHA_INICIO, FECHA_FIN, AFORO_TOTAL, AFORO_DISPONIBLE,
-                  ENTRADA_ESTADO, PRECIO_ENTRADA
+                  ENTRADA_ESTADO, PRECIO_ENTRADA, IMAGEN_URL
            FROM EVENTOS
            WHERE VISIBLE_PUBLICO = 1 AND ESTADO = 'ACTIVO' AND FECHA_INICIO >= SYSTIMESTAMP
            ORDER BY FECHA_INICIO"""
@@ -590,6 +621,7 @@ def eventos_publicos():
             "aforo_disponible": f[6],
             "entrada_estado": f[7],
             "precio_entrada": f[8],
+            "imagen_url": f"/{f[9]}" if f[9] else None,
         }
         for f in filas
     ]

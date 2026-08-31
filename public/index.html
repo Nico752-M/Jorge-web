@@ -297,6 +297,11 @@ section{padding:110px 8vw;}
 .demo-toggle button{border:1px solid var(--linea); padding:8px 14px; border-radius:2px; font-size:.7rem; letter-spacing:.05em; text-transform:uppercase; color:var(--concreto);}
 .demo-toggle button:hover{border-color:var(--oro); color:var(--oro-suave);}
 @media (max-width:900px){.auditorio-grid{grid-template-columns:1fr;} .auditorio-visual{border-left:none; border-top:1px solid var(--linea); min-height:240px;}}
+.auditorio-dots{position:absolute; bottom:16px; left:0; right:0; display:flex; justify-content:center; gap:8px; z-index:2;}
+.auditorio-dot{width:8px; height:8px; border-radius:50%; background:rgba(236,226,206,.35); border:none; padding:0; cursor:pointer; transition:background .25s ease, transform .25s ease;}
+.auditorio-dot.activo{background:var(--oro); transform:scale(1.2);}
+.tertulia-card{cursor:pointer;}
+.tertulia-card.activa{border-color:var(--oro); background:#241d15;}
 
 /* SEGUNDO PISO */
 .piso-grid{display:grid; grid-template-columns:.9fr 1.1fr; gap:0; border:1px solid var(--linea);}
@@ -789,7 +794,10 @@ footer{padding:60px 8vw 40px; border-top:1px solid var(--linea); color:var(--con
     <div class="auditorio-wrap">
       <div class="auditorio-grid">
         <div class="auditorio-info" id="auditorio-info"><!-- contenido inyectado por JS --></div>
-        <div class="auditorio-visual"><img id="img-auditorio" alt="Auditorio de Café Real montado para evento"></div>
+        <div class="auditorio-visual">
+          <img id="img-auditorio" alt="Auditorio de Café Real montado para evento">
+          <div class="auditorio-dots" id="auditorio-dots"></div>
+        </div>
       </div>
     </div>
     <div class="tertulias-list" id="tertulias-list"><!-- generado por JS --></div>
@@ -1100,6 +1108,7 @@ document.getElementById('g6').src = PHOTOS.g6;
    admin marcó como "visibles al público" desde el panel.
    ========================================================= */
 let EVENTOS_PUBLICOS = [];
+let INDICE_EVENTO_ACTUAL = 0;
 
 function formatearFechaEvento(iso){
   if(!iso) return "";
@@ -1115,11 +1124,20 @@ function textoCupos(ev){
   return `${ev.aforo_disponible} de ${ev.aforo_total} cupos disponibles`;
 }
 
+function imagenEvento(ev){
+  return ev.imagen_url ? ev.imagen_url : PHOTOS.auditorio;
+}
+
 function renderAuditorio(){
   const el = document.getElementById('auditorio-info');
+  const img = document.getElementById('img-auditorio');
+  const dots = document.getElementById('auditorio-dots');
+
   if(EVENTOS_PUBLICOS.length > 0){
-    const ev = EVENTOS_PUBLICOS[0];
+    if(INDICE_EVENTO_ACTUAL >= EVENTOS_PUBLICOS.length) INDICE_EVENTO_ACTUAL = 0;
+    const ev = EVENTOS_PUBLICOS[INDICE_EVENTO_ACTUAL];
     const agotado = ev.aforo_total != null && ev.aforo_disponible <= 0;
+    if(img) img.src = imagenEvento(ev);
     el.innerHTML = `
       <span class="status-pill evento"><span class="dot"></span>Próximo evento</span>
       <h3>${ev.titulo}</h3>
@@ -1135,7 +1153,14 @@ function renderAuditorio(){
         }
       </div>
     `;
+    if(dots){
+      dots.innerHTML = EVENTOS_PUBLICOS.length > 1
+        ? EVENTOS_PUBLICOS.map((_, i) => `<button class="auditorio-dot ${i===INDICE_EVENTO_ACTUAL ? 'activo' : ''}" onclick="irAEventoCarrusel(${i})" aria-label="Ver evento ${i+1}"></button>`).join('')
+        : '';
+    }
   } else {
+    if(img) img.src = PHOTOS.auditorio;
+    if(dots) dots.innerHTML = '';
     el.innerHTML = `
       <span class="status-pill libre"><span class="dot"></span>Disponible para rentar</span>
       <h3>Este auditorio puede ser tuyo</h3>
@@ -1149,17 +1174,23 @@ function renderAuditorio(){
   }
 }
 
+function irAEventoCarrusel(indice){
+  INDICE_EVENTO_ACTUAL = indice;
+  renderAuditorio();
+  renderTertulias();
+}
+
 function renderTertulias(){
   const el = document.getElementById('tertulias-list');
   if(!el) return;
-  const resto = EVENTOS_PUBLICOS; 
+  const resto = EVENTOS_PUBLICOS;
   if(resto.length === 0){ el.innerHTML = ''; return; }
-    el.innerHTML = resto.map(ev => `
-    <a class="tertulia-card" href="/evento/${ev.id}/reservar">
+  el.innerHTML = resto.map((ev, i) => `
+    <div class="tertulia-card ${i===INDICE_EVENTO_ACTUAL ? 'activa' : ''}" onclick="irAEventoCarrusel(${i})">
       <div class="fecha">${formatearFechaEvento(ev.fecha_inicio)}</div>
       <b>${ev.titulo}</b>
       <span>${textoCupos(ev)}</span>
-    </a>
+    </div>
   `).join('');
 }
 
