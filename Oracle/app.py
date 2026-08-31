@@ -463,11 +463,13 @@ def editar_evento(evento_id):
             cur.close(); conn.close()
             return redirect(url_for("editar_evento", evento_id=evento_id))
 
-        nueva_imagen = guardar_imagen_evento(request.files.get("imagen"))
+        nueva_imagen = guardar_imagen_evento(request.files.get("imagen"), imagen_anterior_url=imagen_actual)
         quitar_imagen = request.form.get("quitar_imagen") == "on"
         if nueva_imagen:
             imagen_final = nueva_imagen
         elif quitar_imagen:
+            if imagen_actual:
+                borrar_imagen_evento(imagen_actual)
             imagen_final = None
         else:
             imagen_final = imagen_actual

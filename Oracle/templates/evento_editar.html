@@ -28,7 +28,7 @@
 
     <label>Imagen del evento (opcional)</label>
     {% if evento[9] %}
-      <img src="/{{ evento[9] }}" alt="Imagen actual del evento" style="max-width:200px; border-radius:8px; margin:6px 0; display:block;">
+      <img src="{{ evento[9] }}" alt="Imagen actual del evento" style="max-width:200px; border-radius:8px; margin:6px 0; display:block;">
       <label class="opcion-checkbox">
         <input type="checkbox" name="quitar_imagen">
         Quitar esta imagen y usar la foto por defecto
