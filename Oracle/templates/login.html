@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <title>Iniciar sesión — Panel admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- PWA: este archivo no extiende base.html, así que necesita su propio link -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#15120e">
+  <link rel="apple-touch-icon" href="/icon-192.png">
   <style>
     :root{ --hierro:#161311; --hierro-2:#1d1a17; --crema:#f3ece2; --concreto:#a99c8c;
            --oro:#c9a24b; --oro-suave:#e0c27a; --linea:#332d27; }
@@ -58,5 +63,15 @@
       <button type="submit">Entrar</button>
     </form>
   </div>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/sw.js").catch((err) => {
+          console.warn("No se pudo registrar el service worker:", err);
+        });
+      });
+    }
+  </script>
 </body>
 </html>
