@@ -75,19 +75,57 @@
       });
     });
   }
+
+  // --- Sidebar / menú hamburguesa ---
+  function toggleSidebar(forzar){
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay-sidebar');
+    if(!sidebar || !overlay) return;
+    const abrir = forzar !== undefined ? forzar : !sidebar.classList.contains('abierto');
+    sidebar.classList.toggle('abierto', abrir);
+    overlay.classList.toggle('visible', abrir);
+  }
+  document.addEventListener('keydown', (e) => { if(e.key === 'Escape') toggleSidebar(false); });
 </script>
 </head>
 <body>
   {% if session.get('admin_id') %}
-  <header class="topbar">
-    <div class="brand">Café Real · Panel</div>
-    <nav>
-      <span class="usuario">{{ session.get('admin_usuario') }}</span>
-      <a href="{{ url_for('logout') }}" class="btn-out">Cerrar sesión</a>
-    </nav>
-  </header>
-  {% endif %}
+  <div class="app-shell">
+    <button type="button" class="btn-hamburguesa" onclick="toggleSidebar()" aria-label="Abrir menú">
+      <span></span><span></span><span></span>
+    </button>
 
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-brand">Café Real<small>Panel</small></div>
+      <nav class="sidebar-nav">
+        <a href="{{ url_for('dashboard') }}" class="{{ 'activo' if request.endpoint == 'dashboard' else '' }}">Panel</a>
+        <a href="{{ url_for('dashboard') }}#solicitudes">Solicitudes</a>
+        <a href="{{ url_for('dashboard') }}#eventos-activos">Eventos activos</a>
+        <a href="{{ url_for('dashboard') }}#historial">Historial</a>
+        <hr class="sidebar-divisor">
+        <a href="{{ url_for('checkin') }}" class="{{ 'activo' if request.endpoint == 'checkin' else '' }}">Check-in con QR</a>
+        <a href="{{ url_for('evento_nuevo') }}" class="{{ 'activo' if request.endpoint == 'evento_nuevo' else '' }}">Crear evento</a>
+      </nav>
+      <div class="sidebar-footer">
+        <span class="usuario">{{ session.get('admin_usuario') }}</span>
+        <a href="{{ url_for('logout') }}" class="btn-out">Cerrar sesión</a>
+      </div>
+    </aside>
+
+    <div id="overlay-sidebar" class="overlay-sidebar" onclick="toggleSidebar(false)"></div>
+
+    <main class="main-area">
+      {% with mensajes = get_flashed_messages() %}
+        {% if mensajes %}
+          <div class="flash">
+            {% for m in mensajes %}<p>{{ m }}</p>{% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+      {% block contenido %}{% endblock %}
+    </main>
+  </div>
+  {% else %}
   <main class="contenido">
     {% with mensajes = get_flashed_messages() %}
       {% if mensajes %}
@@ -98,5 +136,6 @@
     {% endwith %}
     {% block contenido %}{% endblock %}
   </main>
+  {% endif %}
 </body>
 </html>
