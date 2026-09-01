@@ -258,7 +258,9 @@ a{color:inherit; text-decoration:none;}
   width:240px; flex-shrink:0; background:var(--panel); border-right:1px solid var(--linea);
   display:flex; flex-direction:column; padding:24px 16px;
   position:sticky; top:0; height:100vh; overflow-y:auto;
+  transition:width .22s ease, padding .22s ease, opacity .18s ease;
 }
+
 .sidebar-brand{ font-weight:700; font-size:1.05rem; margin-bottom:28px; padding:0 8px; }
 .sidebar-brand small{ display:block; font-weight:400; font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; color:var(--oro); margin-top:2px; }
 .sidebar-nav{ display:flex; flex-direction:column; gap:2px; flex:1; }
@@ -303,3 +305,33 @@ a{color:inherit; text-decoration:none;}
 .stat-card{ background:var(--panel); border:1px solid var(--linea); border-radius:18px; padding:20px; }
 .stat-card .stat-numero{ font-size:1.8rem; font-weight:700; color:var(--oro-suave); }
 .stat-card .stat-label{ font-size:.8rem; color:var(--concreto); margin-top:4px; }
+
+/* ============ Colapsar sidebar en desktop ============ */
+.sidebar-header{
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:28px; padding:0 8px; gap:8px;
+}
+.sidebar-header .sidebar-brand{ margin-bottom:0; padding:0; }
+.btn-colapsar{
+  width:30px; height:30px; border-radius:9px; border:1px solid var(--linea);
+  background:none; color:var(--concreto); cursor:pointer; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; font-size:.95rem;
+  transition:border-color .2s ease, color .2s ease;
+}
+.btn-colapsar:hover{ border-color:var(--oro); color:var(--oro-suave); }
+
+.btn-mostrar-sidebar{
+  display:none; position:fixed; top:18px; left:18px; z-index:55;
+  width:38px; height:38px; border-radius:11px; background:var(--panel);
+  border:1px solid var(--linea); color:var(--concreto); cursor:pointer;
+  align-items:center; justify-content:center; font-size:1rem;
+  transition:border-color .2s ease, color .2s ease;
+}
+.btn-mostrar-sidebar:hover{ border-color:var(--oro); color:var(--oro-suave); }
+
+@media (min-width:901px){
+  .app-shell.sidebar-oculta .sidebar{
+    width:0; padding:0; opacity:0; overflow:hidden; border-right:none;
+  }
+  .app-shell.sidebar-oculta .btn-mostrar-sidebar{ display:flex; }
+}

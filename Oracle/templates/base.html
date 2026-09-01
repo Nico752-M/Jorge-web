@@ -85,6 +85,52 @@
     sidebar.classList.toggle('abierto', abrir);
     overlay.classList.toggle('visible', abrir);
   }
+
+    // --- Colapsar sidebar en desktop (se recuerda con localStorage) ---
+  function toggleSidebarDesktop(){
+    const shell = document.querySelector('.app-shell');
+    if(!shell) return;
+    const oculto = !shell.classList.contains('sidebar-oculta');
+    shell.classList.toggle('sidebar-oculta', oculto);
+    localStorage.setItem('cr_sidebar_oculta', oculto ? '1' : '0');
+    document.querySelectorAll('.btn-colapsar').forEach(b => b.textContent = oculto ? '›' : '‹');
+  }
+
+  // --- Pestañas del panel (Solicitudes / Eventos activos / Historial) ---
+  function mostrarTab(tab, link){
+    const secciones = document.querySelectorAll('[data-tab]');
+    if(!secciones.length){
+      window.location.href = "{{ url_for('dashboard') }}" + (tab === 'todos' ? '' : '#' + tab);
+      return false;
+    }
+    secciones.forEach(sec => {
+      sec.style.display = (tab === 'todos' || sec.dataset.tab === tab) ? '' : 'none';
+    });
+    document.querySelectorAll('.sidebar-nav a[data-tab-link]').forEach(a => a.classList.remove('activo'));
+    if(link) link.classList.add('activo');
+    if(history.replaceState){
+      history.replaceState(null, '', tab === 'todos' ? window.location.pathname : '#' + tab);
+    }
+    return false;
+  }
+
+  function aplicarTabInicial(){
+    const hash = window.location.hash.replace('#', '');
+    const validos = ['solicitudes', 'eventos-activos', 'historial'];
+    const tab = validos.includes(hash) ? hash : 'todos';
+    const link = document.querySelector(`.sidebar-nav a[data-tab-link="${tab}"]`);
+    mostrarTab(tab, link);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const shell = document.querySelector('.app-shell');
+    if(shell && localStorage.getItem('cr_sidebar_oculta') === '1'){
+      shell.classList.add('sidebar-oculta');
+      document.querySelectorAll('.btn-colapsar').forEach(b => b.textContent = '›');
+    }
+    aplicarTabInicial();
+  });
+  
   document.addEventListener('keydown', (e) => { if(e.key === 'Escape') toggleSidebar(false); });
 </script>
 </head>
@@ -92,16 +138,20 @@
   {% if session.get('admin_id') %}
   <div class="app-shell">
     <button type="button" class="btn-hamburguesa" onclick="toggleSidebar()" aria-label="Abrir menú">
+    <button type="button" class="btn-mostrar-sidebar" onclick="toggleSidebarDesktop()" aria-label="Mostrar menú">☰</button> 
       <span></span><span></span><span></span>
     </button>
 
     <aside id="sidebar" class="sidebar">
-      <div class="sidebar-brand">Café Real<small>Panel</small></div>
+      <div class="sidebar-header">
+        <div class="sidebar-brand">Café Real<small>Panel</small></div>
+        <button type="button" class="btn-colapsar" onclick="toggleSidebarDesktop()" aria-label="Colapsar menú" title="Colapsar menú">‹</button>
+      </div>
       <nav class="sidebar-nav">
-        <a href="{{ url_for('dashboard') }}" class="{{ 'activo' if request.endpoint == 'dashboard' else '' }}">Panel</a>
-        <a href="{{ url_for('dashboard') }}#solicitudes">Solicitudes</a>
-        <a href="{{ url_for('dashboard') }}#eventos-activos">Eventos activos</a>
-        <a href="{{ url_for('dashboard') }}#historial">Historial</a>
+        <a href="#" data-tab-link="todos" onclick="return mostrarTab('todos', this)">Panel</a>
+        <a href="#" data-tab-link="solicitudes" onclick="return mostrarTab('solicitudes', this)">Solicitudes</a>
+        <a href="#" data-tab-link="eventos-activos" onclick="return mostrarTab('eventos-activos', this)">Eventos activos</a>
+        <a href="#" data-tab-link="historial" onclick="return mostrarTab('historial', this)">Historial</a>
         <hr class="sidebar-divisor">
         <a href="{{ url_for('checkin') }}" class="{{ 'activo' if request.endpoint == 'checkin' else '' }}">Check-in con QR</a>
         <a href="{{ url_for('evento_nuevo') }}" class="{{ 'activo' if request.endpoint == 'evento_nuevo' else '' }}">Crear evento</a>

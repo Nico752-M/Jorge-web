@@ -19,7 +19,7 @@
   </div>
 </div>
 
-<section class="bloque" id="solicitudes">
+<section class="bloque" id="solicitudes" data-tab="solicitudes">
   <h2>Bandeja de solicitudes de alquiler</h2>
   {% if not solicitudes %}
     <p class="vacio">No hay solicitudes pendientes por ahora.</p>
@@ -58,7 +58,7 @@
 
 
 
-<section class="bloque">
+<section class="bloque" data-tab="solicitudes">
   <h2>Reservas de cupos por decidir</h2>
   <p class="ayuda">Estas personas quisieron apartar un cupo pero el evento ya no tenía suficientes. Decide si amplías el aforo o rechazas la reserva.</p>
   {% if not excedentes %}
@@ -88,7 +88,7 @@
   {% endif %}
 </section>
 
-<section class="bloque" id="eventos-activos">
+<section class="bloque" id="eventos-activos" data-tab="eventos-activos">
   <h2>Eventos activos</h2>
   <p style="display:flex; gap:10px; flex-wrap:wrap;">
     <a class="btn-primario-fila" href="{{ url_for('evento_nuevo') }}">+ Crear evento con cupos</a>
@@ -135,7 +135,7 @@
   {% endif %}
 </section>
 
-<section class="bloque" id="historial">
+<section class="bloque" id="historial" data-tab="historial">
   <details>
     <summary><h2 style="display:inline;">Historial de eventos finalizados</h2></summary>
     {% if not eventos_finalizados %}
@@ -388,6 +388,7 @@ async function refrescarDashboard(){
     const nuevoContenido = doc.getElementById('vista-dashboard');
     if(nuevoContenido){
       document.getElementById('vista-dashboard').innerHTML = nuevoContenido.innerHTML;
+      aplicarTabInicial();
       const nuevoBuscador = document.getElementById('buscador-eventos');
       if(nuevoBuscador && valorBusqueda){
         nuevoBuscador.value = valorBusqueda;
@@ -402,4 +403,4 @@ setInterval(refrescarDashboard, 20000);
 
 </script>
 
-{% endblock %}
+{% endblock %}<section class="bloque" id="solicitudes">
