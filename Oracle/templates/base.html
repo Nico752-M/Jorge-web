@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{% block title %}Panel Café Real{% endblock %}</title>
 <link rel="stylesheet" href="/admin.css">
+
+<!-- PWA: instala el panel de admin como app de escritorio/móvil -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#15120e">
+<link rel="apple-touch-icon" href="/icon-192.png">
 <style>
   /* --- Selector de estado de entrada (libre / tiene entrada) --- */
   .opciones-entrada{ display:flex; flex-direction:column; gap:6px; margin:4px 0 2px; }
@@ -59,6 +64,15 @@
       });
 
       actualizar();
+    });
+  }
+
+  // --- PWA: registra el service worker para que el panel se pueda instalar ---
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("/sw.js").catch((err) => {
+        console.warn("No se pudo registrar el service worker:", err);
+      });
     });
   }
 </script>
