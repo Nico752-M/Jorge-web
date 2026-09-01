@@ -4,7 +4,22 @@
 
 <div id="vista-dashboard">
 
-<section class="bloque">
+<div class="resumen-stats">
+  <div class="stat-card">
+    <div class="stat-numero">{{ solicitudes|length }}</div>
+    <div class="stat-label">Solicitudes pendientes</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-numero">{{ eventos|length }}</div>
+    <div class="stat-label">Eventos activos</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-numero">{{ excedentes|length }}</div>
+    <div class="stat-label">Reservas por decidir</div>
+  </div>
+</div>
+
+<section class="bloque" id="solicitudes">
   <h2>Bandeja de solicitudes de alquiler</h2>
   {% if not solicitudes %}
     <p class="vacio">No hay solicitudes pendientes por ahora.</p>
@@ -86,7 +101,7 @@
   {% endif %}
 </section>
 
-<section class="bloque">
+<section class="bloque" id="eventos-activos">
   <h2>Eventos activos</h2>
   <p>
     <a class="btn-mini btn-confirmar" href="{{ url_for('evento_nuevo') }}">+ Crear evento con cupos</a>
@@ -159,7 +174,7 @@
   {% endif %}
 </section>
 
-<section class="bloque">
+<section class="bloque" id="historial">
   <details>
     <summary><h2 style="display:inline;">Historial de eventos finalizados</h2></summary>
     {% if not eventos_finalizados %}
