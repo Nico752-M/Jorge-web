@@ -115,6 +115,10 @@
   }
 
   function aplicarTabInicial(){
+    // Si no hay secciones con data-tab, no estamos en el dashboard
+    // (estamos en Check-in, Crear evento, etc.) — no hacer nada.
+    if(!document.querySelectorAll('[data-tab]').length) return;
+
     const hash = window.location.hash.replace('#', '');
     const validos = ['solicitudes', 'eventos-activos', 'historial'];
     const tab = validos.includes(hash) ? hash : 'todos';
