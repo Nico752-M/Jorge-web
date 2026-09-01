@@ -1489,6 +1489,59 @@ function goToReserva(motivo){
 }
 const WHATSAPP_NUMERO = "573114311472"; // Ejemplo — reemplazar por el número real de Café Real
 
+// --- Config del buffer entre reservas del auditorio (ajustable) ---
+const BUFFER_RESERVA_HORAS = 2; // horas de colchón obligatorio antes/después de cada evento
+const BUFFER_RESERVA_MS = BUFFER_RESERVA_HORAS * 60 * 60 * 1000;
+
+// Horario en el que se puede reservar el auditorio: 1h después de abrir, 1h antes de cerrar.
+function horarioAuditorio(fechaStr){
+  const dia = new Date(`${fechaStr}T00:00`).getDay(); // 0 = domingo
+  return dia === 0
+    ? { apertura: 10, cierre: 17 }  // domingo: café 9-18 → auditorio 10-17
+    : { apertura: 9,  cierre: 21 }; // resto: café 8-22 → auditorio 9-21
+}
+
+// Calcula los huecos libres del día (en minutos desde medianoche),
+// ya restando los eventos ocupados + el buffer a cada lado.
+function calcularHorariosLibres(fecha, ocupadosDelDia){
+  const { apertura, cierre } = horarioAuditorio(fecha);
+  const inicioDia = new Date(`${fecha}T00:00`).getTime();
+  const minApertura = apertura * 60;
+  const minCierre = cierre * 60;
+
+  const bloques = ocupadosDelDia.map(ev => {
+    const inicioEv = new Date(ev.inicio).getTime() - BUFFER_RESERVA_MS;
+    const finEv = (ev.fin ? new Date(ev.fin).getTime() : new Date(ev.inicio).getTime()) + BUFFER_RESERVA_MS;
+    const inicioMin = Math.max(minApertura, (inicioEv - inicioDia) / 60000);
+    const finMin = Math.min(minCierre, (finEv - inicioDia) / 60000);
+    return [inicioMin, finMin];
+  }).filter(([a, b]) => b > a).sort((a, b) => a[0] - b[0]);
+
+  const libres = [];
+  let cursor = minApertura;
+  bloques.forEach(([inicio, fin]) => {
+    if(inicio > cursor) libres.push([cursor, inicio]);
+    cursor = Math.max(cursor, fin);
+  });
+  if(cursor < minCierre) libres.push([cursor, minCierre]);
+
+  return libres.filter(([a, b]) => b > a);
+}
+
+function formatearHoraDesdeMinutos(mins){
+  const h = Math.floor(mins / 60);
+  const m = Math.round(mins % 60);
+  const ampm = h < 12 ? 'a.m.' : 'p.m.';
+  let h12 = h % 12;
+  if(h12 === 0) h12 = 12;
+  return m === 0 ? `${h12}:00 ${ampm}` : `${h12}:${String(m).padStart(2, '0')} ${ampm}`;
+}
+
+function formatearHorariosLibres(libres){
+  if(libres.length === 0) return "no hay horarios disponibles ese día";
+  return libres.map(([a, b]) => `de ${formatearHoraDesdeMinutos(a)} a ${formatearHoraDesdeMinutos(b)}`).join(' y ');
+}
+
 async function enviarReserva(e){
   e.preventDefault();
   const nombre = document.getElementById('r-nombre').value.trim();
@@ -1510,14 +1563,24 @@ async function enviarReserva(e){
     try{
       const res = await fetch('/api/eventos-ocupados');
       const ocupados = await res.json();
-      const hayChoque = ocupados.some(ev => {
-        const inicioEv = new Date(ev.inicio);
-        const finEv = ev.fin ? new Date(ev.fin) : inicioEv;
-        return inicioDeseado < finEv && finDeseado > inicioEv;
+
+      // Solo nos importan los eventos del MISMO día que se está pidiendo.
+      const ocupadosDelDia = ocupados.filter(ev => {
+        const inicioEv = new Date(ev.inicio).toISOString().slice(0, 10);
+        const finEv = ev.fin ? new Date(ev.fin).toISOString().slice(0, 10) : inicioEv;
+        return inicioEv === fecha || finEv === fecha;
+      });
+
+      // Choque real = se solapa considerando el buffer antes/después de cada evento existente.
+      const hayChoque = ocupadosDelDia.some(ev => {
+        const inicioEv = new Date(ev.inicio).getTime() - BUFFER_RESERVA_MS;
+        const finEv = (ev.fin ? new Date(ev.fin).getTime() : new Date(ev.inicio).getTime()) + BUFFER_RESERVA_MS;
+        return inicioDeseado.getTime() < finEv && finDeseado.getTime() > inicioEv;
       });
 
       if(hayChoque){
-        alert('Ese horario ya está ocupado por otro evento. Por favor elige otra fecha u hora.');
+        const libres = calcularHorariosLibres(fecha, ocupadosDelDia);
+        alert(`Ese horario no está disponible (dejamos ${BUFFER_RESERVA_HORAS} horas de margen entre eventos). Ese día el auditorio está disponible ${formatearHorariosLibres(libres)}. Ajusta la hora y vuelve a enviar.`);
         return false;
       }
     }catch(err){

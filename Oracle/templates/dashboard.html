@@ -9,50 +9,35 @@
   {% if not solicitudes %}
     <p class="vacio">No hay solicitudes pendientes por ahora.</p>
   {% else %}
-  <table class="tabla">
-    <thead>
-      <tr>
-        <th>Nombre</th>
-        <th>Teléfono</th>
-        <th>Fecha deseada</th>
-        <th>Horario</th>
-        <th>Notas</th>
-        <th>Tipo de evento</th>
-        <th>Personas</th>
-        <th>Estado</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for s in solicitudes %}
-      {% set id, nombre, telefono, fecha, hora_inicio, hora_fin, hora, tipo_ev, personas, estado = s %}
-      <tr data-nombre="{{ nombre }}" data-telefono="{{ telefono }}" data-fecha="{{ fecha }}"
-        data-horario="{{ (hora_inicio ~ ' - ' ~ hora_fin) if hora_inicio and hora_fin else '—' }}"
-        data-hora="{{ hora or '—' }}" data-tipo="{{ tipo_ev or '—' }}"
-        data-personas="{{ personas or '—' }}" data-estado="{{ estado }}">
-        <td>{{ nombre }}</td>
-        <td>{{ telefono }}</td>
-        <td>{{ fecha }}</td>
-        <td>{{ (hora_inicio ~ ' - ' ~ hora_fin) if hora_inicio and hora_fin else "—" }}</td>
-        <td>{{ hora or "—" }}</td>
-        <td>{{ tipo_ev or "—" }}</td>
-        <td>{{ personas or "—" }}</td>
-        <td><span class="badge badge-{{ estado|lower }}">{{ estado }}</span></td>
-        <td class="acciones">
-          <a class="btn-mini btn-wa" target="_blank"
-             href="https://wa.me/{{ telefono|replace(' ','')|replace('+','')|replace('-','') }}">
-             Contactar por WhatsApp
-          </a>
-          <button type="button" class="btn-mini" onclick="verDetalleSolicitud(this)">Ver detalles</button>
-          <a class="btn-mini btn-confirmar" href="{{ url_for('confirmar_solicitud', solicitud_id=id) }}">Confirmar</a>
-          <a class="btn-mini btn-rechazar" href="{{ url_for('rechazar_solicitud', solicitud_id=id) }}"
-             onclick="return confirm('¿Seguro que quieres rechazar esta solicitud?')">Rechazar</a>
-        
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <div class="lista">
+    {% for s in solicitudes %}
+    {% set id, nombre, telefono, fecha, hora_inicio, hora_fin, hora, tipo_ev, personas, estado = s %}
+    <div class="fila" data-nombre="{{ nombre }}" data-telefono="{{ telefono }}" data-fecha="{{ fecha }}"
+      data-horario="{{ (hora_inicio ~ ' - ' ~ hora_fin) if hora_inicio and hora_fin else '—' }}"
+      data-hora="{{ hora or '—' }}" data-tipo="{{ tipo_ev or '—' }}"
+      data-personas="{{ personas or '—' }}" data-estado="{{ estado }}">
+      <div class="fila-info">
+        <div class="fila-titulo">
+          {{ nombre }}
+          <span class="badge badge-{{ estado|lower }}">{{ estado }}</span>
+        </div>
+        <div class="fila-meta">
+          {{ tipo_ev or "Motivo sin especificar" }} · {{ personas or "—" }} personas · {{ fecha }}{% if hora_inicio and hora_fin %} · {{ hora_inicio }}–{{ hora_fin }}{% endif %}
+        </div>
+      </div>
+      <div class="fila-acciones">
+        <a class="btn-primario-fila" href="{{ url_for('confirmar_solicitud', solicitud_id=id) }}">Confirmar</a>
+        <button type="button" class="btn-menu" onclick="toggleMenuFila(this)">⋯</button>
+        <div class="menu-desplegable oculto">
+          <a target="_blank" href="https://wa.me/{{ telefono|replace(' ','')|replace('+','')|replace('-','') }}">Contactar por WhatsApp</a>
+          <button type="button" onclick="verDetalleSolicitud(this)">Ver detalles</button>
+          <a class="opcion-rechazar" href="{{ url_for('rechazar_solicitud', solicitud_id=id) }}"
+            onclick="return confirm('¿Seguro que quieres rechazar esta solicitud?')">Rechazar</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
   {% endif %}
 </section>
 
@@ -261,16 +246,32 @@
 <script>
 let EVENTO_ACTUAL_PERSONAS = null;
 
+function cerrarMenusFila(){
+  document.querySelectorAll('.menu-desplegable').forEach(m => m.classList.add('oculto'));
+}
+
+function toggleMenuFila(btn){
+  const menu = btn.nextElementSibling;
+  const abierto = !menu.classList.contains('oculto');
+  cerrarMenusFila();
+  if(!abierto) menu.classList.remove('oculto');
+}
+
+document.addEventListener('click', (e) => {
+  if(!e.target.closest('.fila-acciones')) cerrarMenusFila();
+});
+
 function verDetalleSolicitud(btn){
-  const tr = btn.closest('tr');
-  document.getElementById('dd-nombre').textContent = tr.dataset.nombre;
-  document.getElementById('dd-telefono').textContent = tr.dataset.telefono;
-  document.getElementById('dd-fecha').textContent = tr.dataset.fecha;
-  document.getElementById('dd-horario').textContent = tr.dataset.horario;
-  document.getElementById('dd-hora').textContent = tr.dataset.hora;
-  document.getElementById('dd-tipo').textContent = tr.dataset.tipo;
-  document.getElementById('dd-personas').textContent = tr.dataset.personas;
-  document.getElementById('dd-estado').textContent = tr.dataset.estado;
+  const fila = btn.closest('.fila');
+  cerrarMenusFila();
+  document.getElementById('dd-nombre').textContent = fila.dataset.nombre;
+  document.getElementById('dd-telefono').textContent = fila.dataset.telefono;
+  document.getElementById('dd-fecha').textContent = fila.dataset.fecha;
+  document.getElementById('dd-horario').textContent = fila.dataset.horario;
+  document.getElementById('dd-hora').textContent = fila.dataset.hora;
+  document.getElementById('dd-tipo').textContent = fila.dataset.tipo;
+  document.getElementById('dd-personas').textContent = fila.dataset.personas;
+  document.getElementById('dd-estado').textContent = fila.dataset.estado;
   document.getElementById('modal-detalle').classList.remove('hidden');
 }
 
