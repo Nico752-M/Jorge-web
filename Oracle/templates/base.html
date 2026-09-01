@@ -115,6 +115,9 @@
     <div id="overlay-sidebar" class="overlay-sidebar" onclick="toggleSidebar(false)"></div>
 
     <main class="main-area">
+  {% else %}
+  <main class="contenido">
+  {% endif %}
       {% with mensajes = get_flashed_messages() %}
         {% if mensajes %}
           <div class="flash">
@@ -123,18 +126,10 @@
         {% endif %}
       {% endwith %}
       {% block contenido %}{% endblock %}
+  {% if session.get('admin_id') %}
     </main>
   </div>
   {% else %}
-  <main class="contenido">
-    {% with mensajes = get_flashed_messages() %}
-      {% if mensajes %}
-        <div class="flash">
-          {% for m in mensajes %}<p>{{ m }}</p>{% endfor %}
-        </div>
-      {% endif %}
-    {% endwith %}
-    {% block contenido %}{% endblock %}
   </main>
   {% endif %}
 </body>
