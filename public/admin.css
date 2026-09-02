@@ -337,15 +337,49 @@ a{color:inherit; text-decoration:none;}
 }
 
 /* ============ Overlay de carga entre páginas ============ */
+/* ============ Overlay de carga: se ve POR ENCIMA, no tapa del todo ============ */
 .overlay-carga{
-  position:fixed; inset:0; background:var(--hierro); z-index:999;
-  display:flex; align-items:center; justify-content:center;
-  opacity:0; pointer-events:none; transition:opacity .15s ease;
+  position:fixed; inset:0; z-index:999;
+  background:rgba(21,18,14,.72);
+  backdrop-filter:blur(5px) saturate(120%);
+  -webkit-backdrop-filter:blur(5px) saturate(120%);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
+  opacity:0; pointer-events:none; transition:opacity .18s ease;
 }
 .overlay-carga.visible{ opacity:1; pointer-events:all; }
 .spinner-carga{
-  width:36px; height:36px; border-radius:50%;
-  border:3px solid var(--linea); border-top-color:var(--oro);
+  width:34px; height:34px; border-radius:50%;
+  border:3px solid rgba(211,162,78,.25); border-top-color:var(--oro);
   animation:girar .7s linear infinite;
 }
+.overlay-carga span{ font-size:.82rem; color:var(--concreto); letter-spacing:.02em; }
 @keyframes girar{ to{ transform:rotate(360deg); } }
+
+/* ============ Reestilizar controles nativos (select, file, radio/checkbox) ============ */
+select{
+  appearance:none; -webkit-appearance:none; -moz-appearance:none;
+  background:var(--hierro) url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a8177' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 14px center;
+  background-size:16px;
+  border:1px solid var(--linea); color:var(--crema);
+  padding:12px 40px 12px 14px; border-radius:12px; font-size:.92rem;
+  font-family:inherit; width:100%; cursor:pointer;
+  transition:border-color .2s ease;
+}
+select:focus{ outline:none; border-color:var(--oro); }
+select option{ background:var(--panel); color:var(--crema); }
+
+input[type="file"]{
+  background:var(--hierro); border:1px solid var(--linea); color:var(--concreto);
+  padding:10px 12px; border-radius:12px; font-size:.85rem; font-family:inherit; width:100%;
+}
+input[type="file"]::file-selector-button{
+  background:var(--oro); color:var(--hierro); border:none; font-weight:600;
+  padding:9px 16px; border-radius:20px; font-size:.8rem; cursor:pointer;
+  margin-right:12px; transition:background .2s ease;
+}
+input[type="file"]::file-selector-button:hover{ background:var(--oro-suave); }
+
+input[type="radio"], input[type="checkbox"]{
+  accent-color:var(--oro);
+  width:18px; height:18px;
+}

@@ -169,8 +169,7 @@
 </script>
 </head>
 <body>
-  <div id="overlay-carga" class="overlay-carga"><div class="spinner-carga"></div></div>
-  {% if session.get('admin_id') %}
+  <div id="overlay-carga" class="overlay-carga"><div class="spinner-carga"></div><span>Un momento...</span></div>  {% if session.get('admin_id') %}
   <div class="app-shell">
     <button type="button" class="btn-hamburguesa" onclick="toggleSidebar()" aria-label="Abrir menú">
     <button type="button" class="btn-mostrar-sidebar" onclick="toggleSidebarDesktop()" aria-label="Mostrar menú">☰</button> 

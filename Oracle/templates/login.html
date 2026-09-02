@@ -40,9 +40,28 @@
       color:#e6a99b; font-size:.85rem; line-height:1.4;
       border:1px solid var(--linea); padding:8px 10px; border-radius:2px; margin:0 0 8px;
     }
+
+    .overlay-carga{
+      position:fixed; inset:0; z-index:999;
+      background:rgba(21,18,14,.72);
+      backdrop-filter:blur(5px) saturate(120%);
+      -webkit-backdrop-filter:blur(5px) saturate(120%);
+      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
+      opacity:0; pointer-events:none; transition:opacity .18s ease;
+    }
+    .overlay-carga.visible{ opacity:1; pointer-events:all; }
+    .spinner-carga{
+      width:34px; height:34px; border-radius:50%;
+      border:3px solid rgba(201,162,75,.25); border-top-color:var(--oro);
+      animation:girar .7s linear infinite;
+    }
+    .overlay-carga span{ font-size:.82rem; color:var(--concreto); letter-spacing:.02em; }
+    @keyframes girar{ to{ transform:rotate(360deg); } }
   </style>
 </head>
 <body>
+
+  <div id="overlay-carga" class="overlay-carga"><div class="spinner-carga"></div><span>Entrando...</span></div>
   <div class="login-box">
     <h2>Panel admin</h2>
     <p>Café Real — acceso interno.</p>
@@ -72,6 +91,10 @@
         });
       });
     }
+
+    document.querySelector('form').addEventListener('submit', () => {
+      document.getElementById('overlay-carga').classList.add('visible');
+    });
   </script>
 </body>
 </html>
