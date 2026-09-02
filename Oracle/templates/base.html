@@ -136,9 +136,40 @@
   });
   
   document.addEventListener('keydown', (e) => { if(e.key === 'Escape') toggleSidebar(false); });
+  
+  // --- Overlay de carga al navegar entre páginas ---
+  function mostrarCargaPagina(){
+    const overlay = document.getElementById('overlay-carga');
+    if(overlay) overlay.classList.add('visible');
+  }
+
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('a');
+    if(!link) return;
+    const href = link.getAttribute('href');
+    // Ignora anclas de pestañas (#solicitudes, etc.), links vacíos, target=_blank
+    // y cualquier link marcado explícitamente con data-no-carga
+    if(!href || href === '#' || href.startsWith('javascript:')) return;
+    if(link.target === '_blank') return;
+    if(link.dataset.noCarga !== undefined) return;
+    mostrarCargaPagina();
+  });
+
+  document.addEventListener('submit', (e) => {
+    if(e.target.tagName === 'FORM') mostrarCargaPagina();
+  });
+
+  // Si el usuario vuelve con el botón "atrás" del navegador (bfcache),
+  // asegúrate de que el overlay no se quede pegado
+  window.addEventListener('pageshow', () => {
+    const overlay = document.getElementById('overlay-carga');
+    if(overlay) overlay.classList.remove('visible');
+  });
+
 </script>
 </head>
 <body>
+  <div id="overlay-carga" class="overlay-carga"><div class="spinner-carga"></div></div>
   {% if session.get('admin_id') %}
   <div class="app-shell">
     <button type="button" class="btn-hamburguesa" onclick="toggleSidebar()" aria-label="Abrir menú">
