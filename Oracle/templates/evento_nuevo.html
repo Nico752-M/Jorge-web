@@ -7,52 +7,64 @@
   <p class="ayuda">Para eventos organizados por el local (no alquileres externos — esos se confirman desde la bandeja de solicitudes).</p>
 
   <form method="POST" class="form-confirmar" enctype="multipart/form-data">
-    <label for="titulo">Título del evento</label>
-    <input type="text" id="titulo" name="titulo" required placeholder="Ej: Noche de jazz">
 
-    <label for="descripcion">Descripción (opcional, la ve el público)</label>
-    <input type="text" id="descripcion" name="descripcion" placeholder="Breve descripción del evento">
-
-    <label for="fecha_inicio">Fecha</label>
-    <input type="date" id="fecha_inicio" name="fecha_inicio" required>
-
-    <div class="fila-doble">
-      <div>
+    <div class="grupo-ios">
+      <div class="fila-ios fila-ios-vertical">
+        <label for="titulo">Título del evento</label>
+        <input type="text" id="titulo" name="titulo" required placeholder="Ej: Noche de jazz">
+      </div>
+      <div class="fila-ios fila-ios-vertical">
+        <label for="fecha_inicio">Fecha</label>
+        <input type="date" id="fecha_inicio" name="fecha_inicio" required>
+      </div>
+      <div class="fila-ios fila-ios-vertical">
         <label for="hora_inicio">Hora de inicio</label>
         <input type="time" id="hora_inicio" name="hora_inicio" required>
       </div>
-      <div>
+      <div class="fila-ios fila-ios-vertical">
         <label for="hora_fin">Hora de fin</label>
         <input type="time" id="hora_fin" name="hora_fin" required>
       </div>
+      <div class="fila-ios fila-ios-vertical">
+        <label for="aforo_total">Aforo total (cupos disponibles)</label>
+        <input type="number" id="aforo_total" name="aforo_total" min="1" step="1" required placeholder="Ej: 60">
+      </div>
     </div>
 
-    <label for="aforo_total">Aforo total (cupos disponibles)</label>
-    <input type="number" id="aforo_total" name="aforo_total" min="1" step="1" required placeholder="Ej: 60">
-
-    <label for="imagen">Imagen del evento (opcional — si no subes ninguna, se usa la foto del auditorio por defecto)</label>
-    <input type="file" id="imagen" name="imagen" accept="image/png, image/jpeg, image/webp">
-
-    <label>¿Cobra entrada?</label>
-    <div class="opciones-entrada">
-      <label class="opcion-entrada">
-        <input type="radio" name="entrada_estado" value="LIBRE">
-        Entrada libre
-      </label>
-      <label class="opcion-entrada">
-        <input type="radio" name="entrada_estado" value="PAGO" checked>
-        Tiene entrada
-      </label>
+    <div class="grupo-ios">
+      <div class="fila-ios">
+        <label>¿Cobra entrada?</label>
+        <div class="segmentado" style="max-width:200px;">
+          <input type="radio" id="seg-libre" name="entrada_estado" value="LIBRE">
+          <label for="seg-libre">Libre</label>
+          <input type="radio" id="seg-pago" name="entrada_estado" value="PAGO" checked>
+          <label for="seg-pago">Con entrada</label>
+        </div>
+      </div>
+      <div class="fila-ios fila-ios-vertical" id="precio-entrada-wrap">
+        <label for="precio_entrada">Precio de entrada (COP) — déjalo vacío si aún no lo defines</label>
+        <input type="text" inputmode="numeric" id="precio_entrada" name="precio_entrada" placeholder="Ej: 40.000 (opcional)">
+      </div>
+      <div class="fila-ios">
+        <label for="visible_publico">Mostrar en la página pública desde ya</label>
+        <label class="switch-ios" for="visible_publico">
+          <input type="checkbox" id="visible_publico" name="visible_publico" checked>
+          <span class="rail"></span>
+        </label>
+      </div>
     </div>
-    <div id="precio-entrada-wrap" class="precio-entrada-wrap">
-      <label for="precio_entrada">Precio de entrada (COP) — déjalo vacío si aún no lo defines</label>
-      <input type="text" inputmode="numeric" id="precio_entrada" name="precio_entrada" placeholder="Ej: 40.000 (opcional)">
-    </div>
 
-    <label class="opcion-checkbox">
-      <input type="checkbox" id="visible_publico" name="visible_publico" checked>
-      Mostrar este evento en la página pública desde ya
-    </label>
+    <details class="grupo-ios colapsable">
+      <summary class="resumen-colapsable">Opciones avanzadas (descripción e imagen)</summary>
+      <div class="fila-ios fila-ios-vertical">
+        <label for="descripcion">Descripción (opcional, la ve el público)</label>
+        <input type="text" id="descripcion" name="descripcion" placeholder="Breve descripción del evento">
+      </div>
+      <div class="fila-ios fila-ios-vertical">
+        <label for="imagen">Imagen del evento (opcional — si no subes ninguna, se usa la foto del auditorio por defecto)</label>
+        <input type="file" id="imagen" name="imagen" accept="image/png, image/jpeg, image/webp">
+      </div>
+    </details>
 
     <button type="submit" class="btn-solid">Crear evento</button>
   </form>

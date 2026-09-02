@@ -5,53 +5,67 @@
   <h2>Editar evento</h2>
   <p class="ayuda">Ya hay {{ evento[5] - evento[6] }} personas confirmadas — no puedes bajar el aforo total por debajo de ese número.</p>
 
-    <form method="POST" action="{{ url_for('editar_evento', evento_id=evento[0]) }}" class="form-confirmar" enctype="multipart/form-data">  
-    <label>Título</label>
-    <input type="text" name="titulo" value="{{ evento[1] }}" required>
+  <form method="POST" action="{{ url_for('editar_evento', evento_id=evento[0]) }}" class="form-confirmar" enctype="multipart/form-data">
 
-    <label>Descripción</label>
-    <textarea name="descripcion">{{ evento[2] or "" }}</textarea>
-
-    <div class="fila-doble">
-      <div>
+    <div class="grupo-ios">
+      <div class="fila-ios fila-ios-vertical">
+        <label>Título</label>
+        <input type="text" name="titulo" value="{{ evento[1] }}" required>
+      </div>
+      <div class="fila-ios fila-ios-vertical">
+        <label>Descripción</label>
+        <textarea name="descripcion">{{ evento[2] or "" }}</textarea>
+      </div>
+      <div class="fila-ios fila-ios-vertical">
         <label>Inicio</label>
         <input type="datetime-local" name="fecha_inicio" value="{{ evento[3].strftime('%Y-%m-%dT%H:%M') }}" required>
       </div>
-      <div>
+      <div class="fila-ios fila-ios-vertical">
         <label>Fin</label>
         <input type="datetime-local" name="fecha_fin" value="{{ evento[4].strftime('%Y-%m-%dT%H:%M') }}" required>
       </div>
+      <div class="fila-ios fila-ios-vertical">
+        <label>Aforo total</label>
+        <input type="number" name="aforo_total" min="{{ evento[5] - evento[6] }}" value="{{ evento[5] }}" required>
+      </div>
     </div>
 
-    <label>Aforo total</label>
-    <input type="number" name="aforo_total" min="{{ evento[5] - evento[6] }}" value="{{ evento[5] }}" required>
-
-    <label>Imagen del evento (opcional)</label>
-    {% if evento[9] %}
-      <img src="{{ evento[9] }}" alt="Imagen actual del evento" style="max-width:200px; border-radius:8px; margin:6px 0; display:block;">
-      <label class="opcion-checkbox">
-        <input type="checkbox" name="quitar_imagen">
-        Quitar esta imagen y usar la foto por defecto
-      </label>
-    {% endif %}
-    <input type="file" name="imagen" accept="image/png, image/jpeg, image/webp">
-
-    <label>¿Cobra entrada?</label>
-    <div class="opciones-entrada">
-      <label class="opcion-entrada">
-        <input type="radio" name="entrada_estado" value="LIBRE" {% if evento[7] == 'LIBRE' %}checked{% endif %}>
-        Entrada libre
-      </label>
-      <label class="opcion-entrada">
-        <input type="radio" name="entrada_estado" value="PAGO" {% if evento[7] != 'LIBRE' %}checked{% endif %}>
-        Tiene entrada
-      </label>
+    <div class="grupo-ios">
+      {% if evento[9] %}
+      <div class="fila-ios fila-ios-vertical">
+        <label>Imagen actual</label>
+        <img src="{{ evento[9] }}" alt="Imagen actual del evento" style="max-width:160px; border-radius:12px; margin-top:4px;">
+      </div>
+      <div class="fila-ios">
+        <label for="quitar_imagen">Quitar esta imagen y usar la foto por defecto</label>
+        <label class="switch-ios" for="quitar_imagen">
+          <input type="checkbox" id="quitar_imagen" name="quitar_imagen">
+          <span class="rail"></span>
+        </label>
+      </div>
+      {% endif %}
+      <div class="fila-ios fila-ios-vertical">
+        <label>Nueva imagen del evento (opcional)</label>
+        <input type="file" name="imagen" accept="image/png, image/jpeg, image/webp">
+      </div>
     </div>
-    <div id="precio-entrada-wrap" class="precio-entrada-wrap" {% if evento[7] == 'LIBRE' %}hidden{% endif %}>
-      <label for="precio_entrada">Precio de entrada (COP) — déjalo vacío si aún no lo defines</label>
-      <input type="text" inputmode="numeric" id="precio_entrada" name="precio_entrada"
-             placeholder="Ej: 40.000 (opcional)"
-             value="{{ '{:,}'.format(evento[8]).replace(',', '.') if evento[8] else '' }}">
+
+    <div class="grupo-ios">
+      <div class="fila-ios">
+        <label>¿Cobra entrada?</label>
+        <div class="segmentado" style="max-width:220px;">
+          <input type="radio" id="seg-libre" name="entrada_estado" value="LIBRE" {% if evento[7] == 'LIBRE' %}checked{% endif %}>
+          <label for="seg-libre">Libre</label>
+          <input type="radio" id="seg-pago" name="entrada_estado" value="PAGO" {% if evento[7] != 'LIBRE' %}checked{% endif %}>
+          <label for="seg-pago">Con entrada</label>
+        </div>
+      </div>
+      <div class="fila-ios fila-ios-vertical" id="precio-entrada-wrap" {% if evento[7] == 'LIBRE' %}hidden{% endif %}>
+        <label for="precio_entrada">Precio de entrada (COP) — déjalo vacío si aún no lo defines</label>
+        <input type="text" inputmode="numeric" id="precio_entrada" name="precio_entrada"
+               placeholder="Ej: 40.000 (opcional)"
+               value="{{ '{:,}'.format(evento[8]).replace(',', '.') if evento[8] else '' }}">
+      </div>
     </div>
 
     <div class="acciones-form">

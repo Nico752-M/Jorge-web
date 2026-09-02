@@ -3,35 +3,38 @@
 {% block contenido %}
 
 <section class="bloque">
-  <p><a class="btn-mini" href="{{ url_for('dashboard') }}">← Volver al panel</a></p>
+  <a class="volver-btn" href="{{ url_for('dashboard') }}">← Volver al panel</a>
   <h2>Check-in con QR</h2>
   <p class="ayuda">Selecciona el evento, apunta la cámara al código QR del cliente. Si no escanea, usa el campo manual de abajo.</p>
 
-  <div style="max-width:420px; margin:0 auto 16px;">
-    <select id="select-evento" style="width:100%; padding:10px; background:var(--hierro); color:var(--crema); border:1px solid var(--linea); border-radius:2px;">
-      <option value="">-- Elige un evento --</option>
-      {% for ev in eventos %}
-      <option value="{{ ev.id }}" data-confirmadas="{{ ev.confirmadas }}" data-ingresadas="{{ ev.ingresadas }}">
-        {{ ev.titulo }}
-      </option>
-      {% endfor %}
-    </select>
-    <p id="contador-evento" style="text-align:center; font-family:'IBM Plex Mono', monospace; color:var(--oro); margin-top:10px;"></p>
+  <div class="grupo-ios" style="max-width:420px; margin:0 auto 6px;">
+    <div class="fila-ios fila-ios-vertical">
+      <label for="select-evento">Evento</label>
+      <select id="select-evento">
+        <option value="">-- Elige un evento --</option>
+        {% for ev in eventos %}
+        <option value="{{ ev.id }}" data-confirmadas="{{ ev.confirmadas }}" data-ingresadas="{{ ev.ingresadas }}">
+          {{ ev.titulo }}
+        </option>
+        {% endfor %}
+      </select>
+    </div>
   </div>
+  <p id="contador-evento" style="text-align:center; font-family:'IBM Plex Mono', monospace; color:var(--oro); margin:0 0 16px;"></p>
 
-  <div id="qr-reader" style="max-width:420px; margin:0 auto;"></div>
+  <div id="qr-reader" style="max-width:420px; margin:0 auto; border-radius:18px; overflow:hidden; border:1px solid var(--linea);"></div>
 
-  <div id="checkin-detalle" style="display:none; max-width:420px; margin:16px auto 0; padding:14px; border:1px solid var(--linea); border-radius:2px; text-align:center;">
+  <div id="checkin-detalle" class="grupo-ios" style="display:none; max-width:420px; margin:16px auto 0; padding:18px; text-align:center;">
     <p id="checkin-detalle-nombre" style="margin:0 0 10px; font-weight:600;"></p>
-    <p id="checkin-detalle-pagado" style="display:none; margin:0; color:#2e7d4f; font-weight:600;">✔ Ya pagó</p>
+    <p id="checkin-detalle-pagado" style="display:none; margin:0; color:var(--verde); font-weight:600;">✔ Ya pagó</p>
     <button type="button" id="checkin-detalle-btn" class="btn-mini btn-confirmar" onclick="marcarComoPagado()">Marcar como pagado</button>
   </div>
 
   <div id="checkin-banner" style="display:none; position:fixed; top:0; left:0; right:0; padding:22px; text-align:center; font-size:1.3rem; font-weight:700; z-index:999;"></div>
 
-  <details style="margin-top:24px; max-width:420px; margin-left:auto; margin-right:auto;">
-    <summary>Ingresar código manualmente</summary>
-    <div style="display:flex; gap:8px; margin-top:10px;">
+  <details class="grupo-ios colapsable" style="max-width:420px; margin:24px auto 0;">
+    <summary class="resumen-colapsable">Ingresar código manualmente</summary>
+    <div class="fila-ios" style="gap:8px;">
       <input type="text" id="input-manual" placeholder="Pega o escribe el código" style="flex:1;">
       <button type="button" class="btn-mini btn-confirmar" onclick="procesarCodigo(document.getElementById('input-manual').value.trim())">Verificar</button>
     </div>
@@ -59,7 +62,7 @@ document.getElementById('select-evento').addEventListener('change', function(){
 
 function mostrarBanner(ok, mensaje) {
   const banner = document.getElementById('checkin-banner');
-  banner.style.background = ok ? '#2e7d4f' : '#a13d33';
+  banner.style.background = ok ? '#4c8c5a' : '#a53c3c';
   banner.style.color = '#fff';
   banner.textContent = (ok ? '✅ ' : '⚠️ ') + mensaje;
   banner.style.display = 'block';
@@ -117,8 +120,6 @@ function actualizarBotonPago() {
   const label = document.getElementById('checkin-detalle-pagado');
 
   if (RESERVA_ACTUAL.pagado) {
-    // Ya pagó: no se ofrece forma de revertirlo desde el check-in.
-    // Si hubo un error, se corrige desde el panel de admin (dashboard).
     btn.style.display = 'none';
     label.style.display = 'block';
   } else {

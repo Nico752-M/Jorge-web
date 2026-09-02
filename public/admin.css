@@ -383,3 +383,62 @@ input[type="radio"], input[type="checkbox"]{
   accent-color:var(--oro);
   width:18px; height:18px;
 }
+
+/* ============ Grupo de filas estilo iOS (Ajustes) ============ */
+.grupo-ios{
+  background:var(--panel); border:1px solid var(--linea); border-radius:16px;
+  overflow:hidden; margin-bottom:20px;
+}
+.fila-ios{
+  display:flex; align-items:center; justify-content:space-between; gap:14px;
+  padding:14px 16px; border-bottom:1px solid var(--linea);
+}
+.fila-ios:last-child{ border-bottom:none; }
+.fila-ios label{ font-size:.88rem; color:var(--crema); flex-shrink:0; }
+.fila-ios .fila-ios-ayuda{ font-size:.76rem; color:var(--concreto); margin-top:2px; }
+.fila-ios input, .fila-ios select{
+  border:none; background:none; text-align:right; padding:0; width:auto; max-width:60%;
+}
+.fila-ios input:focus, .fila-ios select:focus{ outline:none; }
+.fila-ios-vertical{ flex-direction:column; align-items:stretch; gap:6px; }
+.fila-ios-vertical input, .fila-ios-vertical textarea, .fila-ios-vertical select{
+  text-align:left; max-width:100%; background:var(--hierro); border:1px solid var(--linea);
+  border-radius:10px; padding:10px 12px;
+}
+
+/* ============ Switch / toggle estilo iOS ============ */
+.switch-ios{ position:relative; display:inline-block; width:46px; height:27px; flex-shrink:0; }
+.switch-ios input{ opacity:0; width:0; height:0; }
+.switch-ios .rail{
+  position:absolute; inset:0; background:var(--linea); border-radius:20px; cursor:pointer;
+  transition:background .2s ease;
+}
+.switch-ios .rail::before{
+  content:''; position:absolute; width:23px; height:23px; left:2px; top:2px;
+  background:#fff; border-radius:50%; transition:transform .2s ease;
+  box-shadow:0 1px 3px rgba(0,0,0,.4);
+}
+.switch-ios input:checked + .rail{ background:var(--oro); }
+.switch-ios input:checked + .rail::before{ transform:translateX(19px); }
+
+/* ============ Control segmentado estilo iOS ============ */
+.segmentado{
+  display:flex; background:var(--hierro); border:1px solid var(--linea);
+  border-radius:12px; padding:3px; gap:3px;
+}
+.segmentado label{
+  flex:1; text-align:center; padding:9px 10px; border-radius:9px; font-size:.85rem;
+  cursor:pointer; color:var(--concreto); transition:background .2s ease, color .2s ease;
+}
+.segmentado input{ display:none; }
+.segmentado input:checked + label{ background:var(--oro); color:var(--hierro); font-weight:600; }
+
+/* ============ Sección colapsable (además del <details> que ya usa Historial) ============ */
+.grupo-ios details.colapsable{ padding:0; }
+summary.resumen-colapsable{
+  padding:14px 16px; cursor:pointer; font-size:.88rem; color:var(--oro-suave);
+  list-style:none; display:flex; align-items:center; gap:8px;
+}
+summary.resumen-colapsable::-webkit-details-marker{ display:none; }
+summary.resumen-colapsable::before{ content:'▸'; font-size:.7rem; transition:transform .15s ease; }
+details[open] > summary.resumen-colapsable::before{ transform:rotate(90deg); }
