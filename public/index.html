@@ -1491,11 +1491,23 @@ function initials(name){
   return name.trim().slice(0, 2).toUpperCase();
 }
 
+function slugify(nombre){
+  return nombre.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9]+/g,'-')
+    .replace(/^-+|-+$/g,'');
+}
+function imgPathFor(nombre){
+  return `images/menu/${slugify(nombre)}.webp`;
+}
+function onImgErr(img, nombre){
+  img.outerHTML = `<span class="mono">${initials(nombre)}</span>`;
+}
 function cardHTML(it){
   return `
     <div class="menu-card">
       <div class="photo">
-        ${it.img ? `<img src="${it.img}" alt="${it.n}">` : `<span class="mono">${initials(it.n)}</span>`}
+        <img src="${imgPathFor(it.n)}" alt="${it.n}" onerror="onImgErr(this, '${it.n.replace(/'/g, "\\'")}')">
         ${it.tag ? `<span class="ribbon">${it.tag}</span>` : ''}
         ${it.p ? `<span class="price-tag">$${it.p}</span>` : ''}
       </div>
@@ -1556,7 +1568,7 @@ function buildDestacados(){
   row.innerHTML = favoritos.map(it => `
     <div class="dest-card">
       <div class="ph">
-        ${it.img ? `<img src="${it.img}" alt="${it.n}">` : `<span class="mono">${initials(it.n)}</span>`}
+        <img src="${imgPathFor(it.n)}" alt="${it.n}" onerror="onImgErr(this, '${it.n.replace(/'/g, "\\'")}')">
         <span class="ribbon">Favorito</span>
       </div>
       <div class="info">
@@ -2077,4 +2089,3 @@ document.querySelectorAll('a.btn-mini, a.btn-confirmar, a.btn-rechazar').forEach
 </script>
 </body>
 </html>
-
