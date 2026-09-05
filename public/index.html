@@ -1185,7 +1185,7 @@ footer{padding:60px 8vw 40px; border-top:1px solid var(--linea); color:var(--con
 
 <script>
 
-const LOGO_SRC = "images/logo-cafe-real.png";
+const LOGO_SRC = "images/LOGO_SRC.png";
 document.querySelectorAll('.logo-real').forEach(el => el.src = LOGO_SRC);
 
 const PHOTOS = {
@@ -1708,6 +1708,17 @@ function enterView(view){
   target.classList.remove('hidden');
   window.scrollTo(0,0);
   requestAnimationFrame(()=>initReveal(target));
+
+  // La mascota Coffe solo aparece en "Explorar" (site), no en el menú ni en reservas
+  const mascota = document.getElementById('coffe-mascota');
+  const teaser = document.getElementById('bot-teaser');
+  const ventana = document.getElementById('bot-window');
+  const mostrarMascota = (view === 'site');
+  if(mascota) mascota.classList.toggle('hidden', !mostrarMascota);
+  if(!mostrarMascota){
+    if(teaser) teaser.classList.remove('show');
+    if(ventana) ventana.classList.remove('open');
+  }
 }
 function goToReserva(motivo){
   enterView('reserva');
