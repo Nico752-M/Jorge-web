@@ -711,7 +711,14 @@ footer{padding:60px 8vw 40px; border-top:1px solid var(--linea); color:var(--con
 .menu-row:hover .dot{transform:scale(1.5); opacity:1;}
 .menu-row .name{font-family:'Fraunces',serif; font-weight:500; font-size:.96rem; flex:none;}
 .menu-row .leader{flex:1; min-width:12px; border-bottom:1px dotted rgba(211,162,78,.35); position:relative; top:-4px; margin:0 2px;}
-.menu-row .price{font-family:'IBM Plex Mono',monospace; color:var(--oro-suave); font-size:.86rem; flex:none;}
+.menu-row .thumb{
+  width:38px; height:38px; border-radius:8px; overflow:hidden; flex:none;
+  background:radial-gradient(circle at 30% 25%, rgba(211,162,78,.18), transparent 65%), var(--hierro-2);
+  display:flex; align-items:center; justify-content:center;
+}
+.menu-row .thumb img{width:100%; height:100%; object-fit:cover; display:block;}
+.menu-row .thumb .mono{font-family:'Fraunces',serif; font-weight:600; font-size:.68rem; color:var(--oro-suave);}
+.menu-row:hover .thumb{transform:scale(1.06);}  
 
 @media (max-width:900px){.menu-cards-grid{grid-template-columns:1fr 1fr;}}
 @media (max-width:640px){.menu-cards-grid{grid-template-columns:1fr;} .menu-rows{grid-template-columns:1fr;}}
@@ -1521,7 +1528,7 @@ function cardHTML(it){
 function rowHTML(it){
   return `
     <div class="menu-row">
-      <span class="dot"></span>
+      <div class="thumb"><img src="${imgPathFor(it.n)}" alt="${it.n}" onerror="onImgErr(this, '${it.n.replace(/'/g, "\\'")}')"></div>
       <span class="name">${it.n}</span>
       ${it.p ? `<span class="leader"></span><span class="price">$${it.p}</span>` : ''}
     </div>`;
