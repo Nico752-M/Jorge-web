@@ -1554,7 +1554,7 @@ function buildBody(){
       content = cat.shelves.map(s => `
         <div class="menu-shelf">
           ${s.title ? `<h4>${s.title}</h4>` : ''}
-          <div class="menu-rows">${s.items.map(rowHTML).join('')}</div>
+          <div class="menu-cards-grid">${s.items.map(cardHTML).join('')}</div>
         </div>`).join('');
     }
     return `<div class="menu-cat ${i===0?'active':''}" id="cat-${k}">
