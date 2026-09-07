@@ -164,6 +164,16 @@ def crear_solicitud_alquiler():
     if not nombre or not telefono:
         return jsonify({"ok": False, "error": "Faltan nombre o teléfono."}), 400
 
+    if hora_inicio and hora_fin:
+        # Regla general (entre semana): 9:00 a 23:00. El caso especial de domingo
+        # se deja pasar aquí y confía en la validación del formulario público;
+        # el admin de todas formas revisa cada solicitud antes de confirmarla.
+        if not ("09:00" <= hora_inicio <= "23:00" and "09:00" <= hora_fin <= "23:00"):
+            return jsonify({
+                "ok": False,
+                "error": "El auditorio solo se puede reservar entre las 9:00 a.m. y las 11:00 p.m."
+            }), 400
+
     conn = get_connection()
     cur = conn.cursor()
     cur.execute(
@@ -689,17 +699,36 @@ def eventos_publicos():
 def eventos_ocupados():
     conn = get_connection()
     cur = conn.cursor()
+
+    # Eventos ya confirmados por el admin.
     cur.execute(
         """SELECT FECHA_INICIO, FECHA_FIN FROM EVENTOS
            WHERE ESTADO = 'ACTIVO' AND FECHA_FIN >= SYSTIMESTAMP"""
     )
-    filas = cur.fetchall()
+    ocupados = [
+        {"inicio": f[0].isoformat(), "fin": f[1].isoformat() if f[1] else None}
+        for f in cur.fetchall()
+    ]
+
+    # Solicitudes que aún no han sido revisadas por el admin — mientras están
+    # pendientes también deben bloquear el horario, si no dos personas pueden
+    # pedir la misma hora sin que ninguna se entere.
+    cur.execute(
+        """SELECT FECHA_DESEADA, HORA_INICIO, HORA_FIN FROM SOLICITUDES_ALQUILER
+           WHERE ESTADO IN ('PENDIENTE', 'CONTACTADO')
+           AND FECHA_DESEADA IS NOT NULL
+           AND HORA_INICIO IS NOT NULL"""
+    )
+    for fecha, hora_inicio, hora_fin in cur.fetchall():
+        fecha_str = fecha.strftime("%Y-%m-%d")
+        ocupados.append({
+            "inicio": f"{fecha_str}T{hora_inicio}:00",
+            "fin": f"{fecha_str}T{hora_fin}:00" if hora_fin else f"{fecha_str}T{hora_inicio}:00",
+        })
+
     cur.close()
     conn.close()
-    return jsonify([
-        {"inicio": f[0].isoformat(), "fin": f[1].isoformat() if f[1] else None}
-        for f in filas
-    ])
+    return jsonify(ocupados)
 
 
 @app.route("/api/reservas-cupo", methods=["POST"])
@@ -778,9 +807,9 @@ def crear_reserva_cupo():
         "mensaje": "Por ahora no quedan cupos suficientes. Guardamos tu solicitud — estamos viendo si se puede ampliar el aforo y te contactaremos."
     })
 
-# ========================================================
+# =========================================================
 # TICKET PERMANENTE DEL CLIENTE (sin login — link que se guarda)
-# ========================================================
+# =========================================================
 @app.route("/mi-reserva/<codigo>")
 def mi_reserva(codigo):
     conn = get_connection()

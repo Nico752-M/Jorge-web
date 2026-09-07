@@ -1110,13 +1110,14 @@ footer{padding:60px 8vw 40px; border-top:1px solid var(--linea); color:var(--con
       <div class="campo-row">
         <div class="campo">
           <label for="r-hora-inicio">Hora de inicio</label>
-          <input type="time" id="r-hora-inicio">
+          <input type="time" id="r-hora-inicio" min="09:00" max="23:00">
         </div>
         <div class="campo">
           <label for="r-hora-fin">Hora de fin</label>
-          <input type="time" id="r-hora-fin">
+          <input type="time" id="r-hora-fin" min="09:00" max="23:00">
         </div>
       </div>
+      <p class="ayuda-horario">El auditorio se puede reservar entre las 9:00 a.m. y las 11:00 p.m.</p>
       <div class="campo">
         <label for="r-mensaje">Cuéntanos más (opcional)</label>
         <textarea id="r-mensaje" placeholder="Hora aproximada, detalles del evento, etc."></textarea>
@@ -1734,12 +1735,13 @@ const WHATSAPP_NUMERO = "573114311472"; // Ejemplo — reemplazar por el número
 const BUFFER_RESERVA_HORAS = 2; // horas de colchón obligatorio antes/después de cada evento
 const BUFFER_RESERVA_MS = BUFFER_RESERVA_HORAS * 60 * 60 * 1000;
 
-// Horario en el que se puede reservar el auditorio: 1h después de abrir, 1h antes de cerrar.
+// Horario en el que se puede reservar el auditorio: 1h después de abrir, 1h después de cerrar
+// (el café cierra pero el evento puede seguir un rato más).
 function horarioAuditorio(fechaStr){
   const dia = new Date(`${fechaStr}T00:00`).getDay(); // 0 = domingo
   return dia === 0
-    ? { apertura: 10, cierre: 17 }  // domingo: café 9-18 → auditorio 10-17
-    : { apertura: 9,  cierre: 21 }; // resto: café 8-22 → auditorio 9-21
+    ? { apertura: 10, cierre: 19 }  // domingo: café 9-18 → auditorio 10-19
+    : { apertura: 9,  cierre: 23 }; // resto: café 8-22 → auditorio 9-23
 }
 
 // Calcula los huecos libres del día (en minutos desde medianoche),
@@ -1800,6 +1802,17 @@ async function enviarReserva(e){
   if(esAlquilerCompleto && fecha && horaInicio && horaFin){
     const inicioDeseado = new Date(`${fecha}T${horaInicio}`);
     const finDeseado = new Date(`${fecha}T${horaFin}`);
+
+    const { apertura, cierre } = horarioAuditorio(fecha);
+    const [hInicio, mInicio] = horaInicio.split(':').map(Number);
+    const [hFin, mFin] = horaFin.split(':').map(Number);
+    const minInicio = hInicio * 60 + mInicio;
+    const minFin = hFin * 60 + mFin;
+
+    if(minInicio < apertura * 60 || minFin > cierre * 60){
+      alert(`El auditorio ese día solo se puede reservar de ${formatearHoraDesdeMinutos(apertura * 60)} a ${formatearHoraDesdeMinutos(cierre * 60)}. Ajusta la hora y vuelve a enviar.`);
+      return false;
+    }
 
     try{
       const res = await fetch('/api/eventos-ocupados');
