@@ -1699,20 +1699,24 @@ async function enviarReserva(e){
     }
   }
 
-  fetch('/api/solicitudes-alquiler', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      nombre: `${nombre} ${apellido}`.trim(),
-      telefono: telefono,
-      fecha_deseada: fecha || null,
-      hora_inicio: horaInicio || null,
-      hora_fin: horaFin || null,
-      rango_hora_aprox: mensaje || null,
-      tipo_evento: motivo,
-      num_personas: personas || null
-    })
-  }).catch(err => console.error('No se pudo guardar la solicitud en el panel:', err));
+  const esReservaDeMesa = motivo === 'Mesa / terraza';
+
+  if(!esReservaDeMesa){
+    fetch('/api/solicitudes-alquiler', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nombre: `${nombre} ${apellido}`.trim(),
+        telefono: telefono,
+        fecha_deseada: fecha || null,
+        hora_inicio: horaInicio || null,
+        hora_fin: horaFin || null,
+        rango_hora_aprox: mensaje || null,
+        tipo_evento: motivo,
+        num_personas: personas || null
+      })
+    }).catch(err => console.error('No se pudo guardar la solicitud en el panel:', err));
+  }
 
   let texto = `Hola Café Real, quiero hacer una reserva.\n`;
   texto += `Nombre: ${nombre} ${apellido}\n`;
