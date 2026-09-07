@@ -546,7 +546,8 @@ footer{padding:60px 8vw 40px; border-top:1px solid var(--linea); color:var(--con
 .footer-links a:hover{color:var(--oro-suave);}
 .footer-brand .brand-row{display:flex; align-items:center; gap:10px; font-family:'Fraunces',serif; font-weight:600; font-size:1.05rem; margin-bottom:14px;}
 .footer-tagline{color:var(--concreto); font-size:.85rem; line-height:1.65; max-width:30ch;}
-.footer-bottom{display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; padding-top:24px; border-top:1px solid var(--linea);}
+.nova-tag{opacity:.4; letter-spacing:.15em; transition:opacity .3s ease;}
+.nova-tag:hover{opacity:1;}
 @media (max-width:860px){.footer-grid{grid-template-columns:1fr 1fr; gap:32px;}}
 @media (max-width:560px){.footer-grid{grid-template-columns:1fr; gap:28px;}}
 
@@ -578,61 +579,152 @@ footer{padding:60px 8vw 40px; border-top:1px solid var(--linea); color:var(--con
    MENU
    ========================================================= */
 #menu-view{background:var(--hierro);}
-.menu-hero{
-  padding:70px 8vw 30px; text-align:center; border-bottom:1px solid var(--linea);
-  background:radial-gradient(ellipse at 50% 0%, rgba(211,162,78,.1), transparent 60%);
-}
-.menu-hero h2{font-size:clamp(2rem,4vw,3rem); font-weight:600;}
-.menu-hero p{margin-top:10px; color:var(--oro-suave); font-family:'Fraunces',serif; font-style:italic; letter-spacing:.02em;}
 
-.menu-tabs{
-  position:sticky; top:73px; z-index:90; display:flex; gap:6px; overflow-x:auto; padding:20px 8vw; background:var(--hierro); border-bottom:1px solid var(--linea);
-  scrollbar-width:none;
+/* ---------- hero ---------- */
+.menu-hero{
+  position:relative; padding:90px 8vw 40px; text-align:center; overflow:hidden;
+  background:radial-gradient(ellipse at 50% 0%, rgba(211,162,78,.14), transparent 62%);
+  border-bottom:1px solid var(--linea);
 }
+.menu-hero::before{
+  content:''; position:absolute; inset:0; opacity:.4; pointer-events:none;
+  background-image:repeating-linear-gradient(115deg, rgba(211,162,78,.045) 0 2px, transparent 2px 34px);
+}
+.menu-hero > *{position:relative;}
+.menu-hero .steam{width:60px; height:64px; margin:0 auto 6px;}
+.menu-hero .steam path{
+  fill:none; stroke:var(--oro); stroke-width:2.4; stroke-linecap:round; opacity:.75;
+  stroke-dasharray:40; stroke-dashoffset:0;
+  animation:steamRise 3.2s ease-in-out infinite;
+}
+.menu-hero .steam path:nth-child(2){animation-delay:.5s; opacity:.5;}
+.menu-hero .steam path:nth-child(3){animation-delay:1s; opacity:.35;}
+@keyframes steamRise{
+  0%{stroke-dashoffset:40; opacity:0;}
+  25%{opacity:.8;}
+  70%{opacity:.3;}
+  100%{stroke-dashoffset:0; opacity:0; transform:translateY(-6px);}
+}
+.menu-hero h2{font-size:clamp(2.2rem,4.4vw,3.4rem); font-weight:600;}
+.menu-hero p{margin-top:10px; color:var(--oro-suave); font-family:'Fraunces',serif; font-style:italic; font-size:1.05rem;}
+
+/* ---------- destacados (vitrina horizontal) ---------- */
+.destacados{padding:44px 8vw 10px;}
+.destacados.hidden{display:none;}
+.destacados .head{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:22px; flex-wrap:wrap; gap:8px;}
+.destacados .head h3{font-size:1.3rem; font-weight:600; color:var(--oro-suave);}
+.destacados .head span{font-size:.8rem; color:var(--concreto);}
+.destacados-row{
+  display:flex; gap:16px; overflow-x:auto; padding-bottom:10px; scroll-snap-type:x proximity;
+  scrollbar-width:thin; scrollbar-color:var(--linea) transparent;
+}
+.dest-card{
+  flex:none; width:190px; scroll-snap-align:start; border-radius:14px; overflow:hidden;
+  background:linear-gradient(160deg,var(--hierro-2),#171310); border:1px solid var(--linea);
+  transition:transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease, border-color .4s ease;
+  position:relative;
+}
+.dest-card:hover{transform:translateY(-5px); box-shadow:0 16px 30px rgba(0,0,0,.4); border-color:var(--oro);}
+.dest-card .ph{aspect-ratio:1/1; position:relative; overflow:hidden; background:radial-gradient(circle at 30% 25%, rgba(211,162,78,.18), transparent 65%), linear-gradient(160deg,#221b13,#15110c);}
+.dest-card .ph::before{content:''; position:absolute; inset:0; opacity:.5; background-image:repeating-linear-gradient(115deg, rgba(211,162,78,.05) 0 2px, transparent 2px 30px);}
+.dest-card .ph img{width:100%; height:100%; object-fit:cover; position:relative; z-index:1; transition:transform .6s ease;}
+.dest-card:hover .ph img{transform:scale(1.08);}
+.dest-card .ph .mono{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-size:1.6rem; font-weight:600; color:var(--oro-suave); opacity:.55; z-index:1;}
+.dest-card .ribbon{
+  position:absolute; top:10px; left:10px; z-index:2; background:var(--oro); color:var(--hierro);
+  font-size:.62rem; letter-spacing:.05em; text-transform:uppercase; font-weight:600; padding:4px 9px; border-radius:10px;
+}
+.dest-card .info{padding:12px 13px 14px;}
+.dest-card .info b{display:block; font-size:.9rem; font-weight:600; margin-bottom:3px; font-family:'Fraunces',serif;}
+.dest-card .info .price{font-family:'IBM Plex Mono',monospace; color:var(--oro-suave); font-size:.8rem;}
+
+/* ---------- category tabs ---------- */
+.menu-tabs-wrap{position:sticky; top:73px; z-index:90; background:var(--hierro); border-bottom:1px solid var(--linea); margin-top:20px;}
+.menu-tabs{display:flex; gap:8px; overflow-x:auto; padding:18px 8vw; scrollbar-width:none;}
 .menu-tabs::-webkit-scrollbar{display:none;}
 .menu-tabs button{
-  white-space:nowrap; padding:9px 18px; font-size:.76rem; letter-spacing:.06em; text-transform:uppercase; border:1px solid var(--linea); border-radius:20px; color:var(--concreto);
-  transition:all .2s;
+  display:inline-flex; align-items:center; white-space:nowrap; padding:9px 18px 9px 9px; font-size:.76rem; letter-spacing:.05em;
+  border:1px solid var(--linea); border-radius:24px; color:var(--concreto); background:var(--hierro-2);
+  transition:background .25s ease, color .25s ease, border-color .25s ease, transform .2s ease;
 }
-.menu-tabs button.active, .menu-tabs button:hover{background:var(--oro); color:var(--hierro); border-color:var(--oro);}
-
-.menu-body{padding:56px 8vw 100px; max-width:1100px; margin:0 auto;}
-.menu-cat{display:none;}
-.menu-cat.active{display:block; animation:riseIn .5s ease;}
-.menu-cat h3.cat-title{font-size:1.5rem; font-weight:600; margin-bottom:6px; color:var(--oro-suave);}
-.menu-cat .cat-note{color:var(--concreto); font-size:.85rem; margin-bottom:30px;}
-.subgroup{margin-bottom:38px;}
-.subgroup h4{font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:var(--oro); margin-bottom:16px; border-bottom:1px solid var(--linea); padding-bottom:10px;}
-.menu-list{display:grid; grid-template-columns:1fr 1fr; gap:0 40px;}
-.menu-item{
-  display:flex; justify-content:space-between; align-items:center; gap:10px; padding:13px 0; border-bottom:1px dotted var(--linea);
-  transition:padding-left .3s ease, border-color .3s ease;
-}
-.menu-item:hover{padding-left:6px; border-color:var(--oro);}
-.menu-item .left{display:flex; align-items:center; gap:14px; min-width:0;}
-.menu-item .icon{
-  flex:none; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center;
-  background:radial-gradient(circle at 35% 30%, var(--oro-suave), var(--oro) 70%); box-shadow:0 0 0 1px var(--linea);
-  transition:transform .3s cubic-bezier(.3,1.4,.5,1);
-  font-family:'Fraunces', serif; font-weight:600; font-size:.92rem; color:var(--hierro);
-}
-.menu-item:hover .icon{transform:scale(1.15) rotate(-6deg);}
-.cat-title-row{display:flex; align-items:center; gap:12px; margin-bottom:6px;}
-.cat-title-row .icon-lg{
-  width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center;
-  background:radial-gradient(circle at 35% 30%, var(--oro-suave), var(--oro) 70%); box-shadow:0 0 0 1px var(--linea);
-  font-family:'Fraunces', serif; font-weight:600; font-size:.95rem; color:var(--hierro);
-}
+.menu-tabs button:hover{border-color:var(--oro); color:var(--oro-suave); transform:translateY(-1px);}
+.menu-tabs button.active{background:var(--oro); color:var(--hierro); border-color:var(--oro); transform:scale(1.04);}
 .menu-tabs button .tab-ic{
-  margin-right:6px; display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%;
-  background:rgba(211,162,78,.18); font-family:'Fraunces', serif; font-weight:600; font-size:.62rem; color:var(--oro-suave);
-  vertical-align:middle;
+  margin-right:8px; display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, var(--oro-suave), var(--oro) 70%);
+  font-family:'Fraunces', serif; font-weight:600; font-size:.62rem; color:var(--hierro); flex:none;
 }
-.menu-tabs button.active .tab-ic{background:rgba(21,18,14,.25); color:var(--hierro);}
-.menu-item .name{font-size:.98rem;}
-.menu-item .desc{display:block; color:var(--concreto); font-size:.78rem; margin-top:3px;}
-.menu-item .price{font-family:'IBM Plex Mono',monospace; color:var(--oro-suave); font-size:.92rem; white-space:nowrap;}
-@media (max-width:760px){.menu-list{grid-template-columns:1fr;}}
+.menu-tabs button.active .tab-ic{background:rgba(21,18,14,.22); color:var(--hierro-2);}
+
+/* ---------- body ---------- */
+.menu-body{padding:50px 8vw 110px; max-width:1120px; margin:0 auto;}
+.menu-cat{display:none;}
+.menu-cat.active{display:block;}
+.menu-cat-head{max-width:520px; margin-bottom:34px;}
+.menu-cat-head h3{font-size:1.55rem; font-weight:600; color:var(--oro-suave); margin-bottom:6px;}
+.menu-cat-head p{color:var(--concreto); font-size:.9rem; line-height:1.55;}
+
+/* ---- layout: cards (comida, con foto) ---- */
+.menu-cards-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:22px;}
+.menu-card{
+  border-radius:14px; overflow:hidden; border:1px solid var(--linea);
+  background:linear-gradient(160deg,var(--hierro-2),#171310);
+  opacity:0; transform:translateY(16px) scale(.97);
+  transition:transform .5s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease, border-color .4s ease, opacity .5s ease;
+}
+.menu-cat.active .menu-card{opacity:1; transform:translateY(0) scale(1);}
+.menu-card:hover{transform:translateY(-6px) scale(1); box-shadow:0 18px 34px rgba(0,0,0,.45); border-color:var(--oro);}
+.menu-card .photo{aspect-ratio:4/3; position:relative; overflow:hidden; background:radial-gradient(circle at 30% 22%, rgba(211,162,78,.16), transparent 62%), linear-gradient(160deg,#221b13,#15110c);}
+.menu-card .photo::before{content:''; position:absolute; inset:0; opacity:.5; pointer-events:none; background-image:repeating-linear-gradient(115deg, rgba(211,162,78,.05) 0 2px, transparent 2px 30px);}
+.menu-card .photo img{width:100%; height:100%; object-fit:cover; position:relative; z-index:1; transition:transform .6s ease;}
+.menu-card:hover .photo img{transform:scale(1.08) rotate(.6deg);}
+.menu-card .photo .mono{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-size:2rem; font-weight:600; color:var(--oro-suave); opacity:.5; z-index:1;}
+.menu-card .price-tag{
+  position:absolute; left:13px; bottom:13px; z-index:2; background:rgba(21,18,14,.85); backdrop-filter:blur(3px);
+  border:1px solid var(--linea); color:var(--oro-suave); font-family:'IBM Plex Mono',monospace; font-size:.8rem;
+  padding:6px 12px; border-radius:20px;
+}
+.menu-card .ribbon{
+  position:absolute; top:12px; left:12px; z-index:2; background:var(--oro); color:var(--hierro);
+  font-size:.62rem; letter-spacing:.05em; text-transform:uppercase; font-weight:600; padding:4px 9px; border-radius:10px;
+}
+.menu-card .info{padding:16px 18px 18px;}
+.menu-card .info h4{font-size:1.04rem; font-weight:600; margin-bottom:6px;}
+.menu-card .info p{font-size:.82rem; color:var(--concreto); line-height:1.5;}
+
+/* ---- layout: list warm (bebidas, sin foto) ---- */
+.menu-shelf{margin-bottom:30px;}
+.menu-shelf:last-child{margin-bottom:0;}
+.menu-shelf h4{font-size:.76rem; letter-spacing:.1em; text-transform:uppercase; color:var(--oro); margin-bottom:12px;}
+.menu-rows{display:grid; grid-template-columns:1fr 1fr; gap:8px 20px;}
+.menu-row{
+  display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:12px;
+  background:rgba(255,255,255,.018); border:1px solid transparent;
+  opacity:0; transform:translateX(-8px);
+  transition:background .3s ease, border-color .3s ease, transform .35s cubic-bezier(.2,.8,.2,1), opacity .35s ease;
+}
+.menu-cat.active .menu-row{opacity:1; transform:translateX(0);}
+.menu-row:hover{background:rgba(211,162,78,.08); border-color:var(--linea); transform:translateX(4px);}
+.menu-row .dot{
+  flex:none; width:8px; height:8px; border-radius:50%; background:var(--oro); opacity:.55;
+  transition:transform .3s ease, opacity .3s ease;
+}
+.menu-row:hover .dot{transform:scale(1.5); opacity:1;}
+.menu-row .name{font-family:'Fraunces',serif; font-weight:500; font-size:.96rem; flex:none;}
+.menu-row .leader{flex:1; min-width:12px; border-bottom:1px dotted rgba(211,162,78,.35); position:relative; top:-4px; margin:0 2px;}
+.menu-row .thumb{
+  width:64px; height:64px; border-radius:10px; overflow:hidden; flex:none;
+  border:1px solid var(--linea);
+  background:radial-gradient(circle at 30% 25%, rgba(211,162,78,.18), transparent 65%), var(--hierro-2);
+  display:flex; align-items:center; justify-content:center;
+}
+.menu-row .thumb img{width:100%; height:100%; object-fit:cover; display:block;}
+.menu-row .thumb .mono{font-family:'Fraunces',serif; font-weight:600; font-size:1rem; color:var(--oro-suave);}
+.menu-row{padding:14px 16px;}
+.menu-row:hover .thumb{transform:scale(1.05);}  
+
+@media (max-width:900px){.menu-cards-grid{grid-template-columns:1fr 1fr;}}
+@media (max-width:640px){.menu-cards-grid{grid-template-columns:1fr;} .menu-rows{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -918,7 +1010,7 @@ footer{padding:60px 8vw 40px; border-top:1px solid var(--linea); color:var(--con
     </div>
     <div class="footer-bottom">
       <span>© 2026 Café Real Centro de Negocios</span>
-      <span>Café · Bar · Auditorio · Tertulias</span>
+      <span>Café · Bar · Auditorio · Tertulias · <span class="nova-tag">NOVA</span></span>
     </div>
   </footer>
 </div>
@@ -936,12 +1028,27 @@ footer{padding:60px 8vw 40px; border-top:1px solid var(--linea); color:var(--con
   </div>
 
   <div class="menu-hero">
-    <img class="logo-real logo-menu" alt="Café Real">
+    <svg class="steam" viewBox="0 0 60 64" aria-hidden="true">
+      <path d="M22 60 C 14 46, 30 40, 22 26 C 16 16, 26 10, 22 2" transform="translate(-4,0)"/>
+      <path d="M30 60 C 22 46, 38 40, 30 26 C 24 16, 34 10, 30 2"/>
+      <path d="M38 60 C 30 46, 46 40, 38 26 C 32 16, 42 10, 38 2" transform="translate(4,0)"/>
+    </svg>
+    <span class="eyebrow">Carta completa</span>
     <h2>Café &amp; Experiencia</h2>
-    <p>La carta completa de Café Real</p>
+    <p>Cada plato y cada bebida, con el mismo cuidado del resto de la casa</p>
   </div>
 
-  <div class="menu-tabs" id="menu-tabs"><!-- generado por JS --></div>
+  <div class="destacados" id="destacados">
+    <div class="head">
+      <h3>Destacados de la casa</h3>
+      <span>Lo que más piden nuestros clientes</span>
+    </div>
+    <div class="destacados-row" id="destacados-row"><!-- generado por JS --></div>
+  </div>
+
+  <div class="menu-tabs-wrap">
+    <div class="menu-tabs" id="menu-tabs"><!-- generado por JS --></div>
+  </div>
   <div class="menu-body" id="menu-body"><!-- generado por JS --></div>
 </div>
 
@@ -984,7 +1091,9 @@ footer{padding:60px 8vw 40px; border-top:1px solid var(--linea); color:var(--con
       <div class="campo">
         <label for="r-motivo">¿Para qué quieres reservar?</label>
         <select id="r-motivo">
+          <option value="Mesa / terraza">Mesa / terraza</option>
           <option value="Auditorio (conferencia, capacitación o evento)" data-alquiler="1" selected>Auditorio (conferencia, capacitación o evento)</option>
+          <option value="Segundo piso (cumpleaños, ver partido, etc.)">Segundo piso (cumpleaños, ver partido, etc.)</option>
         </select>
       </div>
 
@@ -1258,10 +1367,11 @@ actualizarHorario();
    DATA — MENU (extraído de la carta física)
    ========================================================= */
 const MENU = {
-  experiencia: {
-    label: "Experiencia",
+  acompanantes: {
+    label: "Acompañantes",
     note: "Para acompañar el café",
-    groups: [{ items: [
+    layout: "cards",
+    items: [
       { n:"Aborrajados", d:"Crujientes y sabrosos vallunos", p:"12.000" },
       { n:"Cheesecake", d:"Nuestra tarta de queso artesanal", p:"12.000" },
       { n:"Porción de papas francesas", d:"Rústicas, sazonadas a la perfección", p:"9.000" },
@@ -1271,24 +1381,29 @@ const MENU = {
       { n:"Torta de chocolate", d:"", p:"8.000" },
       { n:"Waffles de pandebono", d:"Masa de pandebono original", p:"7.000" },
       { n:"Waffles con topping", d:"Helado, frutas de temporada y salsa", p:"15.000" },
-    ]}]
+    ]
   },
   cafes: {
     label: "Cafés",
     note: "Preparados con nuestro café de especialidad",
-    groups: [{ items: [
-      { n:"Espresso", p:"4.500" }, { n:"Americano", p:"4.500" }, { n:"Café con leche", p:"6.000" },
-      { n:"Cappuccino", p:"9.500" }, { n:"Latte", p:"7.000" }, { n:"Macchiato", p:"7.500" },
-      { n:"Mocaccino", p:"10.000" }, { n:"Latte vienés", p:"10.500" }, { n:"Affogato", p:"8.500" },
-      { n:"Frappé de café", p:"11.000" }, { n:"Limonada de café", p:"10.500" },
-    ]}, { title:"Métodos de filtración", items:[
-      { n:"Aeropress", p:"12.000" }, { n:"Chemex", p:"12.000" }, { n:"V60", p:"18.000" },
-    ]}]
+    layout: "list",
+    shelves: [
+      { items:[
+        { n:"Espresso", p:"4.500" }, { n:"Americano", p:"4.500" }, { n:"Café con leche", p:"6.000" },
+        { n:"Cappuccino", p:"9.500" }, { n:"Latte", p:"7.000" }, { n:"Macchiato", p:"7.500" },
+        { n:"Mocaccino", p:"10.000" }, { n:"Latte vienés", p:"10.500" }, { n:"Affogato", p:"8.500" },
+        { n:"Frappé de café", p:"11.000" }, { n:"Limonada de café", p:"10.500" },
+      ]},
+      { title:"Métodos de filtración", items:[
+        { n:"Aeropress", p:"12.000" }, { n:"Chemex", p:"12.000" }, { n:"V60", p:"18.000" },
+      ]}
+    ]
   },
   frias: {
     label: "Bebidas frías",
     note: "Aguas, jugos, sodas y más",
-    groups: [
+    layout: "list",
+    shelves: [
       { title:"Jugos &amp; sodas de la casa", items:[
         { n:"Jugos en agua", d:"Lulo, mango, piña, fresa, maracuyá, maracumango, mora", p:"9.000" },
         { n:"Milo frío", p:"12.000" }, { n:"Soda michelada", p:"8.000" },
@@ -1298,11 +1413,11 @@ const MENU = {
       { title:"Aguas", items:[
         { n:"Agua Hatsu 500 ml", p:"5.500" }, { n:"Agua Hatsu con gas 300 ml", p:"4.500" },
         { n:"Agua tónica Canada Dry cero 300 ml", p:"4.500" }, { n:"Manantial", p:"5.500" },
-        { n:"Té Hatsu (vidrio 400 ml)", p:"9.000" },
+        { n:"Te Hatsu (vidrio 400 ml)", p:"9.000" },
       ]},
       { title:"Gaseosas &amp; sodas", items:[
         { n:"Bretaña", p:"6.000" }, { n:"Ginger Ale Canada Dry 300 ml", p:"7.000" },
-        { n:"Soda Hatsu frambuesa 300 ml", p:"5.000" }, { n:"Soda Hatsu uva &amp; romero 300 ml", p:"5.000" },
+        { n:"Soda Hatsu frambuesa 300 ml", p:"5.000" }, { n:"Soda Hatsu uva & romero 300 ml", p:"5.000" },
         { n:"Energizante XS", p:"16.000" },
       ]},
       { title:"Especiales", items:[
@@ -1316,7 +1431,8 @@ const MENU = {
   limonadas: {
     label: "Limonadas",
     note: "A base de agua o de leche",
-    groups: [
+    layout: "list",
+    shelves: [
       { title:"A base de agua · $11.000", items:[
         { n:"Limonada de cereza" }, { n:"Limonada frutos rojos" }, { n:"Limonada mango" }, { n:"Limonada tamarindo" }, { n:"Limonada sandía" },
       ]},
@@ -1331,7 +1447,8 @@ const MENU = {
   cervezas: {
     label: "Cervezas",
     note: "Cervezadas de la casa y cervezas frías",
-    groups: [
+    layout: "list",
+    shelves: [
       { title:"Cervezadas · $18.000", items:[
         { n:"Cervezada de cereza" }, { n:"Cervezada de frutos rojos" }, { n:"Cervezada de mango biche" },
         { n:"Cervezada de sandía" }, { n:"Cervezada de tamarindo" }, { n:"Cervezada de yerbabuena" },
@@ -1349,31 +1466,88 @@ const MENU = {
   postres: {
     label: "Postres",
     note: "Dulces de la casa",
-    groups: [{ items: [
+    layout: "cards",
+    items: [
       { n:"Cheesecake", d:"Frutos amarillos / frutos rojos", p:"12.000" },
       { n:"Tortas", p:"8.000" },
       { n:"Carlotas", d:"Limón / maracuyá", p:"12.000" },
-    ]}]
+    ]
   },
   desayunos: {
     label: "Desayunos",
     note: "Todos nuestros desayunos incluyen pan o arepa",
-    groups: [{ items: [
+    layout: "cards",
+    items: [
       { n:"Huevos pericos", d:"Huevos revueltos con tomate y cebolla", p:"10.000" },
       { n:"Huevos rancheros", d:"Huevos, chorizo y maicitos", p:"12.000" },
       { n:"Huevos revueltos", d:"Al gusto, suaves y esponjosos", p:"6.000" },
       { n:"Omelette criollo", d:"Relleno de guiso, panceta y queso Barragán", p:"13.000" },
       { n:"Omelette maduratto", d:"Omelette de maduro, tocineta y queso mozzarella", p:"13.000" },
       { n:"Chocolate con queso cuajada", d:"Chocolate en agua o en leche, acompañado de queso cuajada", p:"6.000" },
-    ]}]
+    ]
+  },
+  tarderos: {
+    label: "Tarderos",
+    note: "Para picar en la tarde",
+    layout: "cards",
+    items: [
+      { n:"Amaki sinchoco", p:"5.000" },
+      { n:"Bola de helado", p:"7.000" },
+      { n:"Burrito de cerdo", p:"22.000" },
+      { n:"Burrito de pollo", p:"20.000" },
+      { n:"Combo mangobiche", p:"15.000" },
+      { n:"Empanadas carne x3", p:"12.000" },
+      { n:"Empanadas de queso x4", p:"10.000" },
+      { n:"Empanadas pollo x3", p:"10.000" },
+      { n:"Hamburguesa", p:"26.000" },
+      { n:"Maki conchoco", p:"6.000" },
+      { n:"Marranitas carne angus x3", p:"12.000" },
+      { n:"Montaditos de balsámico", p:"3.000" },
+      { n:"Nugget con papas", p:"9.000" },
+      { n:"Porción de empanada", p:"4.000" },
+      { n:"Sándwich pollo sencillo", p:"15.000" },
+      { n:"Torta de helado limón", p:"12.000" },
+      { n:"Torta de manzana", p:"8.000" },
+      { n:"Torta de maracuyá", p:"8.000" },
+      { n:"Torta red velvet", p:"12.000" },
+      { n:"Tortas artesanales", p:"10.000" },
+      { n:"Tostadas", p:"6.000" },
+    ]
+  },
+  cocteles: {
+    label: "Cócteles",
+    note: "Para acompañar tu tarde",
+    layout: "cards",
+    items: [
+      { n:"Botella aguardiente", p:"80.000" },
+      { n:"Citrino", p:"25.000" },
+      { n:"Cóctel", p:"25.000" },
+      { n:"Copa de vino", p:"20.000" },
+      { n:"Margarita", p:"25.000" },
+      { n:"Moscow mule", p:"23.000" },
+      { n:"XS con licor", p:"20.000" },
+    ]
+  },
+  adiciones: {
+    label: "Adiciones",
+    note: "Complementa tu pedido",
+    layout: "cards",
+    items: [
+      { n:"Adición de chorizo", p:"3.000" },
+      { n:"Adición de maduro", p:"2.000" },
+      { n:"Adición de tocineta", p:"2.500" },
+      { n:"Brownie con helado", p:"12.000" },
+      { n:"Galletas mini cookies", p:"5.000" },
+    ]
   }
 };
 
 const CAT_ICONS = {
-  experiencia:"Ex", cafes:"Ca", frias:"Fr", limonadas:"Li", cervezas:"Ce", postres:"Po", desayunos:"De"
+  acompanantes:"Ac", cafes:"Ca", frias:"Fr", limonadas:"Li", cervezas:"Ce", postres:"Po", desayunos:"De",
+  tarderos:"Ta", cocteles:"Co", adiciones:"Ad"
 };
 
-function iconFor(name){
+function initials(name){
   const stopwords = ['de','del','con','y','la','el','en','a','los','las'];
   const words = name.trim().split(/\s+/).filter(w => w && !stopwords.includes(w.toLowerCase()));
   if(words.length >= 2){
@@ -1382,42 +1556,101 @@ function iconFor(name){
   return name.trim().slice(0, 2).toUpperCase();
 }
 
-function buildMenu(){
+function slugify(nombre){
+  return nombre.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9]+/g,'-')
+    .replace(/^-+|-+$/g,'');
+}
+function imgPathFor(nombre){
+  return `images/menu/${slugify(nombre)}.webp`;
+}
+function onImgErr(img, nombre){
+  img.outerHTML = `<span class="mono">${initials(nombre)}</span>`;
+}
+function cardHTML(it){
+  return `
+    <div class="menu-card">
+      <div class="photo">
+        <img src="${imgPathFor(it.n)}" alt="${it.n}" onerror="onImgErr(this, '${it.n.replace(/'/g, "\\'")}')">
+        ${it.tag ? `<span class="ribbon">${it.tag}</span>` : ''}
+        ${it.p ? `<span class="price-tag">$${it.p}</span>` : ''}
+      </div>
+      <div class="info">
+        <h4>${it.n}</h4>
+        ${it.d ? `<p>${it.d}</p>` : ''}
+      </div>
+    </div>`;
+}
+
+function rowHTML(it){
+  return `
+    <div class="menu-row">
+      <div class="thumb"><img src="${imgPathFor(it.n)}" alt="${it.n}" onerror="onImgErr(this, '${it.n.replace(/'/g, "\\'")}')"></div>
+      <span class="name">${it.n}</span>
+      ${it.p ? `<span class="leader"></span><span class="price">$${it.p}</span>` : ''}
+    </div>`;
+}
+
+function buildTabs(){
   const tabsEl = document.getElementById('menu-tabs');
-  const bodyEl = document.getElementById('menu-body');
   const keys = Object.keys(MENU);
   tabsEl.innerHTML = keys.map((k,i)=>`<button data-k="${k}" class="${i===0?'active':''}" onclick="showCat('${k}')"><span class="tab-ic">${CAT_ICONS[k]||'•'}</span>${MENU[k].label}</button>`).join('');
+}
+
+function buildBody(){
+  const bodyEl = document.getElementById('menu-body');
+  const keys = Object.keys(MENU);
   bodyEl.innerHTML = keys.map((k,i)=>{
     const cat = MENU[k];
-    const groups = cat.groups.map(g=>`
-      ${g.title ? `<div class="subgroup"><h4>${g.title}</h4>` : `<div class="subgroup">`}
-        <div class="menu-list">
-          ${g.items.map(it=>`
-            <div class="menu-item">
-              <div class="left">
-                <div class="icon">${iconFor(it.n)}</div>
-                <div class="name">${it.n}${it.d ? `<span class="desc">${it.d}</span>` : ''}</div>
-              </div>
-              ${it.p ? `<div class="price">$${it.p}</div>` : ''}
-            </div>
-          `).join('')}
-        </div>
-      </div>
-    `).join('');
+    let content = '';
+    if(cat.layout === 'cards'){
+      content = `<div class="menu-cards-grid">${cat.items.map(cardHTML).join('')}</div>`;
+    } else {
+      content = cat.shelves.map(s => `
+        <div class="menu-shelf">
+          ${s.title ? `<h4>${s.title}</h4>` : ''}
+          <div class="menu-cards-grid">${s.items.map(cardHTML).join('')}</div>
+        </div>`).join('');
+    }
     return `<div class="menu-cat ${i===0?'active':''}" id="cat-${k}">
-      <div class="cat-title-row"><div class="icon-lg">${CAT_ICONS[k]||'•'}</div><h3 class="cat-title" style="margin:0;">${cat.label}</h3></div>
-      <p class="cat-note">${cat.note}</p>
-      ${groups}
+      <div class="menu-cat-head"><h3>${cat.label}</h3><p>${cat.note}</p></div>
+      ${content}
     </div>`;
   }).join('');
 }
+
+function buildDestacados(){
+  const wrap = document.getElementById('destacados');
+  const row = document.getElementById('destacados-row');
+  const favoritos = [];
+  Object.values(MENU).forEach(cat=>{
+    const pool = cat.layout === 'cards' ? cat.items : cat.shelves.flatMap(s=>s.items);
+    pool.filter(it=>it.tag==='Favorito').forEach(it=>favoritos.push(it));
+  });
+  if(favoritos.length === 0){ wrap.classList.add('hidden'); return; }
+  wrap.classList.remove('hidden');
+  row.innerHTML = favoritos.map(it => `
+    <div class="dest-card">
+      <div class="ph">
+        <img src="${imgPathFor(it.n)}" alt="${it.n}" onerror="onImgErr(this, '${it.n.replace(/'/g, "\\'")}')">
+        <span class="ribbon">Favorito</span>
+      </div>
+      <div class="info">
+        <b>${it.n}</b>
+        ${it.p ? `<span class="price">$${it.p}</span>` : ''}
+      </div>
+    </div>`).join('');
+}
+
 function showCat(k){
   document.querySelectorAll('.menu-tabs button').forEach(b=>b.classList.toggle('active', b.dataset.k===k));
   document.querySelectorAll('.menu-cat').forEach(c=>c.classList.toggle('active', c.id === 'cat-'+k));
-  const active = document.getElementById('cat-'+k);
-  if(active) initReveal(active);
 }
-buildMenu();
+
+buildTabs();
+buildBody();
+buildDestacados();
 
 /* ---------- scroll reveal observer ---------- */
 function initReveal(root){
@@ -1437,9 +1670,6 @@ function initReveal(root){
 }
 document.querySelectorAll('.galeria-grid').forEach(g=>{
   g.querySelectorAll('.ph').forEach(ph=>ph.classList.add('reveal'));
-});
-document.querySelectorAll('.menu-cat').forEach(cat=>{
-  cat.querySelectorAll('.subgroup, .menu-item').forEach(el=>el.classList.add('reveal'));
 });
 initReveal();
 
@@ -1479,6 +1709,17 @@ function enterView(view){
   target.classList.remove('hidden');
   window.scrollTo(0,0);
   requestAnimationFrame(()=>initReveal(target));
+
+  // La mascota Coffe solo aparece en "Explorar" (site), no en el menú ni en reservas
+  const mascota = document.getElementById('coffe-mascota');
+  const teaser = document.getElementById('bot-teaser');
+  const ventana = document.getElementById('bot-window');
+  const mostrarMascota = (view === 'site');
+  if(mascota) mascota.classList.toggle('hidden', !mostrarMascota);
+  if(!mostrarMascota){
+    if(teaser) teaser.classList.remove('show');
+    if(ventana) ventana.classList.remove('open');
+  }
 }
 function goToReserva(motivo){
   enterView('reserva');
@@ -1924,4 +2165,3 @@ document.querySelectorAll('a.btn-mini, a.btn-confirmar, a.btn-rechazar').forEach
 </script>
 </body>
 </html>
-
