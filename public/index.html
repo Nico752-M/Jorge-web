@@ -1785,6 +1785,16 @@ function formatearHorariosLibres(libres){
   return libres.map(([a, b]) => `de ${formatearHoraDesdeMinutos(a)} a ${formatearHoraDesdeMinutos(b)}`).join(' y ');
 }
 
+// OJO: nunca uses toISOString() aquí — convierte a UTC y desplaza la fecha
+// para eventos de la tarde/noche en Colombia (UTC-5). Esto arma "YYYY-MM-DD"
+// con la fecha/hora LOCAL del navegador, que es lo que realmente queremos comparar.
+function fechaLocalYMD(date){
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
 async function enviarReserva(e){
   e.preventDefault();
   const nombre = document.getElementById('r-nombre').value.trim();
@@ -1820,8 +1830,8 @@ async function enviarReserva(e){
 
       // Solo nos importan los eventos del MISMO día que se está pidiendo.
       const ocupadosDelDia = ocupados.filter(ev => {
-        const inicioEv = new Date(ev.inicio).toISOString().slice(0, 10);
-        const finEv = ev.fin ? new Date(ev.fin).toISOString().slice(0, 10) : inicioEv;
+        const inicioEv = fechaLocalYMD(new Date(ev.inicio));
+        const finEv = ev.fin ? fechaLocalYMD(new Date(ev.fin)) : inicioEv;
         return inicioEv === fecha || finEv === fecha;
       });
 
