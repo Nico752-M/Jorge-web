@@ -12,8 +12,9 @@ from urllib.parse import quote
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 
 import oracledb
-import cloudinary
-import cloudinary.uploader
+import boto3
+from PIL import Image
+from io import BytesIO
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 
@@ -32,20 +33,23 @@ app.secret_key = os.environ.get("SECRET_KEY", "cambia-esto-por-algo-largo-y-alea
 # ---- Ruta oculta del panel: cámbiala antes de publicar el sitio ----
 ADMIN_PREFIX = "/panel-cr8x"
 
-# ---- Imágenes de eventos que sube el admin (se guardan en Cloudinary, no en disco) ----
-cloudinary.config(
-    cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
-    api_key=os.environ.get("CLOUDINARY_API_KEY"),
-    api_secret=os.environ.get("CLOUDINARY_API_SECRET"),
-    secure=True,
+# ---- Imágenes de eventos que sube el admin (se guardan en Cloudflare R2, no en disco) ----
+r2 = boto3.client(
+    "s3",
+    endpoint_url=f"https://{os.environ.get('R2_ACCOUNT_ID')}.r2.cloudflarestorage.com",
+    aws_access_key_id=os.environ.get("R2_ACCESS_KEY_ID"),
+    aws_secret_access_key=os.environ.get("R2_SECRET_ACCESS_KEY"),
+    region_name="auto",
 )
+R2_BUCKET = os.environ.get("R2_BUCKET", "cafereal-imagenes")
+R2_PUBLIC_URL = os.environ.get("R2_PUBLIC_URL")
 EXTENSIONES_IMAGEN_PERMITIDAS = {"png", "jpg", "jpeg", "webp"}
 
 
 def guardar_imagen_evento(archivo, imagen_anterior_url=None):
-    """Sube la imagen que subió el admin para un evento (si mandó una válida) a Cloudinary,
-    optimizándola automáticamente, y borra la imagen anterior si había una (para no acumular
-    fotos viejas sin usar). Devuelve la URL completa para guardar en IMAGEN_URL.
+    """Comprime y sube la imagen que subió el admin para un evento a R2,
+    y borra la imagen anterior si había una (para no acumular fotos viejas sin usar).
+    Devuelve la URL pública para guardar en IMAGEN_URL.
     Si no mandó archivo o la extensión no es válida, devuelve None."""
     if not archivo or not archivo.filename:
         return None
@@ -53,38 +57,37 @@ def guardar_imagen_evento(archivo, imagen_anterior_url=None):
     if extension not in EXTENSIONES_IMAGEN_PERMITIDAS:
         return None
 
-    nombre_archivo = secrets.token_hex(8)
-    resultado = cloudinary.uploader.upload(
-        archivo,
-        folder="cafereal/eventos",
-        public_id=nombre_archivo,
-        quality="auto",
-        fetch_format="auto",
-        transformation=[
-            {"width": 1600, "height": 1600, "crop": "limit"}
-        ],
-    )
+    img = Image.open(archivo)
+    img = img.convert("RGB")
+    img.thumbnail((1600, 1600))
 
-    peso_kb = round(resultado.get("bytes", 0) / 1024, 1)
-    ancho = resultado.get("width")
-    alto = resultado.get("height")
-    formato = resultado.get("format")
-    print(f"[Cloudinary] Imagen subida: {peso_kb} KB, {ancho}x{alto}px, formato {formato}")
+    buffer = BytesIO()
+    img.save(buffer, format="JPEG", quality=82, optimize=True)
+    buffer.seek(0)
+    peso_kb = round(buffer.getbuffer().nbytes / 1024, 1)
+
+    nombre_archivo = secrets.token_hex(8)
+    key = f"cafereal/eventos/{nombre_archivo}.jpg"
+    r2.upload_fileobj(buffer, R2_BUCKET, key, ExtraArgs={"ContentType": "image/jpeg"})
+
+    print(f"[R2] Imagen subida: {peso_kb} KB, key={key}")
 
     if imagen_anterior_url:
         borrar_imagen_evento(imagen_anterior_url)
 
-    return resultado["secure_url"]
+    return f"{R2_PUBLIC_URL}/{key}"
 
 
 def borrar_imagen_evento(imagen_url):
-    """Borra de Cloudinary la imagen anterior de un evento cuando se reemplaza por una nueva."""
+    """Borra de R2 la imagen anterior de un evento cuando se reemplaza o se elimina."""
+    if not imagen_url:
+        return
     try:
         partes = imagen_url.split("/cafereal/eventos/")
         if len(partes) != 2:
             return
-        public_id = "cafereal/eventos/" + partes[1].rsplit(".", 1)[0]
-        cloudinary.uploader.destroy(public_id)
+        key = "cafereal/eventos/" + partes[1]
+        r2.delete_object(Bucket=R2_BUCKET, Key=key)
     except Exception:
         pass
 
@@ -508,6 +511,11 @@ def editar_evento(evento_id):
 def eliminar_evento(evento_id):
     conn = get_connection()
     cur = conn.cursor()
+
+    cur.execute("SELECT IMAGEN_URL FROM EVENTOS WHERE ID=:id", id=evento_id)
+    fila = cur.fetchone()
+    if fila and fila[0]:
+        borrar_imagen_evento(fila[0])
 
     # Las solicitudes de alquiler no se borran (es el historial de contacto),
     # solo se desvinculan del evento que se va a eliminar.
