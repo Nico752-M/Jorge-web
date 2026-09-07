@@ -1154,6 +1154,15 @@ footer{padding:60px 8vw 40px; border-top:1px solid var(--linea); color:var(--con
   </div>
 </div>
 
+<div id="modal-aviso-horario" class="modal-overlay hidden">
+  <div class="modal-box">
+    <button class="modal-cerrar" onclick="cerrarModalAvisoHorario()" aria-label="Cerrar">×</button>
+    <h3>Horario no disponible</h3>
+    <div id="modal-aviso-horario-msg" class="modal-msg warn"></div>
+    <button type="button" class="btn btn-solid" style="margin-top:18px;" onclick="cerrarModalAvisoHorario()">Entendido</button>
+  </div>
+</div>
+
 <!-- ============ BOTONES FLOTANTES ============ -->
 
 <!-- ============ BOTONES FLOTANTES ============ -->
@@ -1820,7 +1829,7 @@ async function enviarReserva(e){
     const minFin = hFin * 60 + mFin;
 
     if(minInicio < apertura * 60 || minFin > cierre * 60){
-      alert(`El auditorio ese día solo se puede reservar de ${formatearHoraDesdeMinutos(apertura * 60)} a ${formatearHoraDesdeMinutos(cierre * 60)}. Ajusta la hora y vuelve a enviar.`);
+      mostrarAvisoHorario(`El auditorio ese día solo se puede reservar de ${formatearHoraDesdeMinutos(apertura * 60)} a ${formatearHoraDesdeMinutos(cierre * 60)}. Ajusta la hora y vuelve a enviar.`);
       return false;
     }
 
@@ -1828,7 +1837,7 @@ async function enviarReserva(e){
       const res = await fetch('/api/eventos-ocupados');
       const ocupados = await res.json();
 
-      // Solo nos importan los eventos del MISMO día que se está pidiendo.
+      // Solo nos importan los eventos del MISMO día que se está pidiendo (comparando en hora LOCAL).
       const ocupadosDelDia = ocupados.filter(ev => {
         const inicioEv = fechaLocalYMD(new Date(ev.inicio));
         const finEv = ev.fin ? fechaLocalYMD(new Date(ev.fin)) : inicioEv;
@@ -1844,7 +1853,7 @@ async function enviarReserva(e){
 
       if(hayChoque){
         const libres = calcularHorariosLibres(fecha, ocupadosDelDia);
-        alert(`Ese horario no está disponible (dejamos ${BUFFER_RESERVA_HORAS} horas de margen entre eventos). Ese día el auditorio está disponible ${formatearHorariosLibres(libres)}. Ajusta la hora y vuelve a enviar.`);
+        mostrarAvisoHorario(`Ese horario no está disponible (dejamos ${BUFFER_RESERVA_HORAS} horas de margen entre eventos). Ese día el auditorio está disponible ${formatearHorariosLibres(libres)}. Ajusta la hora y vuelve a enviar.`);
         return false;
       }
     }catch(err){
@@ -1914,6 +1923,15 @@ function abrirModalReserva(eventoId, tituloEvento){
 function cerrarModalReserva(){
   document.getElementById('modal-reserva-cupo').classList.add('hidden');
   EVENTO_ID_ACTUAL = null;
+}
+
+function mostrarAvisoHorario(mensaje){
+  document.getElementById('modal-aviso-horario-msg').textContent = mensaje;
+  document.getElementById('modal-aviso-horario').classList.remove('hidden');
+}
+
+function cerrarModalAvisoHorario(){
+  document.getElementById('modal-aviso-horario').classList.add('hidden');
 }
 
 async function enviarReservaCupo(e){
