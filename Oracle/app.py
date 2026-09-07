@@ -778,9 +778,9 @@ def crear_reserva_cupo():
         "mensaje": "Por ahora no quedan cupos suficientes. Guardamos tu solicitud — estamos viendo si se puede ampliar el aforo y te contactaremos."
     })
 
-# =========================================================
+# ========================================================
 # TICKET PERMANENTE DEL CLIENTE (sin login — link que se guarda)
-# =========================================================
+# ========================================================
 @app.route("/mi-reserva/<codigo>")
 def mi_reserva(codigo):
     conn = get_connection()
