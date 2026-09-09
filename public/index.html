@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
   <html lang="es">
   <head>
   <meta charset="UTF-8">
@@ -804,7 +804,7 @@
   #reserva-view{background:var(--cr-paper);min-height:100vh;}
   #reserva-view .topnav{background:rgba(251,250,246,.92);}
   .reserva-hero{padding:100px 8vw 50px;background:var(--cr-green);color:white;position:relative;overflow:hidden;}
-  .reserva-hero:after{content:'RESERVA';position:absolute;right:-20px;bottom:-55px;font-family:var(--cr-serif);font-size:clamp(8rem,18vw,17rem);font-style:italic;color:rgba(255,255,255,.045);line-height:.8;}
+  .reserva-hero:after{content:'RESERVA';position:absolute;right:-40px;bottom:-150px;font-family:var(--cr-serif);font-size:clamp(6rem,14vw,12rem);font-style:italic;color:rgba(255,255,255,.05);line-height:.8;pointer-events:none;z-index:0;}
   .reserva-hero .logo-menu{display:none;}
   .reserva-hero h2{font-size:clamp(3.5rem,7vw,7rem);line-height:.8;color:white;text-align:left;max-width:8ch;position:relative;z-index:1;}
   .reserva-hero p{text-align:left;color:rgba(255,255,255,.7);font-size:.92rem;position:relative;z-index:1;}
@@ -1331,6 +1331,10 @@
   }
   /* ===== FIN DEL AJUSTE HERO ===== */
   /* ===== FIN DEL AJUSTE ===== */
+  .espacios-cards .beneficio-item{justify-content:flex-start;}
+  .espacios-cards .espacio-foto{aspect-ratio:4/3;overflow:hidden;border-radius:6px;background:#123d39;margin-bottom:20px;}
+  .espacios-cards .espacio-foto img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s ease;}
+  .espacios-cards .beneficio-item:hover .espacio-foto img{transform:scale(1.05);}
   </style>
   <style id="mobile-bottom-nav">.mobile-bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:500;height:72px;background:rgba(255,255,255,.92);backdrop-filter:blur(24px) saturate(140%);-webkit-backdrop-filter:blur(24px) saturate(140%);border-top:1px solid rgba(3,73,68,.1);box-shadow:0 -4px 28px rgba(0,0,0,.06);align-items:stretch;justify-content:space-around;padding:0;padding-bottom:env(safe-area-inset-bottom,0px);}.mobile-bottom-nav .btab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px 0;background:none;border:none;color:#6b6b6b;font-family:'Public Sans',sans-serif;font-size:.62rem;font-weight:600;letter-spacing:.03em;cursor:pointer;position:relative;-webkit-tap-highlight-color:transparent;transition:color .2s ease;}.mobile-bottom-nav .btab svg{width:24px;height:24px;stroke-width:1.8;transition:transform .25s cubic-bezier(.2,.8,.2,1),color .2s ease;}.mobile-bottom-nav .btab span{display:block;line-height:1;margin-top:1px;}.mobile-bottom-nav .btab.btab-active{color:#006241;}.mobile-bottom-nav .btab.btab-active svg{transform:translateY(-1px);}.mobile-bottom-nav .btab::before{content:'';position:absolute;top:0;left:50%;width:0;height:2.5px;background:#006241;border-radius:0 0 3px 3px;transform:translateX(-50%);transition:width .3s cubic-bezier(.2,.8,.2,1);}.mobile-bottom-nav .btab.btab-active::before{width:36px;}.mobile-bottom-nav .btab:active svg{transform:scale(.88);transition:transform .08s ease;}@media(max-width:860px){.mobile-bottom-nav{display:flex;}.nav-mobile-toggle{display:none!important;}.mobile-nav-panel{display:none!important;}body{padding-bottom:calc(72px + env(safe-area-inset-bottom,0px));}#floating-actions{bottom:calc(80px + env(safe-area-inset-bottom,0px))!important;}#coffe-mascota{bottom:calc(80px + env(safe-area-inset-bottom,0px))!important;}#bot-teaser{bottom:calc(106px + env(safe-area-inset-bottom,0px))!important;}#bot-window{bottom:calc(110px + env(safe-area-inset-bottom,0px))!important;}footer{padding-bottom:calc(90px + env(safe-area-inset-bottom,0px))!important;}}@media(max-width:560px){.mobile-bottom-nav{height:66px;}.mobile-bottom-nav .btab{font-size:.56rem;gap:3px;}.mobile-bottom-nav .btab svg{width:22px;height:22px;}body{padding-bottom:calc(66px + env(safe-area-inset-bottom,0px));}}</style>
 <style id="manifiesto-mobile-fix">
@@ -1373,7 +1377,7 @@
         <a href="#" onclick="enterView('menu'); return false;">Carta</a>
         <a href="#" onclick="enterView('galeria'); return false;">Experiencia</a>
         <a href="#" onclick="enterView('auditorio'); return false;">Eventos</a>
-        <a href="#" onclick="enterView('piso'); return false;">Espacios</a>
+        <a href="#" onclick="enterView('piso'); return false;">Reservas</a>
         <a href="#" onclick="goToUbicacion(); return false;">Ubicación</a>
       </nav>
       <div class="actions">
@@ -1546,7 +1550,7 @@
         <a href="#" onclick="enterView('menu'); return false;">Carta</a>
         <a href="#" onclick="enterView('galeria'); return false;">Experiencia</a>
         <a href="#" onclick="enterView('auditorio'); return false;">Eventos</a>
-        <a href="#" onclick="enterView('piso'); return false;">Espacios</a>
+        <a href="#" onclick="enterView('piso'); return false;">Reservas</a>
         <a href="#" onclick="goToUbicacion(); return false;">Ubicación</a>
       </nav>
       <div class="actions">
@@ -1582,7 +1586,7 @@
         <a href="#" onclick="enterView('menu'); return false;">Carta</a>
         <a href="#" onclick="enterView('galeria'); return false;">Experiencia</a>
         <a href="#" onclick="enterView('auditorio'); return false;">Eventos</a>
-        <a href="#" onclick="enterView('piso'); return false;">Espacios</a>
+        <a href="#" onclick="enterView('piso'); return false;">Reservas</a>
         <a href="#" onclick="goToUbicacion(); return false;">Ubicación</a>
       </nav>
       <div class="actions">
@@ -1621,7 +1625,7 @@
         <a href="#" onclick="enterView('menu'); return false;">Carta</a>
         <a href="#" onclick="enterView('galeria'); return false;">Experiencia</a>
         <a href="#" onclick="enterView('auditorio'); return false;">Eventos</a>
-        <a href="#" onclick="enterView('piso'); return false;">Espacios</a>
+        <a href="#" onclick="enterView('piso'); return false;">Reservas</a>
         <a href="#" onclick="goToUbicacion(); return false;">Ubicación</a>
       </nav>
       <div class="actions">
@@ -1631,10 +1635,32 @@
     </div>
     <section id="piso">
       <div class="section-head reveal">
-        <span class="tag">Segundo piso</span>
-        <h2>Un espacio versátil para rentar</h2>
-        <p>Ideal para cumpleaños, ver partidos en grupo, reuniones o celebraciones privadas — con la misma calidez del resto del lugar.</p>
+        <span class="tag">Reservas</span>
+        <h2>Encuentra el espacio ideal</h2>
+        <p>Una mesa para trabajar o compartir, el auditorio para tu próximo evento, o el segundo piso completo para tu celebración — Café Real se adapta a lo que necesites.</p>
       </div>
+
+      <div class="beneficios-grid espacios-cards gsap-reveal" data-dir="up" style="margin-bottom:60px;">
+        <div class="beneficio-item">
+          <div class="espacio-foto"><img id="img-resv-mesa" alt="Mesa y terraza de Café Real"></div>
+          <h3>Mesa / Terraza</h3>
+          <p>Para trabajar con calma, tomarte un café o compartir con amigos — sin necesidad de rentar un espacio completo.</p>
+          <button class="btn btn-outline" style="margin-top:20px; width:fit-content;" onclick="goToReserva('Mesa / terraza')">Reservar mesa</button>
+        </div>
+        <div class="beneficio-item">
+          <div class="espacio-foto"><img id="img-resv-auditorio" alt="Auditorio de Café Real"></div>
+          <h3>Auditorio</h3>
+          <p>Ideal para conferencias, capacitaciones y lanzamientos. Incluye proyector, sonido y montaje tipo salón.</p>
+          <button class="btn btn-outline" style="margin-top:20px; width:fit-content;" onclick="goToReserva('Auditorio (conferencia, capacitación o evento)')">Reservar auditorio</button>
+        </div>
+        <div class="beneficio-item">
+          <div class="espacio-foto"><img id="img-resv-piso" alt="Segundo piso de Café Real"></div>
+          <h3>Segundo piso completo</h3>
+          <p>Un espacio propio y privado para cumpleaños, ver partidos en grupo o celebraciones a tu medida.</p>
+          <button class="btn btn-outline" style="margin-top:20px; width:fit-content;" onclick="goToReserva('Segundo piso (cumpleaños, ver partido, etc.)')">Reservar segundo piso</button>
+        </div>
+      </div>
+
       <div class="piso-grid gsap-reveal" data-dir="right">
         <div class="piso-visual"><img id="img-piso" alt="Acceso al segundo piso de Café Real"></div>
         <div class="piso-info">
@@ -1667,7 +1693,7 @@
         <a href="#" onclick="enterView('menu'); return false;">Carta</a>
         <a href="#" onclick="enterView('galeria'); return false;">Experiencia</a>
         <a href="#" onclick="enterView('auditorio'); return false;">Eventos</a>
-        <a href="#" onclick="enterView('piso'); return false;">Espacios</a>
+        <a href="#" onclick="enterView('piso'); return false;">Reservas</a>
         <a href="#" onclick="goToUbicacion(); return false;">Ubicación</a>
       </nav>
       <div class="actions">
@@ -1869,6 +1895,9 @@
   setFoto('img-auditorio', PHOTOS.auditorio, 'Auditorio de Café Real');
   setFoto('img-auditorio-bg', PHOTOS.auditorio, 'Auditorio de Café Real');
   setFoto('img-piso', PHOTOS.piso, 'Segundo piso de Café Real');
+  setFoto('img-resv-mesa', PHOTOS.g3, 'Mesa y terraza de Café Real');
+  setFoto('img-resv-auditorio', PHOTOS.auditorio, 'Auditorio de Café Real');
+  setFoto('img-resv-piso', PHOTOS.piso, 'Segundo piso de Café Real');
   setFoto('g1', PHOTOS.g1, 'Fachada y terraza');
   setFoto('g2', PHOTOS.g2, 'Bar y zona de cocina');
   setFoto('g3', PHOTOS.g3, 'Mesas con vista a la calle');
@@ -3014,7 +3043,7 @@
         document.querySelectorAll('.topnav').forEach(nav=>{
           closeMobile(nav);
           nav.querySelectorAll('nav a').forEach(a=>a.classList.remove('is-active'));
-          const map={menu:'Carta',galeria:'Experiencia',auditorio:'Eventos',piso:'Espacios'};
+          const map={menu:'Carta',galeria:'Experiencia',auditorio:'Eventos',piso:'Reservas'};
           if(map[view]) nav.querySelectorAll('nav a').forEach(a=>{if(a.textContent.trim()===map[view])a.classList.add('is-active');});
         });
         return out;
@@ -3024,5 +3053,5 @@
   })();
   </script>
 
-  <nav class="mobile-bottom-nav" id="mobile-bottom-nav"><button class="btab btab-active" data-view="site" onclick="mobileNavGo('site')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 10v9a1 1 0 001 1h3v-5a1 1 0 011-1h4a1 1 0 011 1v5h3a1 1 0 001-1v-9"/></svg><span>Inicio</span></button><button class="btab" data-view="menu" onclick="mobileNavGo('menu')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16"/><path d="M4 5c0 0 2-2 8-2s8 2 8 2"/><path d="M4 5v0c0 6 2.5 11 8 14c5.5-3 8-8 8-14"/></svg><span>Menú</span></button><button class="btab" data-view="ubicacion" onclick="mobileNavGo('ubicacion')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg><span>Ubicación</span></button><button class="btab" data-view="auditorio" onclick="mobileNavGo('auditorio')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18"/><path d="M8 2v4"/><path d="M16 2v4"/><circle cx="12" cy="15" r="1.5" fill="currentColor" stroke="none"/></svg><span>Eventos</span></button></nav><script>(function(){window.mobileNavGo=function(v){if(v==='ubicacion'){goToUbicacion();}else{enterView(v);}var b=document.getElementById('mobile-bottom-nav');if(b)b.querySelectorAll('.btab').forEach(function(t){t.classList.toggle('btab-active',t.dataset.view===v);});};var o=window.enterView;if(typeof o==='function'){window.enterView=function(v){var r=o.apply(this,arguments);var m={site:'site',menu:'menu',reserva:'site',galeria:'site',auditorio:'auditorio',piso:'auditorio'};var b=document.getElementById('mobile-bottom-nav');if(b)b.querySelectorAll('.btab').forEach(function(t){t.classList.toggle('btab-active',t.dataset.view===(m[v]||'site'));});return r;};}})();</script></body>
+  <nav class="mobile-bottom-nav" id="mobile-bottom-nav"><button class="btab btab-active" data-view="site" onclick="mobileNavGo('site')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 10v9a1 1 0 001 1h3v-5a1 1 0 011-1h4a1 1 0 011 1v5h3a1 1 0 001-1v-9"/></svg><span>Inicio</span></button><button class="btab" data-view="menu" onclick="mobileNavGo('menu')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16"/><path d="M4 5c0 0 2-2 8-2s8 2 8 2"/><path d="M4 5v0c0 6 2.5 11 8 14c5.5-3 8-8 8-14"/></svg><span>Menú</span></button><button class="btab" data-view="ubicacion" onclick="mobileNavGo('ubicacion')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg><span>Ubicación</span></button><button class="btab" data-view="auditorio" onclick="mobileNavGo('auditorio')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18"/><path d="M8 2v4"/><path d="M16 2v4"/><circle cx="12" cy="15" r="1.5" fill="currentColor" stroke="none"/></svg><span>Eventos</span></button><button class="btab" data-view="piso" onclick="mobileNavGo('piso')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M9 15l2 2 4-4"/></svg><span>Reservas</span></button></nav><script>(function(){window.mobileNavGo=function(v){if(v==='ubicacion'){goToUbicacion();}else{enterView(v);}var b=document.getElementById('mobile-bottom-nav');if(b)b.querySelectorAll('.btab').forEach(function(t){t.classList.toggle('btab-active',t.dataset.view===v);});};var o=window.enterView;if(typeof o==='function'){window.enterView=function(v){var r=o.apply(this,arguments);var m={site:'site',menu:'menu',reserva:'site',galeria:'site',auditorio:'auditorio',piso:'piso'};var b=document.getElementById('mobile-bottom-nav');if(b)b.querySelectorAll('.btab').forEach(function(t){t.classList.toggle('btab-active',t.dataset.view===(m[v]||'site'));});return r;};}})();</script></body>
   </html>
