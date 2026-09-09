@@ -2058,11 +2058,16 @@
     DATA — MENU (extraído de la carta física)
     ========================================================= */
   const MENU = {
-    acompanantes: {
-      label: "Acompañantes",
-      note: "Para acompañar el café",
+    tarderos: {
+      label: "Tarderos",
+      note: "Para picar en la tarde",
       layout: "cards",
       items: [
+        { n:"Burrito de cerdo", p:"22.000" },
+        { n:"Burrito de pollo", p:"20.000" },
+        { n:"Empanadas carne x3", p:"12.000" },
+        { n:"Hamburguesa", p:"26.000" },
+        { n:"Sándwich pollo sencillo", p:"15.000" },
         { n:"Aborrajados", d:"Crujientes y sabrosos vallunos", p:"12.000" },
         { n:"Cheesecake", d:"Nuestra tarta de queso artesanal", p:"12.000" },
         { n:"Porción de papas francesas", d:"Rústicas, sazonadas a la perfección", p:"9.000" },
@@ -2177,23 +2182,10 @@
         { n:"Chocolate con queso cuajada", d:"Chocolate en agua o en leche, acompañado de queso cuajada", p:"6.000" },
       ]
     },
-    tarderos: {
-      label: "Tarderos",
-      note: "Para picar en la tarde",
-      layout: "cards",
-      items: [
-        { n:"Burrito de cerdo", p:"22.000" },
-        { n:"Burrito de pollo", p:"20.000" },
-        { n:"Empanadas carne x3", p:"12.000" },
-        { n:"Hamburguesa", p:"26.000" },
-        { n:"Sándwich pollo sencillo", p:"15.000" },
-      ]
-    },
   };
 
   const CAT_ICONS = {
-    acompanantes:"Ac", cafes:"Ca", frias:"Fr", limonadas:"Li", cervezas:"Ce", postres:"Po", desayunos:"De",
-    tarderos:"Ta"
+    tarderos:"Ta", cafes:"Ca", frias:"Fr", limonadas:"Li", cervezas:"Ce", postres:"Po", desayunos:"De"
   };
 
   function initials(name){
@@ -2330,7 +2322,7 @@
     { img: "images/cafearias/cafearias.webp", label: "Café Arias" },
     { img: imgPathFor("Cappuccino"), label: "Cappuccino" },
     { img: imgPathFor("Empanadas carne x3"), label: "Empanadas de carne" },
-    { img: imgPathFor("V60"), label: "Método V60" },
+    { img: "images/menu/torta-de-chocolate.webp", label: "Torta de chocolate" },
     { img: imgPathFor("Cheesecake"), label: "Cheesecake" },
   ];
 
