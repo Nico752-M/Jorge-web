@@ -2656,14 +2656,16 @@
     el.addEventListener('pointerup', reanudarPronto);
     el.addEventListener('pointercancel', reanudarPronto);
 
+    let posicion = 0;
     function tick(){
       if(!pausado && mitad > 0){
         const maxScroll = el.scrollWidth - el.clientWidth;
         const limite = Math.min(mitad, maxScroll);
-        el.scrollLeft += velocidad;
-        if(el.scrollLeft >= limite){
-          el.scrollLeft = 0;
+        posicion += velocidad;
+        if(posicion >= limite){
+          posicion = 0;
         }
+        el.scrollLeft = Math.round(posicion);
       }
       requestAnimationFrame(tick);
     }
