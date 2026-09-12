@@ -2790,6 +2790,15 @@
     requestAnimationFrame(()=>{ initReveal(target); initGsapReveals(); initGaleriaStagger(); });
 
   }
+
+  function goToReserva(motivo){
+    enterView('reserva');
+    if(motivo){
+      const sel = document.getElementById('r-motivo');
+      if(sel) sel.value = motivo;
+    }
+    actualizarCampoMontaje();
+  }
   
   const AFORO_LIMITES = { con_mesas: 150, sin_mesas: 400 };
 
