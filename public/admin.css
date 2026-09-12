@@ -224,7 +224,8 @@ h1,h2,h3{font-family:'Cormorant Garamond', serif; font-weight:500;}
 .fila-info{ display:flex; flex-direction:column; gap:5px; min-width:0; flex:1; }
 .fila-titulo{ font-weight:600; font-size:.95rem; display:flex; align-items:center; gap:10px; flex-wrap:wrap; color:var(--tinta); }
 .fila-meta{ font-size:.82rem; color:var(--concreto); line-height:1.5; }
-.fila-acciones{ display:flex; align-items:center; gap:10px; flex-shrink:0; position:relative; }
+.fila-acciones{ display:flex; align-items:center; gap:10px; flex-shrink:0; }
+.menu-wrapper{ position:relative; display:inline-flex; }
 
 .btn-primario-fila{
   background:var(--teal-osc); color:var(--blanco); border:none; font-weight:500;

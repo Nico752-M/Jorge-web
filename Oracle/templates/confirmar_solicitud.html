@@ -17,8 +17,6 @@
     {% endif %}
   </div>
 
-  <p class="ayuda">Llena esto después de haber negociado por WhatsApp la hora exacta y el precio final.</p>
-
   <form method="POST" class="form-confirmar">
     <label for="titulo">Título del evento / alquiler</label>
     <input type="text" id="titulo" name="titulo" required
@@ -46,26 +44,26 @@
           {% if tipo_montaje == 'con_mesas' %}max="150"{% elif tipo_montaje == 'sin_mesas' %}max="400"{% endif %}
           step="1" required value="{{ num_personas or '' }}" placeholder="Ej: 80">
     {% if tipo_montaje %}
-    <p class="ayuda">Montaje pedido: {{ "con mesas" if tipo_montaje == "con_mesas" else "sin mesas" }} → tope de {{ 150 if tipo_montaje == "con_mesas" else 400 }} personas. Puedes ajustarlo si negociaste otra cosa.</p>
+    <p class="ayuda">Tope: {{ 150 if tipo_montaje == "con_mesas" else 400 }} personas ({{ "con mesas" if tipo_montaje == "con_mesas" else "sin mesas" }}).</p>
     {% endif %}
 
     <hr class="separador-form">
-    <p class="ayuda">Esto es lo que verá el público que asista — es distinto al precio del alquiler de arriba.</p>
+    <p class="ayuda">Lo de abajo lo ve el público (no confundir con el precio del alquiler).</p>
 
-    <label>¿Se le cobra entrada al público que asiste?</label>
-    <div class="opciones-entrada">
-      <label class="opcion-entrada">
-        <input type="radio" name="entrada_estado" value="LIBRE">
-        Entrada libre
-      </label>
-      <label class="opcion-entrada">
-        <input type="radio" name="entrada_estado" value="PAGO" checked>
-        Tiene entrada
-      </label>
-    </div>
-    <div id="precio-entrada-wrap" class="precio-entrada-wrap">
-      <label for="precio_entrada">Precio de entrada al público (COP) — déjalo vacío si aún no lo defines</label>
-      <input type="text" inputmode="numeric" id="precio_entrada" name="precio_entrada" placeholder="Ej: 40.000 (opcional)">
+    <div class="grupo-ios">
+      <div class="fila-ios">
+        <label>¿Cobra entrada?</label>
+        <div class="segmentado" style="max-width:200px;">
+          <input type="radio" id="seg-libre" name="entrada_estado" value="LIBRE">
+          <label for="seg-libre">Libre</label>
+          <input type="radio" id="seg-pago" name="entrada_estado" value="PAGO" checked>
+          <label for="seg-pago">Con entrada</label>
+        </div>
+      </div>
+      <div class="fila-ios fila-ios-vertical" id="precio-entrada-wrap">
+        <label for="precio_entrada">Precio de entrada (COP) — opcional</label>
+        <input type="text" inputmode="numeric" id="precio_entrada" name="precio_entrada" placeholder="Ej: 40.000 (opcional)">
+      </div>
     </div>
 
     <label class="opcion-checkbox">

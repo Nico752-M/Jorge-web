@@ -38,16 +38,18 @@
           <span class="badge badge-{{ estado|lower }}">{{ estado }}</span>
         </div>
         <div class="fila-meta">
-          {{ tipo_ev or "Motivo sin especificar" }} · {{ personas or "—" }} personas{% if tipo_montaje %} ({{ 'con mesas' if tipo_montaje == 'con_mesas' else 'sin mesas' }}){% endif %} · {{ fecha.strftime('%d/%m/%Y') if fecha else '—' }}{% if hora_inicio and hora_fin %} · {{ hora_inicio }}–{{ hora_fin }}{% endif %}
+          {{ tipo_ev or "Motivo sin especificar" }} · {{ personas or "—" }} personas{% if tipo_montaje %} ({{ 'con mesas' if tipo_montaje == 'con_mesas' else 'sin mesas' }}){% endif %} · {{ fecha }}{% if hora_inicio and hora_fin %} · {{ hora_inicio }}–{{ hora_fin }}{% endif %} </div>
       </div>
+      
       <div class="fila-acciones">
         <a class="btn-primario-fila" href="{{ url_for('confirmar_solicitud', solicitud_id=id) }}">Confirmar</a>
-        <button type="button" class="btn-menu" onclick="toggleMenuFila(this)">⋯</button>
-        <div class="menu-desplegable oculto">
-          <a target="_blank" href="https://wa.me/{{ telefono|replace(' ','')|replace('+','')|replace('-','') }}">Contactar por WhatsApp</a>
-          <button type="button" onclick="verDetalleSolicitud(this)">Ver detalles</button>
-          <a class="opcion-rechazar" href="{{ url_for('rechazar_solicitud', solicitud_id=id) }}"
-            onclick="return confirm('¿Seguro que quieres rechazar esta solicitud?')">Rechazar</a>
+        <div class="menu-wrapper">
+          <button type="button" class="btn-menu" onclick="toggleMenuFila(this)">⋯</button>
+            <div class="menu-desplegable oculto">
+              <a target="_blank" href="https://wa.me/{{ telefono|replace(' ','')|replace('+','')|replace('-','') }}">Contactar por WhatsApp</a>
+              <a class="opcion-rechazar" href="{{ url_for('rechazar_reserva_cupo', reserva_id=rid) }}"
+                onclick="return confirm('¿Seguro que quieres rechazar esta reserva?')">Rechazar</a>
+            </div>
         </div>
       </div>
     </div>
@@ -118,15 +120,17 @@
       </div>
       <div class="fila-acciones">
         <a class="btn-primario-fila" href="{{ url_for('editar_evento', evento_id=id) }}">Editar</a>
-        <button type="button" class="btn-menu" onclick="toggleMenuFila(this)">⋯</button>
-        <div class="menu-desplegable oculto">
-          <button type="button" onclick="verDetalleEvento(this)">Ver detalles</button>
-          <button type="button" onclick="copiarEnlace(this, '{{ id }}')">Copiar enlace</button>
-          <a href="{{ url_for('toggle_visible_evento', evento_id=id) }}">
-            {% if visible == 1 %}Ocultar del sitio{% else %}Mostrar al público{% endif %}
-          </a>
-          <a class="opcion-rechazar" href="{{ url_for('eliminar_evento', evento_id=id) }}"
-            onclick="return confirm('Vas a eliminar este evento y TODAS sus reservas de forma permanente. Esto no se puede deshacer. ¿Seguro que quieres continuar?')">Eliminar</a>
+        <div class="menu-wrapper">
+          <button type="button" class="btn-menu" onclick="toggleMenuFila(this)">⋯</button>
+            <div class="menu-desplegable oculto">
+              <button type="button" onclick="verDetalleEvento(this)">Ver detalles</button>
+              <button type="button" onclick="copiarEnlace(this, '{{ id }}')">Copiar enlace</button>
+              <a href="{{ url_for('toggle_visible_evento', evento_id=id) }}">
+                {% if visible == 1 %}Ocultar del sitio{% else %}Mostrar al público{% endif %}
+              </a>
+              <a class="opcion-rechazar" href="{{ url_for('eliminar_evento', evento_id=id) }}"
+                onclick="return confirm('Vas a eliminar este evento y TODAS sus reservas de forma permanente. Esto no se puede deshacer. ¿Seguro que quieres continuar?')">Eliminar</a>
+            </div>
         </div>
       </div>
     </div>
