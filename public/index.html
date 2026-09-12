@@ -2633,9 +2633,14 @@
     el.style.scrollSnapType = 'none';
     let pausado = false;
     let mitad = 0;
+    let posicion = 0;
 
     function calcularMitad(){
-      mitad = el.scrollWidth / 2;
+      const total = CAFEARIAS_PRODUCTOS.length;
+      const cards = el.children;
+      // Punto exacto donde empieza la tarjeta duplicada (borde real, no la mitad matemática del ancho)
+      mitad = (cards.length > total && cards[total]) ? cards[total].offsetLeft : el.scrollWidth / 2;
+      posicion = el.scrollLeft;
     }
     setTimeout(calcularMitad, 300);
     window.addEventListener('resize', calcularMitad);
@@ -2644,19 +2649,19 @@
     function pausar(){
       pausado = true;
       clearTimeout(resumeTimer);
-      resumeTimer = setTimeout(()=> pausado = false, 2000); // se reactiva solo, pase lo que pase
+      resumeTimer = setTimeout(()=> pausado = false, 2000); // respaldo por si nunca llega pointerup/pointercancel
     }
-    function reanudarPronto(){
+    function reanudar(){
       clearTimeout(resumeTimer);
-      resumeTimer = setTimeout(()=> pausado = false, 1200);
+      posicion = el.scrollLeft; // toma la posición real donde quedó tras el toque
+      pausado = false;
     }
     el.addEventListener('pointerenter', e=>{ if(e.pointerType!=='touch') pausado = true; });
-    el.addEventListener('pointerleave', e=>{ if(e.pointerType!=='touch') pausado = false; });
+    el.addEventListener('pointerleave', e=>{ if(e.pointerType!=='touch') reanudar(); });
     el.addEventListener('pointerdown', pausar);
-    el.addEventListener('pointerup', reanudarPronto);
-    el.addEventListener('pointercancel', reanudarPronto);
+    el.addEventListener('pointerup', reanudar);
+    el.addEventListener('pointercancel', reanudar);
 
-    let posicion = 0;
     function tick(){
       if(!pausado && mitad > 0){
         const maxScroll = el.scrollWidth - el.clientWidth;
@@ -2672,6 +2677,7 @@
     requestAnimationFrame(tick);
   }
   iniciarAutoScrollCarrusel('.cafearias-row', 0.8);
+
 
   function activarHoverPremium(selectorTarjetas){
     document.querySelectorAll(selectorTarjetas).forEach(card => {
