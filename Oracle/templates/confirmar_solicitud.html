@@ -8,7 +8,7 @@
   <h2>Confirmar solicitud de alquiler</h2>
   <div class="resumen-solicitud">
     <p><b>Cliente:</b> {{ nombre }} · {{ telefono }}</p>
-    <p><b>Fecha pedida:</b> {{ fecha_deseada }}</p>
+    <p><b>Fecha pedida:</b> {{ fecha_deseada.strftime('%d/%m/%Y') if fecha_deseada else "no especificó" }}</p>
     <p><b>Hora aproximada que pidió:</b> {{ hora_aprox or "no especificó" }}</p>
     <p><b>Motivo:</b> {{ tipo_evento or "no especificó" }}</p>
     <p><b>Número de personas que pidió:</b> {{ num_personas or "no especificó" }}</p>

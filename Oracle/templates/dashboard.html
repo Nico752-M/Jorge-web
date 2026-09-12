@@ -27,7 +27,7 @@
   <div class="lista">
     {% for s in solicitudes %}
       {% set id, nombre, telefono, fecha, hora_inicio, hora_fin, hora, tipo_ev, personas, estado, tipo_montaje = s %}    
-      <div class="fila" data-nombre="{{ nombre }}" data-telefono="{{ telefono }}" data-fecha="{{ fecha }}"
+      <div class="fila" data-nombre="{{ nombre }}" data-telefono="{{ telefono }}" data-fecha="{{ fecha.strftime('%Y-%m-%d') if fecha else '—' }}"
       data-horario="{{ (hora_inicio ~ ' - ' ~ hora_fin) if hora_inicio and hora_fin else '—' }}"
       data-hora="{{ hora or '—' }}" data-tipo="{{ tipo_ev or '—' }}"
       data-personas="{{ personas or '—' }}" data-estado="{{ estado }}"
@@ -38,7 +38,7 @@
           <span class="badge badge-{{ estado|lower }}">{{ estado }}</span>
         </div>
         <div class="fila-meta">
-          {{ tipo_ev or "Motivo sin especificar" }} · {{ personas or "—" }} personas{% if tipo_montaje %} ({{ 'con mesas' if tipo_montaje == 'con_mesas' else 'sin mesas' }}){% endif %} · {{ fecha }}{% if hora_inicio and hora_fin %} · {{ hora_inicio }}–{{ hora_fin }}{% endif %}        </div>
+          {{ tipo_ev or "Motivo sin especificar" }} · {{ personas or "—" }} personas{% if tipo_montaje %} ({{ 'con mesas' if tipo_montaje == 'con_mesas' else 'sin mesas' }}){% endif %} · {{ fecha.strftime('%d/%m/%Y') if fecha else '—' }}{% if hora_inicio and hora_fin %} · {{ hora_inicio }}–{{ hora_fin }}{% endif %}
       </div>
       <div class="fila-acciones">
         <a class="btn-primario-fila" href="{{ url_for('confirmar_solicitud', solicitud_id=id) }}">Confirmar</a>
