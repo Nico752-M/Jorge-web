@@ -2640,16 +2640,28 @@
     setTimeout(calcularMitad, 300);
     window.addEventListener('resize', calcularMitad);
 
+    let resumeTimer = null;
+    function pausar(){
+      pausado = true;
+      clearTimeout(resumeTimer);
+      resumeTimer = setTimeout(()=> pausado = false, 2000); // se reactiva solo, pase lo que pase
+    }
+    function reanudarPronto(){
+      clearTimeout(resumeTimer);
+      resumeTimer = setTimeout(()=> pausado = false, 1200);
+    }
     el.addEventListener('pointerenter', e=>{ if(e.pointerType!=='touch') pausado = true; });
     el.addEventListener('pointerleave', e=>{ if(e.pointerType!=='touch') pausado = false; });
-    el.addEventListener('pointerdown', ()=> pausado = true);
-    el.addEventListener('pointerup', ()=> setTimeout(()=> pausado = false, 1500));
-    el.addEventListener('pointercancel', ()=> setTimeout(()=> pausado = false, 1500));
+    el.addEventListener('pointerdown', pausar);
+    el.addEventListener('pointerup', reanudarPronto);
+    el.addEventListener('pointercancel', reanudarPronto);
 
     function tick(){
       if(!pausado && mitad > 0){
+        const maxScroll = el.scrollWidth - el.clientWidth;
+        const limite = Math.min(mitad, maxScroll);
         el.scrollLeft += velocidad;
-        if(el.scrollLeft >= mitad){
+        if(el.scrollLeft >= limite){
           el.scrollLeft = 0;
         }
       }
