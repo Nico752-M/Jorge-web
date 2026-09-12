@@ -2626,7 +2626,7 @@
       }, { passive:false });
     });
   }
-  
+
   function iniciarAutoScrollCarrusel(selector, velocidad){
     const el = document.querySelector(selector);
     if(!el) return;
@@ -2634,33 +2634,47 @@
     let pausado = false;
     let mitad = 0;
     let posicion = 0;
+    let presionando = false;
+    let resumeSafety = null;
 
     function calcularMitad(){
       const total = CAFEARIAS_PRODUCTOS.length;
       const cards = el.children;
-      // Punto exacto donde empieza la tarjeta duplicada (borde real, no la mitad matemática del ancho)
       mitad = (cards.length > total && cards[total]) ? cards[total].offsetLeft : el.scrollWidth / 2;
       posicion = el.scrollLeft;
     }
     setTimeout(calcularMitad, 300);
     window.addEventListener('resize', calcularMitad);
 
-    let resumeTimer = null;
-    function pausar(){
-      pausado = true;
-      clearTimeout(resumeTimer);
-      resumeTimer = setTimeout(()=> pausado = false, 2000); // respaldo por si nunca llega pointerup/pointercancel
-    }
-    function reanudar(){
-      clearTimeout(resumeTimer);
-      posicion = el.scrollLeft; // toma la posición real donde quedó tras el toque
+    function reanudarInstante(){
+      posicion = el.scrollLeft;
       pausado = false;
     }
+    function terminarPresion(){
+      if(!presionando) return;
+      presionando = false;
+      clearTimeout(resumeSafety);
+      posicion = el.scrollLeft;
+      pausado = false;
+    }
+    function empezarPresion(){
+      presionando = true;
+      pausado = true;
+      clearTimeout(resumeSafety);
+      resumeSafety = setTimeout(terminarPresion, 4000); // respaldo extremo, solo si nunca llega pointerup
+    }
+
     el.addEventListener('pointerenter', e=>{ if(e.pointerType!=='touch') pausado = true; });
-    el.addEventListener('pointerleave', e=>{ if(e.pointerType!=='touch') reanudar(); });
-    el.addEventListener('pointerdown', pausar);
-    el.addEventListener('pointerup', reanudar);
-    el.addEventListener('pointercancel', reanudar);
+    el.addEventListener('pointerleave', e=>{ if(e.pointerType!=='touch' && !presionando) reanudarInstante(); });
+    el.addEventListener('pointerdown', empezarPresion);
+    el.addEventListener('pointermove', ()=>{
+      if(presionando){
+        clearTimeout(resumeSafety);
+        resumeSafety = setTimeout(terminarPresion, 4000); // mientras siga moviendo el dedo, se pospone
+      }
+    });
+    window.addEventListener('pointerup', terminarPresion);
+    window.addEventListener('pointercancel', terminarPresion);
 
     function tick(){
       if(!pausado && mitad > 0){
