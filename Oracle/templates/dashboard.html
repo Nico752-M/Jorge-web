@@ -77,11 +77,13 @@
       <div class="fila-acciones">
         <a class="btn-primario-fila" href="{{ url_for('ampliar_reserva_cupo', reserva_id=rid) }}"
            onclick="return confirmarYAvisar(this)">Ampliar y confirmar</a>
-        <button type="button" class="btn-menu" onclick="toggleMenuFila(this)">⋯</button>
-        <div class="menu-desplegable oculto">
-          <a target="_blank" href="https://wa.me/{{ telefono|replace(' ','')|replace('+','')|replace('-','') }}">Contactar por WhatsApp</a>
-          <a class="opcion-rechazar" href="{{ url_for('rechazar_reserva_cupo', reserva_id=rid) }}"
-             onclick="return confirm('¿Seguro que quieres rechazar esta reserva?')">Rechazar</a>
+        <div class="menu-wrapper">
+          <button type="button" class="btn-menu" onclick="toggleMenuFila(this)">⋯</button>
+          <div class="menu-desplegable oculto">
+            <a target="_blank" href="https://wa.me/{{ telefono|replace(' ','')|replace('+','')|replace('-','') }}">Contactar por WhatsApp</a>
+            <a class="opcion-rechazar" href="{{ url_for('rechazar_reserva_cupo', reserva_id=rid) }}"
+               onclick="return confirm('¿Seguro que quieres rechazar esta reserva?')">Rechazar</a>
+          </div>
         </div>
       </div>
     </div>
