@@ -26,19 +26,19 @@
   {% else %}
   <div class="lista">
     {% for s in solicitudes %}
-    {% set id, nombre, telefono, fecha, hora_inicio, hora_fin, hora, tipo_ev, personas, estado = s %}
-    <div class="fila" data-nombre="{{ nombre }}" data-telefono="{{ telefono }}" data-fecha="{{ fecha }}"
+      {% set id, nombre, telefono, fecha, hora_inicio, hora_fin, hora, tipo_ev, personas, estado, tipo_montaje = s %}    
+      <div class="fila" data-nombre="{{ nombre }}" data-telefono="{{ telefono }}" data-fecha="{{ fecha }}"
       data-horario="{{ (hora_inicio ~ ' - ' ~ hora_fin) if hora_inicio and hora_fin else '—' }}"
       data-hora="{{ hora or '—' }}" data-tipo="{{ tipo_ev or '—' }}"
-      data-personas="{{ personas or '—' }}" data-estado="{{ estado }}">
+      data-personas="{{ personas or '—' }}" data-estado="{{ estado }}"
+      data-montaje="{{ 'Con mesas' if tipo_montaje == 'con_mesas' else ('Sin mesas' if tipo_montaje == 'sin_mesas' else '—') }}">
       <div class="fila-info">
         <div class="fila-titulo">
           {{ nombre }}
           <span class="badge badge-{{ estado|lower }}">{{ estado }}</span>
         </div>
         <div class="fila-meta">
-          {{ tipo_ev or "Motivo sin especificar" }} · {{ personas or "—" }} personas · {{ fecha }}{% if hora_inicio and hora_fin %} · {{ hora_inicio }}–{{ hora_fin }}{% endif %}
-        </div>
+          {{ tipo_ev or "Motivo sin especificar" }} · {{ personas or "—" }} personas{% if tipo_montaje %} ({{ 'con mesas' if tipo_montaje == 'con_mesas' else 'sin mesas' }}){% endif %} · {{ fecha }}{% if hora_inicio and hora_fin %} · {{ hora_inicio }}–{{ hora_fin }}{% endif %}        </div>
       </div>
       <div class="fila-acciones">
         <a class="btn-primario-fila" href="{{ url_for('confirmar_solicitud', solicitud_id=id) }}">Confirmar</a>
@@ -200,6 +200,7 @@
     <p><b>Hora aprox:</b> <span id="dd-hora"></span></p>
     <p><b>Tipo de evento:</b> <span id="dd-tipo"></span></p>
     <p><b>Personas:</b> <span id="dd-personas"></span></p>
+    <p><b>Montaje:</b> <span id="dd-montaje"></span></p>
     <p><b>Estado:</b> <span id="dd-estado"></span></p>
   </div>
 </div>
@@ -247,6 +248,7 @@ function verDetalleSolicitud(btn){
   document.getElementById('dd-hora').textContent = fila.dataset.hora;
   document.getElementById('dd-tipo').textContent = fila.dataset.tipo;
   document.getElementById('dd-personas').textContent = fila.dataset.personas;
+  document.getElementById('dd-montaje').textContent = fila.dataset.montaje;
   document.getElementById('dd-estado').textContent = fila.dataset.estado;
   document.getElementById('modal-detalle').classList.remove('hidden');
 }

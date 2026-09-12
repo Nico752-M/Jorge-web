@@ -160,6 +160,7 @@ def crear_solicitud_alquiler():
     rango_hora = (data.get("rango_hora_aprox") or "").strip()
     tipo_evento = (data.get("tipo_evento") or "").strip()
     num_personas = data.get("num_personas") or None
+    tipo_montaje = (data.get("tipo_montaje") or "").strip() or None
 
     if not nombre or not telefono:
         return jsonify({"ok": False, "error": "Faltan nombre o teléfono."}), 400
@@ -178,8 +179,8 @@ def crear_solicitud_alquiler():
     cur = conn.cursor()
     cur.execute(
         """INSERT INTO SOLICITUDES_ALQUILER
-               (NOMBRE, TELEFONO, FECHA_DESEADA, HORA_INICIO, HORA_FIN, RANGO_HORA_APROX, TIPO_EVENTO, NUM_PERSONAS, ESTADO)
-           VALUES (:nombre, :telefono, TO_DATE(:fecha, 'YYYY-MM-DD'), :h_inicio, :h_fin, :rango, :tipo, :personas, 'PENDIENTE')""",
+               (NOMBRE, TELEFONO, FECHA_DESEADA, HORA_INICIO, HORA_FIN, RANGO_HORA_APROX, TIPO_EVENTO, NUM_PERSONAS, TIPO_MONTAJE, ESTADO)
+           VALUES (:nombre, :telefono, TO_DATE(:fecha, 'YYYY-MM-DD'), :h_inicio, :h_fin, :rango, :tipo, :personas, :montaje, 'PENDIENTE')""",
         nombre=nombre,
         telefono=telefono,
         fecha=fecha_deseada,
@@ -188,6 +189,7 @@ def crear_solicitud_alquiler():
         rango=rango_hora,
         tipo=tipo_evento,
         personas=num_personas,
+        montaje=tipo_montaje,
     )
     conn.commit()
     cur.close()
@@ -205,7 +207,7 @@ def dashboard():
     cur = conn.cursor()
 
     cur.execute(
-        """SELECT ID, NOMBRE, TELEFONO, FECHA_DESEADA, HORA_INICIO, HORA_FIN, RANGO_HORA_APROX, TIPO_EVENTO, NUM_PERSONAS, ESTADO
+        """SELECT ID, NOMBRE, TELEFONO, FECHA_DESEADA, HORA_INICIO, HORA_FIN, RANGO_HORA_APROX, TIPO_EVENTO, NUM_PERSONAS, ESTADO, TIPO_MONTAJE
            FROM SOLICITUDES_ALQUILER
            WHERE ESTADO IN ('PENDIENTE', 'CONTACTADO')
            ORDER BY FECHA_SOLICITUD DESC"""
@@ -376,7 +378,7 @@ def confirmar_solicitud(solicitud_id):
 
     # GET: mostrar el formulario con los datos de la solicitud
     cur.execute(
-        """SELECT ID, NOMBRE, TELEFONO, FECHA_DESEADA, HORA_INICIO, HORA_FIN, RANGO_HORA_APROX, TIPO_EVENTO, NUM_PERSONAS
+        """SELECT ID, NOMBRE, TELEFONO, FECHA_DESEADA, HORA_INICIO, HORA_FIN, RANGO_HORA_APROX, TIPO_EVENTO, NUM_PERSONAS, TIPO_MONTAJE
            FROM SOLICITUDES_ALQUILER WHERE ID = :id""",
         id=solicitud_id,
     )
