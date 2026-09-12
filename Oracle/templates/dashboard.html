@@ -45,11 +45,12 @@
         <a class="btn-primario-fila" href="{{ url_for('confirmar_solicitud', solicitud_id=id) }}">Confirmar</a>
         <div class="menu-wrapper">
           <button type="button" class="btn-menu" onclick="toggleMenuFila(this)">⋯</button>
-            <div class="menu-desplegable oculto">
-              <a target="_blank" href="https://wa.me/{{ telefono|replace(' ','')|replace('+','')|replace('-','') }}">Contactar por WhatsApp</a>
-              <a class="opcion-rechazar" href="{{ url_for('rechazar_reserva_cupo', reserva_id=rid) }}"
-                onclick="return confirm('¿Seguro que quieres rechazar esta reserva?')">Rechazar</a>
-            </div>
+          <div class="menu-desplegable oculto">
+            <a target="_blank" href="https://wa.me/{{ telefono|replace(' ','')|replace('+','')|replace('-','') }}">Contactar por WhatsApp</a>
+            <button type="button" onclick="verDetalleSolicitud(this)">Ver detalles</button>
+            <a class="opcion-rechazar" href="{{ url_for('rechazar_solicitud', solicitud_id=id) }}"
+              onclick="return confirm('¿Seguro que quieres rechazar esta solicitud?')">Rechazar</a>
+          </div>
         </div>
       </div>
     </div>
