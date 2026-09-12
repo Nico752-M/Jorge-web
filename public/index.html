@@ -1412,7 +1412,16 @@
   .espacios-cards .beneficio-item{justify-content:flex-start;}
   .espacios-cards .espacio-foto{aspect-ratio:4/3;overflow:hidden;border-radius:6px;background:#123d39;margin-bottom:20px;}
   .espacios-cards .espacio-foto img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s ease;}
-  .espacios-cards .beneficio-item:hover .espacio-foto img{transform:scale(1.05);}
+  .producto-modal-overlay{position:fixed;inset:0;background:rgba(10,20,18,.72);z-index:900;display:none;align-items:center;justify-content:center;padding:20px;}
+.producto-modal-overlay.open{display:flex;}
+.producto-modal-box{background:#fff;max-width:520px;width:100%;max-height:88vh;overflow:auto;border-radius:8px;position:relative;}
+.producto-modal-box .producto-modal-close{position:absolute;top:14px;right:14px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.9);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.2rem;z-index:2;}
+.producto-modal-box img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;}
+.producto-modal-body{padding:22px 24px 26px;}
+.producto-modal-body .top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:10px;}
+.producto-modal-body h3{font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:500;color:#034944;margin:0;}
+.producto-modal-body .precio{font-weight:600;white-space:nowrap;}
+.producto-modal-body p{font-size:.9rem;line-height:1.6;color:#555;margin:0;}
   </style>
   <style id="mobile-bottom-nav-styles">.mobile-bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:500;height:72px;background:rgba(255,255,255,.92);backdrop-filter:blur(24px) saturate(140%);-webkit-backdrop-filter:blur(24px) saturate(140%);border-top:1px solid rgba(3,73,68,.1);box-shadow:0 -4px 28px rgba(0,0,0,.06);align-items:stretch;justify-content:space-around;padding:0;padding-bottom:env(safe-area-inset-bottom,0px);}.mobile-bottom-nav .btab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px 0;background:none;border:none;color:#6b6b6b;font-family:'Public Sans',sans-serif;font-size:.62rem;font-weight:600;letter-spacing:.03em;cursor:pointer;position:relative;-webkit-tap-highlight-color:transparent;transition:color .2s ease;}.mobile-bottom-nav .btab svg{width:24px;height:24px;stroke-width:1.8;transition:transform .25s cubic-bezier(.2,.8,.2,1),color .2s ease;}.mobile-bottom-nav .btab span{display:block;line-height:1;margin-top:1px;}.mobile-bottom-nav .btab.btab-active{color:#006241;}.mobile-bottom-nav .btab.btab-active svg{transform:translateY(-1px);}.mobile-bottom-nav .btab::before{content:'';position:absolute;top:0;left:50%;width:0;height:2.5px;background:#006241;border-radius:0 0 3px 3px;transform:translateX(-50%);transition:width .3s cubic-bezier(.2,.8,.2,1);}.mobile-bottom-nav .btab.btab-active::before{width:36px;}.mobile-bottom-nav .btab:active svg{transform:scale(.88);transition:transform .08s ease;}@media(max-width:860px){.mobile-bottom-nav{display:flex;}.nav-mobile-toggle{display:none!important;}.mobile-nav-panel{display:none!important;}body{padding-bottom:calc(72px + env(safe-area-inset-bottom,0px));}#floating-actions{bottom:calc(80px + env(safe-area-inset-bottom,0px))!important;}#coffe-mascota{bottom:calc(80px + env(safe-area-inset-bottom,0px))!important;}#bot-teaser{bottom:calc(106px + env(safe-area-inset-bottom,0px))!important;}#bot-window{bottom:calc(110px + env(safe-area-inset-bottom,0px))!important;}footer{padding-bottom:calc(90px + env(safe-area-inset-bottom,0px))!important;}}@media(max-width:560px){.mobile-bottom-nav{height:66px;}.mobile-bottom-nav .btab{font-size:.56rem;gap:3px;}.mobile-bottom-nav .btab svg{width:22px;height:22px;}body{padding-bottom:calc(66px + env(safe-area-inset-bottom,0px));}}</style>
 <style id="manifiesto-mobile-fix">
@@ -2309,9 +2318,12 @@
       </div>`;
   }
 
+  const PRODUCTOS_FLAT = [];
   function prodRowHTML(it){
+    const id = PRODUCTOS_FLAT.length;
+    PRODUCTOS_FLAT.push(it);
     return `
-      <div class="prod-row">
+      <div class="prod-row" onclick="abrirProducto(${id})" style="cursor:pointer;">
         <div class="prod-photo">
           <img src="${imgPathFor(it.n)}" alt="${it.n}" onerror="onImgErr(this, '${it.n.replace(/'/g, "\\'")}')">
         </div>
@@ -2324,6 +2336,20 @@
           ${it.d ? `<p>${it.d}</p>` : ''}
         </div>
       </div>`;
+  }
+  function abrirProducto(id){
+    const it = PRODUCTOS_FLAT[id];
+    if(!it) return;
+    const img = document.getElementById('producto-modal-img');
+    img.src = imgPathFor(it.n);
+    img.onerror = function(){ onImgErr(this, it.n); };
+    document.getElementById('producto-modal-nombre').textContent = it.n;
+    document.getElementById('producto-modal-precio').textContent = it.p ? ('$' + it.p) : '';
+    document.getElementById('producto-modal-desc').textContent = it.d || '';
+    document.getElementById('producto-modal').classList.add('open');
+  }
+  function cerrarProducto(){
+    document.getElementById('producto-modal').classList.remove('open');
   }
 
   function buildTabs(){
@@ -3124,5 +3150,17 @@
   })();
   </script>
 
-  <nav class="mobile-bottom-nav" id="mobile-bottom-nav"><button class="btab btab-active" data-view="site" onclick="mobileNavGo('site')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 10v9a1 1 0 001 1h3v-5a1 1 0 011-1h4a1 1 0 011 1v5h3a1 1 0 001-1v-9"/></svg><span>Inicio</span></button><button class="btab" data-view="menu" onclick="mobileNavGo('menu')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16"/><path d="M4 5c0 0 2-2 8-2s8 2 8 2"/><path d="M4 5v0c0 6 2.5 11 8 14c5.5-3 8-8 8-14"/></svg><span>Menú</span></button><button class="btab" data-view="ubicacion" onclick="mobileNavGo('ubicacion')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg><span>Ubicación</span></button><button class="btab" data-view="auditorio" onclick="mobileNavGo('auditorio')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18"/><path d="M8 2v4"/><path d="M16 2v4"/><circle cx="12" cy="15" r="1.5" fill="currentColor" stroke="none"/></svg><span>Eventos</span></button><button class="btab" data-view="piso" onclick="mobileNavGo('piso')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M9 15l2 2 4-4"/></svg><span>Reservas</span></button></nav><script>(function(){window.mobileNavGo=function(v){if(v==='ubicacion'){goToUbicacion();}else{enterView(v);}var b=document.getElementById('mobile-bottom-nav');if(b)b.querySelectorAll('.btab').forEach(function(t){t.classList.toggle('btab-active',t.dataset.view===v);});};var o=window.enterView;if(typeof o==='function'){window.enterView=function(v){var r=o.apply(this,arguments);var m={site:'site',menu:'menu',reserva:'piso',galeria:'site',auditorio:'auditorio',piso:'piso'};var b=document.getElementById('mobile-bottom-nav');if(b)b.querySelectorAll('.btab').forEach(function(t){t.classList.toggle('btab-active',t.dataset.view===(m[v]||'site'));});return r;};}})();</script></body>
+  <nav class="mobile-bottom-nav" id="mobile-bottom-nav"><button class="btab btab-active" data-view="site" onclick="mobileNavGo('site')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 10v9a1 1 0 001 1h3v-5a1 1 0 011-1h4a1 1 0 011 1v5h3a1 1 0 001-1v-9"/></svg><span>Inicio</span></button><button class="btab" data-view="menu" onclick="mobileNavGo('menu')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16"/><path d="M4 5c0 0 2-2 8-2s8 2 8 2"/><path d="M4 5v0c0 6 2.5 11 8 14c5.5-3 8-8 8-14"/></svg><span>Menú</span></button><button class="btab" data-view="ubicacion" onclick="mobileNavGo('ubicacion')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg><span>Ubicación</span></button><button class="btab" data-view="auditorio" onclick="mobileNavGo('auditorio')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18"/><path d="M8 2v4"/><path d="M16 2v4"/><circle cx="12" cy="15" r="1.5" fill="currentColor" stroke="none"/></svg><span>Eventos</span></button><button class="btab" data-view="piso" onclick="mobileNavGo('piso')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M9 15l2 2 4-4"/></svg><span>Reservas</span></button></nav><script>(function(){window.mobileNavGo=function(v){if(v==='ubicacion'){goToUbicacion();}else{enterView(v);}var b=document.getElementById('mobile-bottom-nav');if(b)b.querySelectorAll('.btab').forEach(function(t){t.classList.toggle('btab-active',t.dataset.view===v);});};var o=window.enterView;if(typeof o==='function'){window.enterView=function(v){var r=o.apply(this,arguments);var m={site:'site',menu:'menu',reserva:'piso',galeria:'site',auditorio:'auditorio',piso:'piso'};var b=document.getElementById('mobile-bottom-nav');if(b)b.querySelectorAll('.btab').forEach(function(t){t.classList.toggle('btab-active',t.dataset.view===(m[v]||'site'));});return r;};}})();</script><div class="producto-modal-overlay" id="producto-modal" onclick="if(event.target===this) cerrarProducto();">
+  <div class="producto-modal-box">
+    <button class="producto-modal-close" onclick="cerrarProducto()">✕</button>
+    <img id="producto-modal-img" src="" alt="">
+    <div class="producto-modal-body">
+      <div class="top">
+        <h3 id="producto-modal-nombre"></h3>
+        <span class="precio" id="producto-modal-precio"></span>
+      </div>
+      <p id="producto-modal-desc"></p>
+    </div>
+  </div>
+</div></body>
   </html>
