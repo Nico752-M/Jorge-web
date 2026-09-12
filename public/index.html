@@ -1226,7 +1226,84 @@
     #menu-view .menu-card:nth-child(even){margin-top:0;}
     #menu-view .menu-card .photo,
     #menu-view .menu-card:nth-child(even) .photo{aspect-ratio:1.28/1;}
-    #menu-view .menu-card .price-tag{right:10px;bottom:10px;font-size:.68rem;padding:7px 10px;}
+       #menu-view .menu-card .price-tag{right:10px;bottom:10px;font-size:.68rem;padding:7px 10px;}
+  }
+
+  /* ===== NUEVO ESTILO DE MENU - sidebar + filas de producto ===== */
+  .menu-layout{
+    display:grid; grid-template-columns:250px 1fr; gap:0;
+    max-width:1180px; margin:0 auto; padding:0 8vw 100px; align-items:start;
+  }
+  .menu-sidebar{
+    position:sticky; top:150px;
+    border-right:1px solid var(--linea);
+    padding:50px 24px 40px 0;
+    display:flex; flex-direction:column; gap:4px;
+  }
+  .menu-sidebar button{
+    width:100%; display:flex; align-items:center; justify-content:space-between;
+    background:none; border:none; cursor:pointer;
+    font-family:'Public Sans',sans-serif; font-weight:600; font-size:.86rem; color:var(--tinta);
+    padding:14px 16px; border-radius:3px; text-align:left;
+    transition:background .2s, color .2s;
+  }
+  .menu-sidebar button .cnt{
+    font-family:'JetBrains Mono',monospace; font-size:.66rem; color:var(--tinta-suave);
+    transition:color .2s;
+  }
+  .menu-sidebar button:hover{background:var(--hueso-2);}
+  .menu-sidebar button.active{background:var(--teal-osc); color:var(--blanco);}
+  .menu-sidebar button.active .cnt{color:rgba(255,255,255,.65);}
+
+  .menu-panel-head{padding:50px 0 30px; max-width:560px;}
+  .menu-panel-head h3{
+    font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:500;
+    font-size:clamp(2rem,3.2vw,2.6rem); color:var(--teal-osc); line-height:1.05;
+  }
+  .menu-panel-head p{margin-top:10px; color:var(--tinta-suave); font-size:.9rem; line-height:1.55;}
+
+  .menu-shelf-2{margin-bottom:36px;}
+  .menu-shelf-2:last-child{margin-bottom:0;}
+  .shelf-title{
+    font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:500;
+    font-size:1.15rem; color:var(--teal-cla); margin-bottom:14px;
+  }
+  .prod-list{display:flex; flex-direction:column; gap:14px;}
+
+  .prod-row{
+    display:grid; grid-template-columns:88px 1fr; gap:18px;
+    background:var(--blanco); border:1px solid var(--linea);
+    border-radius:4px; padding:12px;
+    transition:box-shadow .25s, transform .25s;
+  }
+  .prod-row:hover{box-shadow:0 14px 30px rgba(3,73,68,.08); transform:translateY(-2px);}
+  .prod-photo{
+    width:88px; height:88px; border-radius:3px; overflow:hidden;
+    background:var(--teal-osc); display:flex; align-items:center; justify-content:center; flex:none;
+  }
+  .prod-photo img{width:100%; height:100%; object-fit:cover;}
+  .prod-photo .mono{font-family:'Cormorant Garamond',serif; font-weight:500; font-size:1.3rem; color:rgba(255,255,255,.7);}
+  .prod-info{display:flex; flex-direction:column; justify-content:center; min-width:0;}
+  .prod-top{display:flex; align-items:baseline; justify-content:space-between; gap:14px;}
+  .prod-top h4{font-family:'Cormorant Garamond',serif; font-weight:500; font-style:italic; font-size:1.18rem; color:var(--tinta);}
+  .prod-price{font-family:'JetBrains Mono',monospace; font-size:.8rem; color:var(--teal-osc); white-space:nowrap; flex:none;}
+  .prod-tag{
+    display:inline-block; margin-top:5px; align-self:flex-start;
+    font-family:'JetBrains Mono',monospace; font-size:.56rem; letter-spacing:.08em; text-transform:uppercase;
+    background:var(--hueso-2); color:var(--teal-osc); padding:3px 8px; border-radius:2px;
+  }
+  .prod-info p{margin-top:5px; font-size:.83rem; color:var(--tinta-suave); line-height:1.5;}
+
+  @media(max-width:900px){
+    .menu-layout{grid-template-columns:1fr; padding:0 20px 80px;}
+    .menu-sidebar{
+      position:static; border-right:none; border-bottom:1px solid var(--linea);
+      flex-direction:row; overflow-x:auto; padding:20px 0; gap:6px;
+    }
+    .menu-sidebar button{white-space:nowrap;}
+    .menu-panel-head{padding:30px 0 20px;}
+    .prod-row{grid-template-columns:70px 1fr;}
+    .prod-photo{width:70px; height:70px;}
   }
 
   </style>
@@ -1723,10 +1800,10 @@
       <div class="destacados-row" id="destacados-row"></div>
     </div>
 
-    <div class="menu-tabs-wrap">
-      <div class="menu-tabs" id="menu-tabs"></div>
+    <div class="menu-layout">
+      <div class="menu-sidebar" id="menu-sidebar"></div>
+      <div class="menu-panel-body" id="menu-panel-body"></div>
     </div>
-    <div class="menu-body" id="menu-body"></div>
   </div>
 
   <!-- ============ RESERVA VIEW ============ -->
@@ -2231,29 +2308,50 @@
       </div>`;
   }
 
+  function prodRowHTML(it){
+    return `
+      <div class="prod-row">
+        <div class="prod-photo">
+          <img src="${imgPathFor(it.n)}" alt="${it.n}" onerror="onImgErr(this, '${it.n.replace(/'/g, "\\'")}')">
+        </div>
+        <div class="prod-info">
+          <div class="prod-top">
+            <h4>${it.n}</h4>
+            ${it.p ? `<span class="prod-price">$${it.p}</span>` : ''}
+          </div>
+          ${it.tag ? `<span class="prod-tag">${it.tag}</span>` : ''}
+          ${it.d ? `<p>${it.d}</p>` : ''}
+        </div>
+      </div>`;
+  }
+
   function buildTabs(){
-    const tabsEl = document.getElementById('menu-tabs');
+    const tabsEl = document.getElementById('menu-sidebar');
     const keys = Object.keys(MENU);
-    tabsEl.innerHTML = keys.map((k,i)=>`<button data-k="${k}" class="${i===0?'active':''}" onclick="showCat('${k}')">${MENU[k].label}</button>`).join('');
+    tabsEl.innerHTML = keys.map((k,i)=>{
+      const cat = MENU[k];
+      const count = cat.layout === 'cards' ? cat.items.length : cat.shelves.reduce((a,s)=>a+s.items.length,0);
+      return `<button data-k="${k}" class="${i===0?'active':''}" onclick="showCat('${k}')">${cat.label}<span class="cnt">${count}</span></button>`;
+    }).join('');
   }
 
   function buildBody(){
-    const bodyEl = document.getElementById('menu-body');
+    const bodyEl = document.getElementById('menu-panel-body');
     const keys = Object.keys(MENU);
     bodyEl.innerHTML = keys.map((k,i)=>{
       const cat = MENU[k];
       let content = '';
       if(cat.layout === 'cards'){
-        content = `<div class="menu-cards-grid">${cat.items.map(cardHTML).join('')}</div>`;
+        content = `<div class="prod-list">${cat.items.map(prodRowHTML).join('')}</div>`;
       } else {
         content = cat.shelves.map(s => `
-          <div class="menu-shelf">
-            ${s.title ? `<h4>${s.title}</h4>` : ''}
-            <div class="menu-cards-grid">${s.items.map(cardHTML).join('')}</div>
+          <div class="menu-shelf-2">
+            ${s.title ? `<h4 class="shelf-title">${s.title}</h4>` : ''}
+            <div class="prod-list">${s.items.map(prodRowHTML).join('')}</div>
           </div>`).join('');
       }
       return `<div class="menu-cat ${i===0?'active':''}" id="cat-${k}">
-        <div class="menu-cat-head"><h3>${cat.label}</h3><p>${cat.note}</p></div>
+        <div class="menu-panel-head"><h3>${cat.label}</h3><p>${cat.note}</p></div>
         ${content}
       </div>`;
     }).join('');
@@ -2283,7 +2381,7 @@
   }
 
   function showCat(k){
-    document.querySelectorAll('.menu-tabs button').forEach(b=>b.classList.toggle('active', b.dataset.k===k));
+    document.querySelectorAll('.menu-sidebar button').forEach(b=>b.classList.toggle('active', b.dataset.k===k));
     const actual = document.querySelector('.menu-cat.active');
     const nuevo = document.getElementById('cat-'+k);
     if(!nuevo || nuevo === actual) return;
