@@ -955,6 +955,7 @@
   .cafearias-card .ph{aspect-ratio:1/1;background:#eee}
   .cafearias-card .info{padding:16px 18px 20px;margin:0}
   .cafearias-card .info b{font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:500;color:var(--cr-green-deep)}
+  .cafearias-card .info p{margin:8px 0 0;font-size:.82rem;line-height:1.5;color:#555}
   .cafearias-card .info span{font-size:.72rem;color:#777}
 
   /* LOCATION */
@@ -2415,10 +2416,10 @@
     platos/bebidas reutilizan las que ya existen en images/menu/
     ========================================================= */
   const CAFEARIAS_PRODUCTOS = [
-    { img: "images/cafearias/paquete-individual.webp", label: "" },
-    { img: "images/cafearias/varios-paquetes.webp", label: "" },
-    { img: "images/cafearias/proceso.webp", label: "" },
-    { img: "images/cafearias/cafe-listo.webp", label: "" },
+    { img: "images/cafearias/cafearias-paquete.webp", label: "Ingredientes", texto: "Café 100% puro." },
+    { img: "images/cafearias/cafearias-preparado.webp", label: "Instrucciones de preparación", texto: "Utilice 8 gramos de café molido por 100ml de agua a 92°C. Agregue el agua caliente de manera uniforme y circularmente infusionando desde el centro hacia afuera por 4 minutos." },
+    { img: "images/cafearias/cafearias-granos.webp", label: "Notas", texto: "Fragancia a pan tostado y miel, aroma a caña con sensación de cereal, sabor almendra tostada con nuez y caña, residual seco con nota herbal, cuerpo ligero, acidez cítrica semi brillante." },
+    { img: "images/cafearias/cafearias-canasta.webp", label: "Método de conservación", texto: "Para conservar el sabor y aroma mantenerse sellado en su empaque original en un lugar fresco y seco." },
   ];
 
   function buildCafeArias(){
@@ -2430,7 +2431,7 @@
         <div class="ph">
           <img src="${p.img}" alt="${p.label}" onerror="onImgErr(this, '${p.label.replace(/'/g, "\\'")}')">
         </div>
-        <div class="info"><b>${p.label}</b></div>
+        <div class="info"><b>${p.label}</b><p>${p.texto}</p></div>
       </div>`).join('');
   }
   buildCafeArias();
