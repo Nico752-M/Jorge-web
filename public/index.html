@@ -2157,17 +2157,18 @@
       note: "Para picar en la tarde",
       layout: "cards",
       items: [
-        { n:"Burrito de cerdo", p:"22.000" },
-        { n:"Burrito de pollo", p:"20.000" },
-        { n:"Empanadas carne x3", p:"12.000" },
-        { n:"Hamburguesa", p:"26.000" },
-        { n:"Sándwich pollo sencillo", p:"15.000" },
-        { n:"Aborrajados", d:"Bocadillos tradicionales elaborados con plátano maduro relleno, empanados y fritos, servidos típicamente con una porción de salsa de la casa.", p:"12.000" },        { n:"Cheesecake", d:"Nuestra tarta de queso artesanal", p:"12.000" },
+        { n:"Burrito de cerdo", d:"Tortilla de harina dorada a la plancha rellena de jugosa carne de cerdo desmechada, acompañada de papas gajo sazonadas y salsa de la casa.", p:"22.000" },
+        { n:"Burrito de pollo", d:"Tortilla crujiente por fuera con marcas de parrilla, rellena de tierno pollo desmenuzado, acompañada de papas gajo y dip especial.", p:"20.000" },
+        { n:"Empanadas carne x3", d:"Una porción de tres empanadas crujientes de maíz rellenas de carne y acompañadas de ají", p:"12.000" },
+        { n:"Hamburguesa", d:"Suculenta hamburguesa en pan brioche con ajonjolí, carne jugosa, queso fundido y vegetales frescos, servida con papas gajo y salsa.", p:"26.000" },
+        { n:"Sándwich pollo sencillo", d:"Clásico sándwich en pan de molde con relleno de pollo desmechado y vegetales, ideal para una porción ligera y reconfortante.", p:"15.000" },
+        { n:"Aborrajados", d:"Crujientes y sabrosos vallunos", p:"12.000" },
+        { n:"Cheesecake", d:"Nuestra tarta de queso artesanal", p:"12.000" },
         { n:"Porción de papas francesas", d:"Rústicas, sazonadas a la perfección", p:"9.000" },
         { n:"Chips de plátano", d:"Viene con salsa de la casa", p:"7.000" },
         { n:"Sándwich combo", d:"Jamón y queso más papas a la francesa", p:"15.000" },
         { n:"Sándwich de jamón y queso", d:"Clásico en pan tradicional", p:"9.000" },
-        { n:"Torta de chocolate", d:"", p:"8.000" },
+        { n:"Brownie con helado", d:"Un bizcocho de chocolate tipo brownie coronado con una bola de helado de vainilla, bañado en salsa de chocolate y acompañado de barquillos.", p:"PENDIENTE" },
         { n:"Waffles de pandebono", d:"Masa de pandebono original", p:"7.000" },
         { n:"Waffles con topping", d:"Helado, frutas de temporada y salsa", p:"15.000" },
       ]
@@ -2178,14 +2179,18 @@
       layout: "list",
       shelves: [
         { items:[
-          { n:"Espresso", d:"Un café espresso corto e intenso con su característico estrato de crema dorada, servido en taza", p:"4.500" }, { n:"Americano", d:"Bebida caliente de café negro servida en una taza de cerámica texturizada, acompañada de un sobre de azúcar.", p:"4.500" }, { n:"Café con leche", d:"Bebida caliente elaborada con café y leche texturizada con espuma ligera", p:"6.000" },
-          { n:"Cappuccino", p:"9.500" }, { n:"Latte", p:"7.000" }, { n:"Macchiato", p:"7.500" },
-          { n:"Mocaccino", p:"10.000" }, { n:"Latte vienés", p:"10.500" }, { n:"Affogato", p:"8.500" },
-          { n:"Frappé de café", d:"Una bebida fría y granizada a base de café, cubierta con abundante crema batida, hilos de salsa de chocolate y dos barquillos decorativos.", p:"11.000" }, { n:"Limonada de café", d:"Una bebida fría y refrescante que combina café y limonada con cubitos de hielo", p:"10.500" },
+          { n:"Espresso", d:"Café corto, intenso y concentrado, coronado con su tradicional capa de crema dorada.", p:"4.500" },
+          { n:"Americano", d:"Bebida caliente y suave de café negro diluido, ideal para disfrutar en cualquier momento.", p:"4.500" },
+          { n:"Café con leche", d:"Reconfortante mezcla de café con leche vaporizada y una fina capa de espuma ligera.", p:"6.000" },
+          { n:"Cappuccino", d:"Tradicional combinación de espresso, leche vaporizada y una capa densa y cremosa de espuma.", p:"9.500" },
+          { n:"Latte", d:"Bebida tersa y cremosa donde predomina la leche vaporizada sobre una base de espresso.", p:"7.000" },
+          { n:"Macchiato", d:"Espresso intenso coronado con una sutil capa de espuma de leche para suavizar su carácter.", p:"7.500" },
+          { n:"Mocaccino", d:"Combinación reconfortante de espresso, leche vaporizada y rico chocolate, coronado con una suave capa de espuma.", p:"10.000" },
+          { n:"Latte vienés", d:"Delicioso espresso con leche vaporizada, coronado con una generosa capa de crema batida.", p:"10.500" },
+          { n:"Affogato", d:"Postre de helado de vainilla \"ahogado\" con un espresso caliente recién preparado.", p:"8.500" },
+          { n:"Frappé de café", d:"Bebida fría y granizada de café, coronada con crema batida, hilos de chocolate y barquillos.", p:"11.000" },
+          { n:"Limonada de café", d:"Refrescante y original fusión fría que combina la acidez de la limonada con el toque intenso del café y hielo.", p:"10.500" },
         ]},
-        { title:"Métodos de filtración", items:[
-          { n:"Aeropress", p:"12.000" }, { n:"Chemex", p:"12.000" }, { n:"V60", p:"18.000" },
-        ]}
       ]
     },
     frias: {
@@ -2195,7 +2200,7 @@
       shelves: [
         { title:"Jugos &amp; sodas de la casa", items:[
           { n:"Jugos en agua", d:"Lulo, mango, piña, fresa, maracuyá, maracumango, mora", p:"9.000" },
-          { n:"Milo frío", p:"12.000" }, { n:"Soda michelada", d:"Una bebida refrescante compuesta por un vaso alto con escarchado de sal, cubos de hielo, un toque de limón y una botella de soda para mezclar.", p:"8.000" },
+          { n:"Milo frío", p:"12.000" }, { n:"Soda michelada", p:"8.000" },
           { n:"Soda de frutos rojos", p:"14.000" }, { n:"Soda de frutos amarillos", p:"14.000" },
           { n:"Lulada", p:"14.000" },
         ]},
@@ -2222,13 +2227,22 @@
       layout: "list",
       shelves: [
         { title:"A base de agua · $11.000", items:[
-          { n:"Limonada de cereza" }, { n:"Limonada frutos rojos" }, { n:"Limonada mango" }, { n:"Limonada tamarindo" }, { n:"Limonada sandía" },
+          { n:"Limonada de cereza", d:"Refrescante mezcla de zumo de limón natural con el toque dulce y frutal de la cereza." },
+          { n:"Limonada frutos rojos", d:"Bebida fría y vibrante que une la acidez del limón con una selección de frutos del bosque." },
+          { n:"Limonada mango", d:"Exótica y cremosa mezcla de limón con la dulce pulpa natural de mango." },
+          { n:"Limonada tamarindo", d:"Propuesta tradicional y refrescante con el balance perfecto entre el limón y la acidez del tamarindo." },
+          { n:"Limonada sandía", d:"Bebida ligera y sumamente hidratante a base de zumo de limón y sandía fresca." },
         ]},
         { title:"A base de leche · $13.000", items:[
-          { n:"Limonada coco" }, { n:"Coco cereza" }, { n:"Coco frutos rojos" }, { n:"Coco maracuyá" }, { n:"Piña colada" },
+          { n:"Limonada coco", d:"Cremosa y tropical combinación de limón con la suavidad de la crema de coco." },
+          { n:"Coco cereza", d:"Bebida cremosa con base de coco realzada con un toque dulce de cereza." },
+          { n:"Coco frutos rojos", d:"Exótica mezcla de base de coco tropical combinada con el perfil acidito de los frutos rojos." },
+          { n:"Coco maracuyá", d:"Contraste perfecto entre la cremosidad del coco y la chispa tropical del maracuyá." },
+          { n:"Piña colada", d:"Clásico cóctel sin licor a base de piña fresca y crema de coco, servido bien frío." },
         ]},
         { title:"Bebidas especiales · $15.000", items:[
-          { n:"Granizado de café" }, { n:"Limonada de vino tinto" },
+          { n:"Granizado de café", d:"Bebida helada y espesa con una intensa y refrescante base de café espresso." },
+          { n:"Limonada de vino tinto", d:"Sofisticada mezcla que fusiona la frescura de la limonada tradicional con notas de vino tinto." },
         ]},
       ]
     },
@@ -2268,7 +2282,7 @@
         { n:"Huevos revueltos", d:"Al gusto, suaves y esponjosos", p:"6.000" },
         { n:"Omelette criollo", d:"Relleno de guiso, panceta y queso Barragán", p:"13.000" },
         { n:"Omelette maduratto", d:"Omelette de maduro, tocineta y queso mozzarella", p:"13.000" },
-        { n:"Chocolate con queso cuajada", d:"Una taza humeante de chocolate caliente acompañada de cubos de queso cuajada fresco para fundir dentro de la bebida.", p:"6.000" },
+        { n:"Chocolate con queso cuajada", d:"Chocolate en agua o en leche, acompañado de queso cuajada", p:"6.000" },
       ]
     },
   };
