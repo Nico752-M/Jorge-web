@@ -947,7 +947,7 @@
   .cafearias-carousel{position:relative}
   .cafearias-carousel:after{content:'';position:absolute;top:0;right:0;bottom:12px;width:48px;pointer-events:none;background:linear-gradient(90deg,transparent,var(--cr-green-deep));}
   .cafearias-row{display:flex;gap:18px;overflow:auto;padding:4px 2px 12px;scrollbar-width:none;scroll-snap-type:x proximity;}
-  .cafearias-row{-webkit-overflow-scrolling:touch; touch-action:pan-x; cursor:grab; user-select:none;}
+  .cafearias-row{-webkit-overflow-scrolling:touch; cursor:grab; user-select:none;}
   .cafearias-row.arrastrando{cursor:grabbing; scroll-snap-type:none;}
   .cafearias-row img{pointer-events:none;}  
   .cafearias-row::-webkit-scrollbar{display:none}
@@ -2640,10 +2640,11 @@
     setTimeout(calcularMitad, 300);
     window.addEventListener('resize', calcularMitad);
 
-    el.addEventListener('pointerenter', ()=> pausado = true);
-    el.addEventListener('pointerleave', ()=> pausado = false);
+    el.addEventListener('pointerenter', e=>{ if(e.pointerType!=='touch') pausado = true; });
+    el.addEventListener('pointerleave', e=>{ if(e.pointerType!=='touch') pausado = false; });
     el.addEventListener('pointerdown', ()=> pausado = true);
     el.addEventListener('pointerup', ()=> setTimeout(()=> pausado = false, 1500));
+    el.addEventListener('pointercancel', ()=> setTimeout(()=> pausado = false, 1500));
 
     function tick(){
       if(!pausado && mitad > 0){
