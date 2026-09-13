@@ -7,14 +7,14 @@
 
   <!-- PWA: este archivo no extiende base.html, así que necesita su propio link -->
   <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#15120e">
-  <link rel="apple-touch-icon" href="/icon-192.png">
-  <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#F7F4EC">
   <link rel="apple-touch-icon" href="/icon-192.png">
-  <link rel="stylesheet" href="/static/css/admin.css">
+
+  <!-- Misma hoja de estilos que usa el resto del panel admin -->
+  <link rel="stylesheet" href="/admin.css">
+
   <style>
-    /* Solo lo que es específico de esta pantalla y no vive en admin.css */
+    /* Lo único específico de esta pantalla (no vive en admin.css) */
     .overlay-carga{
       position:fixed; inset:0; z-index:999;
       background:rgba(2,16,14,.5);
@@ -33,28 +33,45 @@
     @keyframes girar{ to{ transform:rotate(360deg); } }
   </style>
 </head>
-<div id="overlay-carga" class="overlay-carga"><div class="spinner-carga"></div><span>Entrando...</span></div>
+<body>
 
-<div class="login-wrap">
-  <div class="login-card">
-    <h1>Panel admin</h1>
-    <p class="subt">Café Real — acceso interno.</p>
+  <div id="overlay-carga" class="overlay-carga"><div class="spinner-carga"></div><span>Entrando...</span></div>
 
-    {% with mensajes = get_flashed_messages() %}
-      {% if mensajes %}
-        {% for m in mensajes %}
-          <p class="flash">{{ m }}</p>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
+  <div class="login-wrap">
+    <div class="login-card">
+      <h1>Panel admin</h1>
+      <p class="subt">Café Real — acceso interno.</p>
 
-    <form method="POST">
-      <label>Usuario</label>
-      <input type="text" name="usuario" placeholder="Usuario" required autofocus>
-      <label>Contraseña</label>
-      <input type="password" name="password" placeholder="Contraseña" required>
-      <button type="submit" class="btn-solid">Entrar</button>
-    </form>
+      {% with mensajes = get_flashed_messages() %}
+        {% if mensajes %}
+          {% for m in mensajes %}
+            <p class="flash">{{ m }}</p>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST">
+        <label>Usuario</label>
+        <input type="text" name="usuario" placeholder="Usuario" required autofocus>
+        <label>Contraseña</label>
+        <input type="password" name="password" placeholder="Contraseña" required>
+        <button type="submit" class="btn-solid">Entrar</button>
+      </form>
+    </div>
   </div>
-</div>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/sw.js").catch((err) => {
+          console.warn("No se pudo registrar el service worker:", err);
+        });
+      });
+    }
+
+    document.querySelector('form').addEventListener('submit', () => {
+      document.getElementById('overlay-carga').classList.add('visible');
+    });
+  </script>
+</body>
 </html>
