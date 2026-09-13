@@ -9,41 +9,15 @@
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#15120e">
   <link rel="apple-touch-icon" href="/icon-192.png">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#F7F4EC">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+  <link rel="stylesheet" href="/static/css/admin.css">
   <style>
-    :root{ --hierro:#161311; --hierro-2:#1d1a17; --crema:#f3ece2; --concreto:#a99c8c;
-           --oro:#c9a24b; --oro-suave:#e0c27a; --linea:#332d27; }
-    *{box-sizing:border-box;}
-    body{
-      margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
-      background:var(--hierro); color:var(--crema);
-      font-family:'Public Sans', Arial, sans-serif; padding:24px;
-    }
-    .login-box{
-      width:100%; max-width:380px; background:var(--hierro-2);
-      border:1px solid var(--linea); padding:36px 30px; border-radius:2px;
-    }
-    .login-box h2{ margin:0 0 6px; font-size:1.4rem; }
-    .login-box p{ color:var(--concreto); font-size:.9rem; line-height:1.5; margin:0 0 22px; }
-    form{ display:flex; flex-direction:column; gap:12px; }
-    input{
-      background:var(--hierro); border:1px solid var(--linea); color:var(--crema);
-      padding:12px 14px; font-size:.92rem; border-radius:2px; outline:none;
-    }
-    input:focus{ border-color:var(--oro); }
-    button{
-      margin-top:6px; background:var(--oro); color:#1a1512; border:none;
-      padding:13px; font-size:.92rem; font-weight:600; cursor:pointer; border-radius:2px;
-    }
-    button:hover{ background:var(--oro-suave); }
-    .mensajes{ margin-bottom:16px; }
-    .mensajes p{
-      color:#e6a99b; font-size:.85rem; line-height:1.4;
-      border:1px solid var(--linea); padding:8px 10px; border-radius:2px; margin:0 0 8px;
-    }
-
+    /* Solo lo que es específico de esta pantalla y no vive en admin.css */
     .overlay-carga{
       position:fixed; inset:0; z-index:999;
-      background:rgba(21,18,14,.72);
+      background:rgba(2,16,14,.5);
       backdrop-filter:blur(5px) saturate(120%);
       -webkit-backdrop-filter:blur(5px) saturate(120%);
       display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
@@ -52,49 +26,35 @@
     .overlay-carga.visible{ opacity:1; pointer-events:all; }
     .spinner-carga{
       width:34px; height:34px; border-radius:50%;
-      border:3px solid rgba(201,162,75,.25); border-top-color:var(--oro);
+      border:3px solid rgba(255,255,255,.25); border-top-color:var(--blanco);
       animation:girar .7s linear infinite;
     }
-    .overlay-carga span{ font-size:.82rem; color:var(--concreto); letter-spacing:.02em; }
+    .overlay-carga span{ font-size:.82rem; color:var(--blanco); letter-spacing:.02em; }
     @keyframes girar{ to{ transform:rotate(360deg); } }
   </style>
 </head>
-<body>
+<div id="overlay-carga" class="overlay-carga"><div class="spinner-carga"></div><span>Entrando...</span></div>
 
-  <div id="overlay-carga" class="overlay-carga"><div class="spinner-carga"></div><span>Entrando...</span></div>
-  <div class="login-box">
-    <h2>Panel admin</h2>
-    <p>Café Real — acceso interno.</p>
+<div class="login-wrap">
+  <div class="login-card">
+    <h1>Panel admin</h1>
+    <p class="subt">Café Real — acceso interno.</p>
 
     {% with mensajes = get_flashed_messages() %}
       {% if mensajes %}
-        <div class="mensajes">
-          {% for m in mensajes %}
-            <p>{{ m }}</p>
-          {% endfor %}
-        </div>
+        {% for m in mensajes %}
+          <p class="flash">{{ m }}</p>
+        {% endfor %}
       {% endif %}
     {% endwith %}
 
     <form method="POST">
+      <label>Usuario</label>
       <input type="text" name="usuario" placeholder="Usuario" required autofocus>
+      <label>Contraseña</label>
       <input type="password" name="password" placeholder="Contraseña" required>
-      <button type="submit">Entrar</button>
+      <button type="submit" class="btn-solid">Entrar</button>
     </form>
   </div>
-
-  <script>
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("/sw.js").catch((err) => {
-          console.warn("No se pudo registrar el service worker:", err);
-        });
-      });
-    }
-
-    document.querySelector('form').addEventListener('submit', () => {
-      document.getElementById('overlay-carga').classList.add('visible');
-    });
-  </script>
-</body>
+</div>
 </html>
