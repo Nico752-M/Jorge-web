@@ -398,10 +398,8 @@
   @keyframes fabPulse{0%{transform:scale(1); opacity:.6;} 100%{transform:scale(1.35); opacity:0;}}
 
   /* FAB RESERVAR */
-  @keyframes fabInCenter{to{opacity:1; transform:translateX(-50%) translateY(0) scale(1);}}
-
   #fab-reservar{
-    position:fixed; left:50%; bottom:24px; z-index:298;
+    position:fixed; left:24px; bottom:24px; z-index:298;
     display:flex; align-items:center; gap:9px;
     padding:14px 22px;
     border-radius:999px;
@@ -410,18 +408,23 @@
     font-family:'JetBrains Mono', monospace;
     font-size:.8rem; font-weight:500; letter-spacing:.02em;
     box-shadow:0 10px 28px rgba(3,73,68,.32);
-    opacity:0; transform:translateX(-50%) translateY(16px) scale(.85);
-    animation:fabInCenter .6s cubic-bezier(.2,.8,.2,1) forwards .5s;
+    opacity:0; transform:translateY(16px) scale(.85);
+    animation:fabIn .6s cubic-bezier(.2,.8,.2,1) forwards .5s;
     transition:transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s ease;
     white-space:nowrap;
   }
-  #fab-reservar:hover{ transform:translateX(-50%) translateY(-5px) scale(1.05); box-shadow:0 14px 34px rgba(3,73,68,.4); }
-  #fab-reservar:active{ transform:translateX(-50%) translateY(-2px) scale(.97); }
+  #fab-reservar:hover{ transform:translateY(-5px) scale(1.05); box-shadow:0 14px 34px rgba(3,73,68,.4); }
+  #fab-reservar:active{ transform:translateY(-2px) scale(.97); }
   #fab-reservar svg{ width:19px; height:19px; flex-shrink:0; }
   #fab-reservar::after{
     content:''; position:absolute; inset:-4px; border-radius:999px;
     border:2px solid rgba(10,124,118,.5);
     opacity:0; animation:fabPulse 2.6s ease-out infinite 2.2s;
+  }
+
+  @media(max-width:560px){
+    #fab-reservar{ left:16px; padding:12px 18px; font-size:.74rem; gap:7px; }
+    #fab-reservar svg{ width:17px; height:17px; }
   }
 
   /* GALERIA */
@@ -848,7 +851,7 @@
 
   /* ---------- footer ---------- */
   footer{padding:80px 8vw 35px;background:#073c38;}
-  .footer-grid{grid-template-columns:1.7fr 1fr 1fr .7fr;gap:60px;}
+  .footer-grid{grid-template-columns:1.6fr 1fr 1fr;gap:60px;}
   .footer-col b{font-family:var(--cr-mono);font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;}
   .footer-links{gap:9px;}.footer-links a{font-family:var(--cr-serif);font-size:1.05rem;color:rgba(255,255,255,.72);}
   .footer-links a:hover{color:white;transform:translateX(3px);}
@@ -884,7 +887,7 @@
     section{padding:70px 20px;}.section-head h2{font-size:3rem;}.hero-copy{padding:0 20px;}.hero h1{font-size:3.35rem;}.hero-copy:after{font-size:.48rem;}
     .menu-hero{min-height:70vh;padding:110px 20px 55px;}.menu-hero h2{font-size:4.2rem;}.destacados{padding-left:20px;padding-right:20px;}.menu-tabs{padding:0 20px;}.menu-body{padding-left:20px;padding-right:20px;}.menu-cards-grid{grid-template-columns:1fr;}
     .cafearias-card{width:255px;}.cafearias-row{gap:12px;}.auditorio-visual,.piso-visual{min-height:300px;}.footer-grid{grid-template-columns:1fr;gap:35px;}
-    #bot-window{right:14px;width:calc(100vw - 28px);}#coffe-mascota{left:10px;transform:scale(.82);transform-origin:bottom left;}#floating-actions{right:12px;bottom:15px;}
+    #bot-window{right:14px;width:calc(100vw - 28px);}#floating-actions{right:12px;bottom:15px;}
   }
   </style>
 
@@ -1844,13 +1847,6 @@
             <li><a href="#" onclick="goToUbicacion(); return false;">Ubicación y horario</a></li>
             <li><a href="https://wa.me/573105552323" target="_blank" rel="noopener">Escríbenos por WhatsApp</a></li>
           </ul>
-        </div>
-        <div class="footer-col">
-          <b>Síguenos</b>
-          <div class="footer-social">
-            <a href="https://wa.me/573105552323" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
-            <a href="https://www.instagram.com/caferealtulua?utm_source=ig_web_button_share_sheet&igsi=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener" aria-label="Instagram">📷</a>
-          </div>
         </div>
       </div>
       <div class="footer-bottom">
