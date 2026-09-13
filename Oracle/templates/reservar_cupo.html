@@ -83,6 +83,10 @@
       <a id="btn-descargar-ticket" href="#" class="btn-volver" style="display:block; margin-bottom:8px;">Descargar QR</a>
       <a id="btn-whatsapp-ticket" href="#" target="_blank" class="btn-volver" style="display:block;">Enviarme este link por WhatsApp</a>
     </div>
+    <div id="confirmacion-alquiler" style="display:none; text-align:center; margin-top:16px;">
+      <p style="color:var(--concreto); font-size:.85rem; margin:0 0 12px;">Guarda la confirmación con la fecha, hora y precio de tu cupo.</p>
+      <a id="btn-whatsapp-alquiler" href="#" target="_blank" class="btn-volver" style="display:block;">Enviarme la confirmación por WhatsApp</a>
+    </div>
     <a id="btn-volver" href="/" class="btn-volver">Volver al inicio</a>
   </div>
 
@@ -142,10 +146,11 @@
         document.getElementById('btn-volver').style.display = "block";
 
         if (data.es_alquiler && data.wa_link) {
-          // Evento de alquiler externo: no hay QR ni check-in, la confirmación
-          // (fecha, hora, precio) se manda directo al WhatsApp del cliente.
-          msg.textContent = "¡Listo! Te vamos a abrir WhatsApp con tu confirmación.";
-          window.location.href = data.wa_link;
+          // Evento de alquiler externo: no hay QR ni check-in. En vez de saltar
+          // solo, mostramos un botón para que la persona envíe la confirmación
+          // (fecha, hora, precio) a su propio WhatsApp cuando quiera.
+          document.getElementById('btn-whatsapp-alquiler').href = data.wa_link;
+          document.getElementById('confirmacion-alquiler').style.display = "block";
         } else if (data.codigo && data.link) {
           const urlQr = "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=" + encodeURIComponent(data.codigo);
           document.getElementById('ticket-qr-img').src = urlQr;

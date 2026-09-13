@@ -2183,6 +2183,19 @@
         <button type="submit" class="btn btn-solid" id="rc-submit-btn">Confirmar mi cupo</button>
         <div id="modal-msg" class="modal-msg"></div>
       </form>
+
+      <div id="rc-ticket-qr" class="hidden" style="text-align:center; margin-top:14px;">
+        <img id="rc-ticket-qr-img" src="" alt="Código QR de tu reserva" style="max-width:200px; width:100%; border-radius:2px;">
+        <p id="rc-ticket-codigo" style="font-family:'JetBrains Mono',monospace; font-size:.78rem; word-break:break-all; margin:10px 0;"></p>
+        <p style="font-size:.85rem; color:var(--tinta-suave); margin:0 0 12px;">Guarda este código, lo necesitarás en la entrada.</p>
+        <a id="rc-btn-descargar" href="#" class="btn btn-outline" style="display:block; margin-bottom:8px;">Descargar QR</a>
+        <a id="rc-btn-whatsapp" href="#" target="_blank" class="btn btn-solid" style="display:block;">Enviarme este link por WhatsApp</a>
+      </div>
+
+      <div id="rc-confirmacion-alquiler" class="hidden" style="text-align:center; margin-top:14px;">
+        <p style="font-size:.85rem; color:var(--tinta-suave); margin:0 0 12px;">Guarda la confirmación con fecha, hora y precio.</p>
+        <a id="rc-btn-whatsapp-alquiler" href="#" target="_blank" class="btn btn-solid" style="display:block;">Enviarme la confirmación por WhatsApp</a>
+      </div>
     </div>
   </div>
 
@@ -3187,7 +3200,11 @@
     document.getElementById('modal-msg').textContent = '';
     document.getElementById('modal-msg').className = 'modal-msg';
     document.getElementById('form-reserva-cupo').reset();
+    document.getElementById('form-reserva-cupo').style.display = '';
+    document.getElementById('form-reserva-cupo').querySelectorAll('input').forEach(i => i.disabled = false);
     document.getElementById('rc-submit-btn').disabled = false;
+    document.getElementById('rc-ticket-qr').classList.add('hidden');
+    document.getElementById('rc-confirmacion-alquiler').classList.add('hidden');
     document.getElementById('modal-reserva-cupo').classList.remove('hidden');
   }
 
@@ -3234,7 +3251,34 @@
         msg.className = 'modal-msg ok';
         document.getElementById('form-reserva-cupo').querySelectorAll('input').forEach(i => i.disabled = true);
         cargarEventosPublicos();
-        setTimeout(cerrarModalReserva, 2500);
+
+        if(data.es_alquiler && data.wa_link){
+          document.getElementById('rc-btn-whatsapp-alquiler').href = data.wa_link;
+          document.getElementById('rc-confirmacion-alquiler').classList.remove('hidden');
+        } else if(data.codigo && data.link){
+          const urlQr = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + encodeURIComponent(data.codigo);
+          document.getElementById('rc-ticket-qr-img').src = urlQr;
+          document.getElementById('rc-ticket-codigo').textContent = data.codigo;
+
+          let telLimpio = payload.telefono.replace(/\D/g, '');
+          if(telLimpio.length === 10 && telLimpio.startsWith('3')) telLimpio = '57' + telLimpio;
+          document.getElementById('rc-btn-whatsapp').href =
+            "https://wa.me/" + telLimpio + "?text=" + encodeURIComponent("Guardo el link de mi reserva: " + data.link);
+
+          document.getElementById('rc-btn-descargar').onclick = function(ev){
+            ev.preventDefault();
+            fetch(urlQr).then(r => r.blob()).then(blob => {
+              const objectUrl = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = objectUrl; a.download = 'ticket-' + data.codigo + '.png';
+              document.body.appendChild(a); a.click(); a.remove();
+              URL.revokeObjectURL(objectUrl);
+            }).catch(() => window.open(urlQr, '_blank'));
+          };
+
+          document.getElementById('rc-ticket-qr').classList.remove('hidden');
+        }
+        // Ya no se cierra solo el modal: la persona lo cierra cuando ya guardó su QR o mandó el WhatsApp.
       } else if(data.ok && !data.confirmado){
         msg.textContent = data.mensaje;
         msg.className = 'modal-msg warn';
