@@ -234,6 +234,7 @@
   .modal-box{
     width:100%; max-width:420px; background:var(--blanco); border:1px solid var(--linea);
     border-radius:12px; padding:30px; position:relative;
+    max-height:85vh; overflow-y:auto; -webkit-overflow-scrolling:touch;
   }
   .modal-box h3{margin-top:0; font-family:   'Cormorant Garamond',serif; color:var(--teal-osc); font-weight:500;}
   .modal-cerrar{
@@ -888,6 +889,14 @@
     .menu-hero{min-height:70vh;padding:110px 20px 55px;}.menu-hero h2{font-size:4.2rem;}.destacados{padding-left:20px;padding-right:20px;}.menu-tabs{padding:0 20px;}.menu-body{padding-left:20px;padding-right:20px;}.menu-cards-grid{grid-template-columns:1fr;}
     .cafearias-card{width:255px;}.cafearias-row{gap:12px;}.auditorio-visual,.piso-visual{min-height:300px;}.footer-grid{grid-template-columns:1fr;gap:35px;}
     #bot-window{right:14px;width:calc(100vw - 28px);}#floating-actions{right:12px;bottom:15px;}
+  }
+
+  @media(max-width:860px){
+  .auditorio-visual{ min-height:240px; }
+  }
+  @media(max-width:560px){
+    .auditorio-visual{ min-height:200px; }
+    .auditorio-info{ padding:26px 22px; }
   }
   </style>
 
@@ -2398,6 +2407,45 @@
 
   cargarEventosPublicos();
   setInterval(cargarEventosPublicos, 20000);
+
+  /* =========================================================
+  SWIPE — deslizar con el dedo para cambiar de evento
+  en la tarjeta del auditorio, igual que una galería de fotos
+  ========================================================= */
+  (function(){
+    const visual = document.querySelector('.auditorio-visual');
+    if(!visual) return;
+
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let siguiendoToque = false;
+
+    visual.addEventListener('touchstart', (e) => {
+      if(e.touches.length !== 1) return;
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      siguiendoToque = true;
+    }, { passive: true });
+
+    visual.addEventListener('touchend', (e) => {
+      if(!siguiendoToque) return;
+      siguiendoToque = false;
+      if(EVENTOS_PUBLICOS.length < 2) return;
+
+      const touch = e.changedTouches[0];
+      const deltaX = touch.clientX - touchStartX;
+      const deltaY = touch.clientY - touchStartY;
+
+      if(Math.abs(deltaX) > 40 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5){
+        const total = EVENTOS_PUBLICOS.length;
+        if(deltaX < 0){
+          irAEventoCarrusel((INDICE_EVENTO_ACTUAL + 1) % total);
+        } else {
+          irAEventoCarrusel((INDICE_EVENTO_ACTUAL - 1 + total) % total);
+        }
+      }
+    }, { passive: true });
+  })();
 
   /* =========================================================
     HORARIO — Lunes a domingo 7:00-22:00
