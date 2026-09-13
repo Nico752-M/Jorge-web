@@ -31,6 +31,17 @@
     }
     .overlay-carga span{ font-size:.82rem; color:var(--blanco); letter-spacing:.02em; }
     @keyframes girar{ to{ transform:rotate(360deg); } }
+
+    .campo-password{ position:relative; }
+    .campo-password input{ padding-right:44px; width:100%; }
+    .toggle-password{
+      position:absolute; right:10px; top:50%; transform:translateY(-50%);
+      background:none; border:none; cursor:pointer; padding:4px;
+      color:var(--concreto); display:flex; align-items:center;
+      transition:color .2s ease;
+    }
+    .toggle-password:hover{ color:var(--teal-osc); }
+    .toggle-password svg{ width:19px; height:19px; }
   </style>
 </head>
 <body>
@@ -54,7 +65,15 @@
         <label>Usuario</label>
         <input type="text" name="usuario" placeholder="Usuario" required autofocus>
         <label>Contraseña</label>
-        <input type="password" name="password" placeholder="Contraseña" required>
+        <div class="campo-password">
+          <input id="password" type="password" name="password" placeholder="Contraseña" required>
+          <button type="button" class="toggle-password" id="toggle-password" aria-label="Mostrar contraseña">
+            <svg id="icono-ojo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </button>
+        </div>
         <button type="submit" class="btn-solid">Entrar</button>
       </form>
     </div>
@@ -71,6 +90,21 @@
 
     document.querySelector('form').addEventListener('submit', () => {
       document.getElementById('overlay-carga').classList.add('visible');
+    });
+
+    const togglePassword = document.getElementById('toggle-password');
+    const passwordInput = document.getElementById('password');
+    const iconoOjo = document.getElementById('icono-ojo');
+
+    togglePassword.addEventListener('click', () => {
+      const esOculta = passwordInput.type === 'password';
+      passwordInput.type = esOculta ? 'text' : 'password';
+
+      iconoOjo.innerHTML = esOculta
+        ? '<path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a21.6 21.6 0 0 1 5.06-6.06M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 7 11 7a21.6 21.6 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>'
+        : '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"></path><circle cx="12" cy="12" r="3"></circle>';
+
+      togglePassword.setAttribute('aria-label', esOculta ? 'Ocultar contraseña' : 'Mostrar contraseña');
     });
   </script>
 </body>
