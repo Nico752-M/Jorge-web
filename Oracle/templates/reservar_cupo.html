@@ -141,7 +141,12 @@
         e.target.style.display = "none";
         document.getElementById('btn-volver').style.display = "block";
 
-        if (data.codigo && data.link) {
+        if (data.es_alquiler && data.wa_link) {
+          // Evento de alquiler externo: no hay QR ni check-in, la confirmación
+          // (fecha, hora, precio) se manda directo al WhatsApp del cliente.
+          msg.textContent = "¡Listo! Te vamos a abrir WhatsApp con tu confirmación.";
+          window.location.href = data.wa_link;
+        } else if (data.codigo && data.link) {
           const urlQr = "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=" + encodeURIComponent(data.codigo);
           document.getElementById('ticket-qr-img').src = urlQr;
           document.getElementById('ticket-codigo').textContent = data.codigo;

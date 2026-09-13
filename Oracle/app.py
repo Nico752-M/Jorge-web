@@ -257,7 +257,7 @@ def checkin():
                   SUM(CASE WHEN r.ESTADO = 'CONFIRMADA' AND r.USADO = 1 THEN 1 ELSE 0 END) AS ingresadas
            FROM EVENTOS e
            LEFT JOIN RESERVAS_CUPOS r ON r.EVENTO_ID = e.ID
-           WHERE e.ESTADO = 'ACTIVO'
+           WHERE e.ESTADO = 'ACTIVO' AND e.TIPO = 'CUPOS'
            GROUP BY e.ID, e.TITULO
            ORDER BY e.TITULO"""
     )
@@ -758,15 +758,21 @@ def crear_reserva_cupo():
     cur = conn.cursor()
 
     cur.execute(
-        "SELECT ID FROM EVENTOS WHERE ID = :id AND ESTADO = 'ACTIVO' AND FECHA_FIN >= SYSTIMESTAMP",
+        """SELECT ID, TIPO, TITULO, FECHA_INICIO, ENTRADA_ESTADO, PRECIO_ENTRADA
+           FROM EVENTOS WHERE ID = :id AND ESTADO = 'ACTIVO' AND FECHA_FIN >= SYSTIMESTAMP""",
         id=evento_id,
     )
-    if not cur.fetchone():
+    evento = cur.fetchone()
+    if not evento:
         cur.close()
         conn.close()
         return jsonify({"ok": False, "error": "Ese evento ya no está disponible."}), 404
 
+    _, tipo_evento, evento_titulo, evento_inicio, entrada_estado, precio_entrada = evento
+
     # Intento atómico: solo resta si de verdad alcanzan los cupos.
+    # Esto aplica igual para CUPOS y ALQUILER: el aforo siempre se controla,
+    # aunque el alquiler no tenga QR de check-in.
     cur.execute(
         """UPDATE EVENTOS
            SET AFORO_DISPONIBLE = AFORO_DISPONIBLE - :n
@@ -777,7 +783,11 @@ def crear_reserva_cupo():
     alcanzo = cur.rowcount == 1
     estado_reserva = "CONFIRMADA" if alcanzo else "EXCEDENTE"
 
-    codigo_reserva = secrets.token_urlsafe(12) if alcanzo else None
+    # El QR de entrada (CODIGO) solo se genera para eventos creados por el local (CUPOS),
+    # que sí usan check-in en la puerta. Los eventos de ALQUILER (rentados por alguien
+    # externo) no tienen ese flujo, así que su reserva queda sin código.
+    genera_qr = alcanzo and tipo_evento == "CUPOS"
+    codigo_reserva = secrets.token_urlsafe(12) if genera_qr else None
 
     cur.execute(
         """INSERT INTO RESERVAS_CUPOS (EVENTO_ID, NOMBRE, APELLIDO, TELEFONO, NUM_PERSONAS, ESTADO, CODIGO)
@@ -795,7 +805,14 @@ def crear_reserva_cupo():
     cur.close()
     conn.close()
 
-    if alcanzo:
+    if not alcanzo:
+        return jsonify({
+            "ok": True,
+            "confirmado": False,
+            "mensaje": "Por ahora no quedan cupos suficientes. Guardamos tu solicitud — estamos viendo si se puede ampliar el aforo y te contactaremos."
+        })
+
+    if tipo_evento == "CUPOS":
         return jsonify({
             "ok": True,
             "confirmado": True,
@@ -803,10 +820,29 @@ def crear_reserva_cupo():
             "link": url_for("mi_reserva", codigo=codigo_reserva, _external=True)
         })
 
+    # --- Evento de ALQUILER: sin QR. Se arma un mensaje con fecha, hora y precio
+    #     para que el cliente lo reciba (y lo guarde) directamente en su WhatsApp. ---
+    fecha_str = evento_inicio.strftime("%d/%m/%Y")
+    hora_str = evento_inicio.strftime("%I:%M %p")
+    if entrada_estado == "PAGO" and precio_entrada:
+        linea_precio = f"Precio de entrada: ${precio_entrada:,.0f}".replace(",", ".")
+    else:
+        linea_precio = "Entrada libre"
+
+    mensaje = (
+        f"¡Hola {nombre}! Tu cupo para \"{evento_titulo}\" quedó confirmado.\n"
+        f"Fecha: {fecha_str}\n"
+        f"Hora: {hora_str}\n"
+        f"{linea_precio}"
+    )
+    tel_limpio = telefono.replace(" ", "").replace("+", "").replace("-", "")
+    wa_link = f"https://wa.me/{tel_limpio}?text={quote(mensaje)}"
+
     return jsonify({
         "ok": True,
-        "confirmado": False,
-        "mensaje": "Por ahora no quedan cupos suficientes. Guardamos tu solicitud — estamos viendo si se puede ampliar el aforo y te contactaremos."
+        "confirmado": True,
+        "es_alquiler": True,
+        "wa_link": wa_link
     })
 
 # =========================================================
