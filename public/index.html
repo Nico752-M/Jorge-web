@@ -2096,6 +2096,102 @@
 }
 @media(prefers-reduced-motion:reduce){.experiencia-tile img,.hero-cta{transition:none!important;}}
 </style>
+
+<style id="ux-premium-v7">
+/* ===== Experiencia visual: menos lectura, más imagen ===== */
+.experiencia-home{background:var(--hueso);padding-top:clamp(70px,9vw,120px);padding-bottom:clamp(70px,9vw,120px)}
+.experiencia-home .section-head p{max-width:42ch}
+.galeria-grid{grid-template-columns:1.35fr .8fr .8fr 1.1fr;gap:12px}
+.galeria-grid .ph{border-radius:18px;box-shadow:0 18px 45px rgba(3,73,68,.08)}
+.galeria-grid .ph:nth-child(1){aspect-ratio:4/5}
+.galeria-grid .ph:nth-child(2),.galeria-grid .ph:nth-child(3){aspect-ratio:4/5}
+.galeria-grid .ph:nth-child(4){aspect-ratio:4/5}
+.galeria-grid .ph:nth-child(5),.galeria-grid .ph:nth-child(6){aspect-ratio:4/5}
+
+/* Menú: producto grande, descripción corta y aire */
+.menu-panel-body .prod-list{gap:18px}
+.menu-panel-body .prod-row{grid-template-columns:150px 1fr;min-height:174px;padding:12px;border-radius:12px;overflow:hidden}
+.menu-panel-body .prod-photo{width:150px;height:150px;border-radius:8px}
+.menu-panel-body .prod-top h4{font-size:1.38rem}
+.menu-panel-body .prod-info p{font-size:.76rem;line-height:1.45;max-width:38ch;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+@media(max-width:900px){.menu-panel-body .prod-row{grid-template-columns:112px 1fr;min-height:132px}.menu-panel-body .prod-photo{width:112px;height:112px}.menu-panel-body .prod-top h4{font-size:1.2rem}}
+@media(max-width:520px){.menu-panel-body .prod-row{grid-template-columns:1fr;min-height:0}.menu-panel-body .prod-photo{width:100%;height:auto;aspect-ratio:1.45/1}.menu-panel-body .prod-info{padding:4px 4px 8px}.menu-panel-body .prod-info p{display:none}}
+
+/* ¿Con quién vienes? */
+.con-quien{padding:clamp(70px,9vw,120px) clamp(20px,7vw,90px);background:var(--blanco)}
+.con-quien-head{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:34px}
+.con-quien-head h2{font:500 clamp(2.4rem,5vw,4.5rem)/.9 'Cormorant Garamond',serif;color:var(--teal-osc);letter-spacing:-.03em}
+.con-quien-head p{max-width:32ch;color:var(--tinta-suave);font-size:.84rem;line-height:1.55}
+.con-quien-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.con-quien-card{position:relative;min-height:420px;overflow:hidden;border-radius:18px;background:var(--teal-osc);color:#fff}
+.con-quien-card img{width:100%;height:100%;position:absolute;inset:0;object-fit:cover;transition:transform .7s cubic-bezier(.2,.8,.2,1)}
+.con-quien-card:hover img{transform:scale(1.045)}
+.con-quien-card:after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(2,25,23,.86),rgba(2,25,23,.04) 65%)}
+.con-quien-copy{position:absolute;z-index:2;left:26px;right:26px;bottom:25px}
+.con-quien-copy span{font:600 .58rem 'JetBrains Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#b9ddd2}
+.con-quien-copy h3{margin-top:7px;font:500 2rem/1 'Cormorant Garamond',serif}
+.con-quien-copy p{margin-top:7px;color:rgba(255,255,255,.75);font-size:.76rem}
+@media(max-width:760px){.con-quien-head{display:block}.con-quien-head p{margin-top:12px}.con-quien-grid{grid-template-columns:1fr}.con-quien-card{min-height:300px}}
+
+/* Renta para disfrutar: editorial */
+#piso .espacios-cards .beneficio-item{border:0;padding:0;background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 16px 45px rgba(3,73,68,.08)}
+#piso .espacios-cards .espacio-foto{height:300px;overflow:hidden}
+#piso .espacios-cards .espacio-foto img{width:100%;height:100%;object-fit:cover;transition:transform .7s ease}
+#piso .espacios-cards .beneficio-item:hover .espacio-foto img{transform:scale(1.04)}
+#piso .espacios-cards .beneficio-item>h3,#piso .espacios-cards .beneficio-item>p,#piso .espacios-cards .beneficio-item>button{margin-left:26px;margin-right:26px}
+#piso .espacios-cards .beneficio-item>h3{margin-top:22px;margin-bottom:0;font-size:1.9rem}
+#piso .espacios-cards .beneficio-item>p{font-size:.78rem;line-height:1.5;max-width:34ch;margin-top:8px;min-height:38px}
+#piso .espacios-cards .beneficio-item>button{margin-bottom:26px;margin-top:16px!important}
+#piso .piso-grid{border-radius:22px;overflow:hidden;box-shadow:0 20px 55px rgba(3,73,68,.08)}
+
+/* Ubicación: menos ficha, más destino */
+#ubicacion .section-head p{display:none}
+#ubicacion .ubicacion-wrap{border:0;border-radius:24px;box-shadow:0 22px 60px rgba(3,73,68,.12)}
+#ubicacion .ubicacion-copy{padding:clamp(34px,5vw,62px)}
+#ubicacion .ubicacion-copy h3{font:500 clamp(2.2rem,4vw,3.6rem)/.95 'Cormorant Garamond',serif;margin-bottom:28px}
+#ubicacion .info-list{gap:18px}
+#ubicacion .info-list .item b{font-family:'JetBrains Mono',monospace;font-style:normal;font-size:.57rem;letter-spacing:.14em;text-transform:uppercase}
+#ubicacion .info-list .item p{font-size:.92rem;margin:0}
+#ubicacion .info-list .item span{font-size:.75rem}
+#ubicacion .mapa-frame{min-height:460px}
+#ubicacion .mapa-frame iframe{min-height:460px}
+@media(max-width:760px){#ubicacion .ubicacion-wrap{border-radius:18px}#ubicacion .mapa-frame,#ubicacion .mapa-frame iframe{min-height:320px}}
+
+/* Confianza: sin inventar reseñas */
+.confianza{padding:clamp(70px,9vw,110px) clamp(20px,7vw,90px);background:var(--hueso-2);text-align:center}
+.confianza .eyebrow{font:600 .58rem 'JetBrains Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--teal-cla)}
+.confianza h2{margin:10px auto 12px;font:500 clamp(2.4rem,5vw,4.2rem)/.92 'Cormorant Garamond',serif;color:var(--teal-osc)}
+.confianza p{max-width:48ch;margin:0 auto 22px;color:var(--tinta-suave);font-size:.82rem;line-height:1.55}
+.confianza .confianza-line{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.confianza .confianza-pill{padding:9px 14px;border:1px solid var(--linea);border-radius:999px;background:#fff;font:600 .6rem 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--teal-osc)}
+</style>
+
+
+<style id="ux-journey-v8">
+/* V8 · Recorrido emocional: curiosidad → deseo → identificación → intención → reserva */
+.journey-bridge{padding:72px 6vw 78px;background:var(--crema,#f6f0e6);position:relative;overflow:hidden}
+.journey-bridge::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,255,255,.28),transparent 45%,rgba(255,255,255,.18));pointer-events:none}
+.journey-inner{max-width:1120px;margin:auto;display:grid;grid-template-columns:1.1fr .9fr;gap:54px;align-items:center;position:relative}
+.journey-eyebrow{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--teal-osc,#164f4d);opacity:.72}
+.journey-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2.5rem,5vw,4.8rem);font-weight:400;line-height:.92;margin:12px 0 18px;color:var(--tinta,#172323)}
+.journey-title em{font-style:italic;color:var(--teal-osc,#164f4d)}
+.journey-copy{max-width:540px;color:var(--tinta-suave,#626b68);font-size:1rem;line-height:1.7;margin:0}
+.journey-choice{display:grid;gap:12px}
+.journey-choice button{border:1px solid rgba(22,79,77,.16);background:rgba(255,255,255,.74);border-radius:16px;padding:17px 20px;display:flex;justify-content:space-between;align-items:center;text-align:left;cursor:pointer;transition:.28s ease;color:var(--tinta,#172323)}
+.journey-choice button:hover{transform:translateX(5px);border-color:rgba(22,79,77,.38);box-shadow:0 12px 30px rgba(20,45,43,.08)}
+.journey-choice small{display:block;font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal-osc,#164f4d);margin-bottom:5px}
+.journey-choice strong{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:500}
+.journey-choice span{font-size:1.25rem;color:var(--teal-osc,#164f4d)}
+.journey-final{padding:86px 6vw 100px;background:var(--teal-osc,#164f4d);color:#fff;text-align:center;position:relative;overflow:hidden}
+.journey-final::after{content:"";position:absolute;width:420px;height:420px;border:1px solid rgba(255,255,255,.09);border-radius:50%;right:-180px;top:-170px}
+.journey-final .journey-eyebrow{color:rgba(255,255,255,.62)}
+.journey-final h2{font-family:'Cormorant Garamond',serif;font-size:clamp(2.6rem,5vw,4.8rem);font-weight:400;line-height:.95;margin:12px auto 16px;max-width:760px}
+.journey-final p{max-width:590px;margin:0 auto 28px;color:rgba(255,255,255,.72);line-height:1.65}
+.journey-final .journey-reserve-btn{border:0;background:#fff;color:var(--teal-osc,#164f4d);border-radius:999px;padding:15px 26px;font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:.25s ease;box-shadow:0 10px 28px rgba(0,0,0,.16)}
+.journey-final .journey-reserve-btn:hover{transform:translateY(-3px);box-shadow:0 16px 34px rgba(0,0,0,.22)}
+@media(max-width:760px){.journey-bridge{padding:58px 20px 62px}.journey-inner{grid-template-columns:1fr;gap:30px}.journey-final{padding:68px 20px 78px}.journey-choice button{padding:15px 16px}}
+</style>
+
 </head>
     <body>
 
@@ -2189,8 +2285,8 @@
     <!-- BENEFICIOS -->
     <section class="beneficios">
       <div class="section-head reveal" style="margin-bottom:28px;">
-        <h2>Hay una razón para venir.</h2>
-        <p>Elige cómo quieres vivir Café Real.</p>
+        <h2>Primero lo ves. Luego quieres quedarte.</h2>
+        <p>Descubre qué parte de Café Real se parece más a tu plan de hoy.</p>
       </div>
         <div class="beneficios-grid">
           <div class="beneficio-item beneficio-item-imagen gsap-reveal" data-dir="up" onclick="enterView('piso')" style="cursor:pointer;">
@@ -2236,12 +2332,28 @@
       <div class="section-head reveal">
         <span class="tag">Nuestro café</span>
         <h2>Café Arias</h2>
-        <p>El café de origen que preparamos en barra, también disponible en grano para llevar a casa.</p>
+        <p>Una primera probada de lo que hace especial la experiencia en Café Real.</p>
       </div>
       <div class="cafearias-carousel">
         <div class="cafearias-row" id="cafearias-row"></div>
       </div>
     </section>  
+
+    <!-- PUENTE DE INTENCIÓN: convierte el interés en una elección personal -->
+    <section class="journey-bridge" aria-label="Elige tu plan en Café Real">
+      <div class="journey-inner">
+        <div>
+          <span class="journey-eyebrow">Y ahora imagínalo</span>
+          <h2 class="journey-title">¿Qué quieres que pase<br><em>cuando vengas?</em></h2>
+          <p class="journey-copy">No todos vienen por lo mismo. Elige tu plan y te llevamos directo al espacio adecuado para vivirlo.</p>
+        </div>
+        <div class="journey-choice">
+          <button type="button" onclick="goToReserva('Mesa / terraza')"><div><small>01 · Sin prisa</small><strong>Café y conversación</strong></div><span>→</span></button>
+          <button type="button" onclick="goToReserva('Segundo piso completo')"><div><small>02 · Para compartir</small><strong>Celebrar con los tuyos</strong></div><span>→</span></button>
+          <button type="button" onclick="goToReserva('Auditorio (conferencia, capacitación o evento)')"><div><small>03 · Para reunir</small><strong>Un evento o encuentro</strong></div><span>→</span></button>
+        </div>
+      </div>
+    </section>
 
     <!-- UBICACION -->
     <section id="ubicacion">
@@ -2297,6 +2409,14 @@
       </div>
     </section>
 
+
+    <!-- CIERRE DEL RECORRIDO: confianza → intención → acción -->
+    <section class="journey-final" aria-label="Reserva en Café Real">
+      <span class="journey-eyebrow">Cuando ya lo imaginaste</span>
+      <h2>Haz que ese plan<br>tenga un lugar.</h2>
+      <p>Si ya sabes con quién vienes o qué quieres celebrar, el siguiente paso es sencillo. Cuéntanos y prepara tu visita con nosotros.</p>
+      <button type="button" class="journey-reserve-btn" onclick="goToReserva('Mesa / terraza')">Reservar mi visita&nbsp; →</button>
+    </section>
 
     <!-- FAQ -->
     <section class="faq-section" aria-labelledby="faq-title">
@@ -2444,7 +2564,7 @@
       <div class="section-head reveal">
         <span class="tag">Reservas</span>
         <h2>Encuentra el espacio ideal</h2>
-        <p>Una mesa para trabajar o compartir, el auditorio para tu próximo evento, o el segundo piso completo para tu celebración — Café Real se adapta a lo que necesites.</p>
+        <p>Elige cómo quieres vivir Café Real.</p>
       </div>
 
       <div class="beneficios-grid espacios-cards gsap-reveal" data-dir="up" style="margin-bottom:60px;">
@@ -2514,8 +2634,8 @@
         <path d="M38 60 C 30 46, 46 40, 38 26 C 32 16, 42 10, 38 2" transform="translate(4,0)"/>
       </svg>
       <span class="tag" style="color:rgba(255,255,255,.75);">Carta completa</span>
-      <h2>Café &amp; Experiencia</h2>
-      <p>Cada plato y cada bebida, con el mismo cuidado del resto de la casa</p>
+      <h2>Lo que se te puede antojar hoy.</h2>
+      <p>Elige por la vista. Descubre los detalles al tocar cada producto.</p>
     </div>
 
     <div class="destacados" id="destacados">
@@ -2697,6 +2817,28 @@
     </a>
   </div>
 
+
+
+<script id="journey-v8-js">
+(function(){
+  var sections = document.querySelectorAll('.journey-bridge, .journey-final');
+  if(!sections.length || !('IntersectionObserver' in window)) return;
+  sections.forEach(function(section){
+    section.classList.add('journey-ready');
+    var items = section.querySelectorAll('.journey-title, .journey-copy, .journey-choice button, .journey-final h2, .journey-final p, .journey-reserve-btn');
+    items.forEach(function(el){ el.style.opacity='0'; el.style.transform='translateY(18px)'; el.style.transition='opacity .7s ease, transform .7s ease'; });
+  });
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(!entry.isIntersecting) return;
+      var items = entry.target.querySelectorAll('.journey-title, .journey-copy, .journey-choice button, .journey-final h2, .journey-final p, .journey-reserve-btn');
+      items.forEach(function(el,i){ setTimeout(function(){el.style.opacity='1';el.style.transform='translateY(0)';}, i*90); });
+      io.unobserve(entry.target);
+    });
+  },{threshold:.18});
+  sections.forEach(function(s){io.observe(s);});
+})();
+</script>
 
   <script>
 
