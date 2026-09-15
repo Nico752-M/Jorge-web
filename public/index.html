@@ -1669,25 +1669,100 @@
     height:18px;
     flex:none;
   }
+  /* CTA PRINCIPAL DE INICIO — jerarquía visual y persuasión suave */
+  .beneficios-cta-top::before{
+    content:'¿Ya sabes cuándo venir?';
+    display:block;
+    font-family:'Public Sans',sans-serif;
+    font-size:.66rem;
+    font-weight:600;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:rgba(48,51,47,.62);
+    margin-bottom:1px;
+  }
+  .beneficios-cta-top{
+    flex-direction:column !important;
+    align-items:flex-start;
+    gap:11px;
+    width:min(100%,340px);
+    position:relative;
+  }
+  .beneficios-cta-top .btn{
+    width:100% !important;
+    min-height:58px;
+    justify-content:center;
+    position:relative;
+    overflow:hidden;
+    letter-spacing:.035em;
+  }
+  .beneficios-cta-top .btn-solid{
+    background:linear-gradient(135deg,#006b55 0%,#004f40 100%);
+    box-shadow:0 12px 28px rgba(0,83,65,.22),0 0 0 1px rgba(255,255,255,.08) inset;
+    transform:translateY(0);
+  }
+  .beneficios-cta-top .btn-solid::before{
+    content:'';
+    position:absolute;
+    top:0; bottom:0; left:-80%; width:42%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.24),transparent);
+    transform:skewX(-18deg);
+    animation:ctaShine 4.8s ease-in-out infinite;
+    pointer-events:none;
+  }
+  .beneficios-cta-top .btn-solid::after{
+    content:'→';
+    position:absolute;
+    right:18px;
+    font-size:1.15rem;
+    line-height:1;
+    opacity:.9;
+    transition:transform .25s ease;
+  }
+  .beneficios-cta-top .btn-solid:hover{
+    transform:translateY(-3px);
+    box-shadow:0 16px 34px rgba(0,83,65,.28);
+  }
+  .beneficios-cta-top .btn-solid:hover::after{transform:translateX(4px);}
+  .beneficios-cta-top .btn-outline{
+    background:rgba(255,255,255,.88);
+    border:1px solid rgba(0,79,64,.28);
+    box-shadow:0 5px 16px rgba(0,0,0,.05);
+  }
+  .beneficios-cta-top .btn-outline:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 22px rgba(0,0,0,.08);
+  }
+  .beneficios-cta-top .btn svg{
+    width:19px;
+    height:19px;
+    flex:none;
+  }
+  @keyframes ctaShine{
+    0%,58%{left:-80%;opacity:0}
+    66%{opacity:1}
+    78%,100%{left:145%;opacity:0}
+  }
   @media (max-width:700px){
     .beneficios-cta-top{
+      width:100%;
+      max-width:360px;
       margin-bottom:32px;
-      flex-direction:row !important;
-      flex-wrap:nowrap;
       gap:10px;
     }
     .beneficios-cta-top .btn{
-      width:auto !important;
-      flex:1;
-      justify-content:center;
-      padding-left:12px;
-      padding-right:12px;
-      font-size:.68rem;
+      min-height:60px;
+      font-size:.72rem;
+      padding-left:18px;
+      padding-right:44px;
     }
     .beneficios-cta-top .btn svg{
-      width:16px;
-      height:16px;
+      width:18px;
+      height:18px;
     }
+  }
+  @media (prefers-reduced-motion:reduce){
+    .beneficios-cta-top .btn-solid::before{animation:none;}
   }
   .hero{position:relative;}
   .hero::after{
@@ -1789,10 +1864,184 @@
 #floating-actions{z-index:600!important;}
 @media(max-width:560px){#floating-actions{right:14px!important;bottom:84px!important;}#floating-actions a{width:56px!important;height:56px!important;}}
 </style>
+
+<style id="smart-reserve-cta">
+  /* CTA flotante inteligente: persuasivo, pero intermitente y no invasivo. */
+  #smart-reserve{position:fixed;right:24px;bottom:116px;z-index:575;display:flex;align-items:flex-start;gap:6px;opacity:0;visibility:hidden;transform:translateY(12px) scale(.96);pointer-events:none;transition:opacity .42s ease,transform .42s cubic-bezier(.2,.8,.2,1),visibility .42s;}
+  #smart-reserve.is-visible{opacity:1;visibility:visible;transform:translateY(0) scale(1);pointer-events:auto;}
+  .smart-reserve-main{position:relative;display:flex;align-items:center;gap:10px;min-height:58px;padding:9px 13px 9px 10px;border:1px solid rgba(255,255,255,.32);border-radius:18px;background:rgba(6,63,59,.96);color:#fff;box-shadow:0 14px 34px rgba(3,73,68,.28),0 3px 10px rgba(0,0,0,.08);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);cursor:pointer;text-align:left;transition:transform .25s ease,box-shadow .25s ease;}
+  .smart-reserve-main:hover{transform:translateY(-3px);box-shadow:0 18px 40px rgba(3,73,68,.34),0 5px 12px rgba(0,0,0,.1);}
+  .smart-reserve-main:active{transform:scale(.97);}
+  .smart-reserve-icon{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;flex:none;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.13);}
+  .smart-reserve-icon svg{width:20px;height:20px;}
+  .smart-reserve-copy{display:flex;flex-direction:column;gap:3px;padding-right:5px;}
+  .smart-reserve-copy small{font:600 .5rem/1 'JetBrains Mono',monospace;letter-spacing:.16em;color:#b9ddd2;}
+  .smart-reserve-copy strong{font:500 .9rem/1.1 'Cormorant Garamond',serif;letter-spacing:.01em;white-space:nowrap;}
+  .smart-reserve-arrow{font:500 1rem/1 'Public Sans',sans-serif;color:#b9ddd2;margin-left:3px;}
+  .smart-reserve-close{width:22px;height:22px;border-radius:50%;border:1px solid rgba(3,73,68,.13);background:#fff;color:#42605b;display:grid;place-items:center;font-size:13px;line-height:1;padding:0;cursor:pointer;box-shadow:0 5px 15px rgba(0,0,0,.12);transform:translateY(-7px);transition:transform .2s ease,background .2s ease;}
+  .smart-reserve-close:hover{transform:translateY(-7px) scale(1.08);background:#f7f4eb;}
+  #smart-reserve::after{content:'';position:absolute;right:23px;bottom:-7px;width:13px;height:13px;background:#063f3b;border-right:1px solid rgba(255,255,255,.25);border-bottom:1px solid rgba(255,255,255,.25);transform:rotate(45deg);z-index:-1;}
+  @media(max-width:860px){#smart-reserve{right:14px;bottom:calc(216px + env(safe-area-inset-bottom,0px));}}
+  @media(max-width:560px){#smart-reserve{right:12px;bottom:calc(218px + env(safe-area-inset-bottom,0px));max-width:calc(100vw - 24px)}.smart-reserve-main{min-height:52px;padding:8px 10px 8px 8px;border-radius:16px;gap:8px}.smart-reserve-icon{width:34px;height:34px;border-radius:10px}.smart-reserve-icon svg{width:18px;height:18px}.smart-reserve-copy strong{font-size:.84rem}.smart-reserve-arrow{font-size:.9rem}}
+  @media(prefers-reduced-motion:reduce){#smart-reserve{transition:none!important}.smart-reserve-main{transition:none!important;}}
+</style>
+
+<style id="menu-reserva-cta">
+  /* CTA contextual de reserva: aparece cuando el visitante ya lleva un rato explorando la carta. */
+  #menu-reserva-cta{
+    position:fixed;
+    left:50%;
+    bottom:24px;
+    z-index:590;
+    width:min(520px,calc(100vw - 40px));
+    transform:translate(-50%,18px) scale(.97);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .35s cubic-bezier(.2,.8,.2,1),transform .35s cubic-bezier(.2,.8,.2,1);
+  }
+  #menu-reserva-cta.is-visible{
+    opacity:1;
+    transform:translate(-50%,0) scale(1);
+    pointer-events:auto;
+  }
+  #menu-reserva-cta .mrc-card{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:12px 12px 12px 18px;
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:18px;
+    background:rgba(5,63,58,.96);
+    color:#fff;
+    box-shadow:0 18px 50px rgba(0,0,0,.22),0 5px 18px rgba(3,73,68,.16);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+  }
+  #menu-reserva-cta .mrc-copy{min-width:0;flex:1}
+  #menu-reserva-cta .mrc-kicker{
+    display:block;
+    margin-bottom:2px;
+    font:600 .57rem 'JetBrains Mono',monospace;
+    letter-spacing:.13em;
+    text-transform:uppercase;
+    color:#b9ddd2;
+  }
+  #menu-reserva-cta .mrc-title{
+    display:block;
+    font:500 1.28rem/1 'Cormorant Garamond',serif;
+    letter-spacing:-.01em;
+  }
+  #menu-reserva-cta .mrc-sub{
+    display:block;
+    margin-top:3px;
+    font:400 .67rem/1.35 'Public Sans',sans-serif;
+    color:rgba(255,255,255,.66);
+  }
+  #menu-reserva-cta .mrc-btn{
+    flex:0 0 auto;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    min-height:44px;
+    padding:0 17px;
+    border:0;
+    border-radius:999px;
+    background:#f4eee1;
+    color:#075b54;
+    font:700 .69rem 'Public Sans',sans-serif;
+    letter-spacing:.02em;
+    box-shadow:0 5px 15px rgba(0,0,0,.12);
+    transition:transform .2s ease,box-shadow .2s ease,background .2s ease;
+  }
+  #menu-reserva-cta .mrc-btn:hover{transform:translateY(-2px);box-shadow:0 9px 20px rgba(0,0,0,.18);background:#fffaf0}
+  #menu-reserva-cta .mrc-btn:active{transform:scale(.97)}
+  #menu-reserva-cta .mrc-btn svg{width:16px;height:16px;flex:none}
+  #menu-reserva-cta .mrc-close{
+    position:absolute;
+    top:-9px;
+    right:-7px;
+    width:24px;height:24px;
+    border:1px solid rgba(255,255,255,.25);
+    border-radius:50%;
+    background:#fff;
+    color:#35504b;
+    display:grid;place-items:center;
+    font-size:14px;line-height:1;
+    box-shadow:0 5px 15px rgba(0,0,0,.14);
+  }
+  #menu-reserva-cta .mrc-card::before{
+    content:'';
+    position:absolute;
+    inset:-1px;
+    border-radius:19px;
+    border:1px solid rgba(184,225,213,.22);
+    pointer-events:none;
+  }
+  @media(max-width:860px){
+    #menu-reserva-cta{bottom:calc(78px + env(safe-area-inset-bottom,0px));width:calc(100vw - 28px)}
+    #menu-reserva-cta .mrc-card{padding:10px 10px 10px 15px;border-radius:16px;gap:10px}
+    #menu-reserva-cta .mrc-title{font-size:1.18rem}
+    #menu-reserva-cta .mrc-sub{font-size:.62rem}
+    #menu-reserva-cta .mrc-btn{min-height:42px;padding:0 14px;font-size:.65rem}
+  }
+  @media(max-width:430px){
+    #menu-reserva-cta{width:calc(100vw - 20px)}
+    #menu-reserva-cta .mrc-card{padding-left:13px}
+    #menu-reserva-cta .mrc-sub{display:none}
+    #menu-reserva-cta .mrc-btn{padding:0 12px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    #menu-reserva-cta{transition:none!important}
+  }
+</style>
+
+
+<style id="menu-final-cta">
+  .menu-final-cta{
+    margin:22px clamp(18px,5vw,70px) 80px;
+    padding:clamp(30px,5vw,52px);
+    border-radius:24px;
+    background:linear-gradient(135deg,#063f3b,#0b625c);
+    color:#fff;
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:24px;
+    box-shadow:0 20px 55px rgba(3,73,68,.14);
+    position:relative;
+    overflow:hidden;
+  }
+  .menu-final-cta:after{content:'CAFÉ REAL';position:absolute;right:-20px;bottom:-42px;font:italic 8rem/1 'Cormorant Garamond',serif;color:rgba(255,255,255,.045);pointer-events:none}
+  .menu-final-cta span{font:600 .6rem 'JetBrains Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#b9ddd2}
+  .menu-final-cta h3{margin:10px 0 0;font:500 clamp(2rem,4vw,3.6rem)/.92 'Cormorant Garamond',serif;letter-spacing:-.025em;position:relative;z-index:1}
+  .menu-final-cta .btn{position:relative;z-index:1;white-space:nowrap}
+  @media(max-width:700px){.menu-final-cta{align-items:flex-start;flex-direction:column;margin-left:14px;margin-right:14px;border-radius:20px}.menu-final-cta h3{font-size:2.25rem}.menu-final-cta .btn{width:100%}}
+</style>
+
 </head>
     <body>
 
   <div class="grain"></div>
+
+
+  <!-- CTA contextual: pensado para visitantes que están explorando la carta sin intención previa de reservar. -->
+  <aside id="menu-reserva-cta" aria-label="Reserva una mesa">
+    <div class="mrc-card">
+      <div class="mrc-copy">
+        <span class="mrc-kicker">Café Real</span>
+        <strong class="mrc-title">¿Ya encontraste tu favorito?</strong>
+        <span class="mrc-sub">Cuando quieras venir, deja tu mesa lista.</span>
+      </div>
+      <button class="mrc-btn" type="button" onclick="goToReserva('Mesa / terraza')">
+        Reservar mesa
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h13"></path><path d="m13 6 6 6-6 6"></path>
+        </svg>
+      </button>
+      <button class="mrc-close" type="button" aria-label="Ocultar invitación a reservar" onclick="cerrarMenuReservaCta()">×</button>
+    </div>
+  </aside>
 
   <!-- ============ HOME ============ -->
   <div id="site-view">
@@ -2181,6 +2430,14 @@
       <div class="menu-sidebar" id="menu-sidebar"></div>
       <div class="menu-panel-body" id="menu-panel-body"></div>
     </div>
+
+    <section class="menu-final-cta" aria-label="Reserva después de ver la carta">
+      <div>
+        <span>Una mesa te espera</span>
+        <h3>Si ya sabes qué quieres pedir,<br>el siguiente paso es venir.</h3>
+      </div>
+      <button class="btn btn-solid" type="button" onclick="goToReserva('Mesa / terraza')">Reservar mesa</button>
+    </section>
   </div>
 
   <!-- ============ RESERVA VIEW ============ -->
@@ -2314,6 +2571,20 @@
       <div id="modal-aviso-horario-msg" class="modal-msg warn"></div>
       <button type="button" class="btn btn-solid" style="margin-top:18px;" onclick="cerrarModalAvisoHorario()">Entendido</button>
     </div>
+  </div>
+
+  <!-- CTA FLOTANTE INTELIGENTE: aparece por momentos mientras el visitante explora. -->
+  <div id="smart-reserve" aria-live="polite" aria-label="Invitación a reservar">
+    <button class="smart-reserve-main" type="button" onclick="activarReservaInteligente()">
+      <span class="smart-reserve-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M8 3v4M16 3v4M4 10h16"></path><path d="M8 14h3"></path>
+        </svg>
+      </span>
+      <span class="smart-reserve-copy"><small>CAFÉ REAL</small><strong>¿Te guardamos una mesa?</strong></span>
+      <span class="smart-reserve-arrow" aria-hidden="true">→</span>
+    </button>
+    <button class="smart-reserve-close" type="button" aria-label="Ocultar invitación" onclick="cerrarReservaInteligente(event)">×</button>
   </div>
 
   <!-- ============ BOTONES FLOTANTES ============ -->
@@ -3080,6 +3351,141 @@
     El Home solo tiene Hero, Beneficios, Café Arias, Ubicación
     y el pie de página.
     ========================================================= */
+
+  /* =========================================================
+    CTA FLOTANTE INTELIGENTE — RESERVAS
+    Aparece por momentos mientras el visitante explora y permanece
+    fijo en pantalla, pero se retira solo para no interrumpir.
+  ========================================================= */
+  let smartReserveTimer = null;
+  let smartReserveHideTimer = null;
+  let smartReserveScrollTimer = null;
+  let smartReserveShown = 0;
+  let smartReserveLastShown = 0;
+  let smartReserveStarted = false;
+  let smartReserveClosed = false;
+
+  function mostrarReservaInteligente(){
+    const el = document.getElementById('smart-reserve');
+    if(!el || smartReserveClosed || smartReserveShown >= 4) return;
+    if(document.getElementById('reserva-view') && !document.getElementById('reserva-view').classList.contains('hidden')) return;
+    const menuCta = document.getElementById('menu-reserva-cta');
+    if(menuCta && menuCta.classList.contains('is-visible')) return;
+    const now = Date.now();
+    if(now - smartReserveLastShown < 30000) return;
+    smartReserveLastShown = now;
+    smartReserveShown++;
+    el.classList.add('is-visible');
+    clearTimeout(smartReserveHideTimer);
+    smartReserveHideTimer = setTimeout(ocultarReservaInteligente, 8500);
+  }
+
+  function ocultarReservaInteligente(){
+    const el = document.getElementById('smart-reserve');
+    if(el) el.classList.remove('is-visible');
+  }
+
+  function cerrarReservaInteligente(e){
+    if(e) e.stopPropagation();
+    smartReserveClosed = true;
+    clearTimeout(smartReserveTimer);
+    clearTimeout(smartReserveHideTimer);
+    ocultarReservaInteligente();
+    try{ sessionStorage.setItem('cafeRealSmartReserveClosed','1'); }catch(_){ }
+  }
+
+  function activarReservaInteligente(){
+    ocultarReservaInteligente();
+    clearTimeout(smartReserveTimer);
+    clearTimeout(smartReserveHideTimer);
+    goToReserva('Mesa / terraza');
+  }
+
+  function iniciarReservaInteligente(){
+    if(smartReserveStarted) return;
+    smartReserveStarted = true;
+    try{ smartReserveClosed = sessionStorage.getItem('cafeRealSmartReserveClosed') === '1'; }catch(_){ }
+    if(smartReserveClosed) return;
+
+    // Primera aparición: deja que el visitante mire la página antes de invitarlo.
+    smartReserveTimer = setTimeout(mostrarReservaInteligente, 14000);
+
+    // Si está explorando, aprovecha una pausa natural después de hacer scroll.
+    window.addEventListener('scroll', ()=>{
+      if(smartReserveClosed || smartReserveShown >= 4) return;
+      clearTimeout(smartReserveScrollTimer);
+      smartReserveScrollTimer = setTimeout(()=>{
+        const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+        const progreso = window.scrollY / max;
+        if(progreso > .12) mostrarReservaInteligente();
+      }, 4200);
+    }, {passive:true});
+  }
+
+  iniciarReservaInteligente();
+
+  /* =========================================================
+    CTA CONTEXTUAL DE RESERVA — MENÚ
+    No interrumpe al visitante: aparece después de explorar la carta,
+    justo cuando ya tiene más información para decidir.
+  ========================================================= */
+  let menuCtaTimer = null;
+  let menuCtaActivo = false;
+  let menuCtaCerrado = false;
+
+  function mostrarMenuReservaCta(){
+    const cta = document.getElementById('menu-reserva-cta');
+    if(!cta || menuCtaCerrado || !menuCtaActivo) return;
+    cta.classList.add('is-visible');
+  }
+
+  function ocultarMenuReservaCta(){
+    const cta = document.getElementById('menu-reserva-cta');
+    if(cta) cta.classList.remove('is-visible');
+  }
+
+  function cerrarMenuReservaCta(){
+    menuCtaCerrado = true;
+    ocultarMenuReservaCta();
+    try{ sessionStorage.setItem('cafeRealMenuCtaClosed','1'); }catch(_){ }
+  }
+
+  function prepararMenuReservaCta(){
+    const cta = document.getElementById('menu-reserva-cta');
+    if(!cta) return;
+    clearTimeout(menuCtaTimer);
+    menuCtaActivo = true;
+    menuCtaCerrado = false;
+    try{ menuCtaCerrado = sessionStorage.getItem('cafeRealMenuCtaClosed') === '1'; }catch(_){ }
+    ocultarMenuReservaCta();
+
+    // Primera oportunidad: si el visitante se queda unos segundos leyendo la carta.
+    menuCtaTimer = setTimeout(()=>mostrarMenuReservaCta(), 6500);
+
+    // Segunda oportunidad: si realmente explora la carta, aparece al pasar ~22% del contenido.
+    const menuView = document.getElementById('menu-view');
+    if(menuView && !menuView.dataset.ctaScrollBound){
+      menuView.dataset.ctaScrollBound = '1';
+      let yaMostradoPorScroll = false;
+      window.addEventListener('scroll', function(){
+        if(!menuCtaActivo || menuCtaCerrado || yaMostradoPorScroll) return;
+        const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+        const progreso = window.scrollY / max;
+        if(progreso >= .22){
+          yaMostradoPorScroll = true;
+          clearTimeout(menuCtaTimer);
+          mostrarMenuReservaCta();
+        }
+      }, {passive:true});
+    }
+  }
+
+  function desactivarMenuReservaCta(){
+    menuCtaActivo = false;
+    clearTimeout(menuCtaTimer);
+    ocultarMenuReservaCta();
+  }
+
   function enterView(view){
     ['site-view','menu-view','reserva-view','galeria-view','auditorio-view','piso-view'].forEach(id=>{
       const el = document.getElementById(id);
@@ -3091,6 +3497,9 @@
     };
     const target = document.getElementById(map[view] || 'site-view');
     target.classList.remove('hidden');
+    if(view === 'menu') prepararMenuReservaCta();
+    else desactivarMenuReservaCta();
+    if(view === 'reserva') ocultarReservaInteligente();
     window.scrollTo(0,0);
     requestAnimationFrame(()=>{ initReveal(target); initGsapReveals(); initGaleriaStagger(); });
 
