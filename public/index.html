@@ -672,94 +672,6 @@
       letter-spacing:.12em;
     }
   }
-  
-
-  /* =========================================================
-     CAFÉ REAL — AJUSTES PREMIUM CONSERVADORES
-     Solo estilos/pequeñas mejoras de interacción; no reemplazan
-     la lógica existente de reservas, eventos, menú o navegación.
-     ========================================================= */
-  .topnav{border-bottom-width:.5px;}
-  #site-view>.topnav{position:sticky;}
-  #site-view>.topnav .brand{position:absolute;left:50%;transform:translateX(-50%);z-index:2;}
-  #site-view>.topnav .brand div{white-space:nowrap;}
-  #site-view>.topnav .brand .logo-nav{width:46px;height:46px;}
-  @media(max-width:700px){
-    #site-view>.topnav{padding-left:16px;padding-right:16px;}
-    #site-view>.topnav .brand div{display:none;}
-    #site-view>.topnav .brand .logo-nav{width:48px;height:48px;}
-    #site-view>.topnav .actions .horario-pill{display:none;}
-  }
-
-  /* Hero más editorial, con carrusel de fotos */
-  .hero{min-height:94vh;isolation:isolate;}
-  .hero-slides{position:absolute;inset:0;z-index:0;overflow:hidden;background:var(--teal-osc);}
-  .hero-slides .hero-bg{opacity:0;transition:opacity 1.15s ease,transform 7s ease;}
-  .hero-slides .hero-bg.is-active{opacity:1;transform:scale(1.045);}
-  .hero-scrim{background:linear-gradient(180deg,rgba(2,16,14,.48),rgba(2,16,14,.64) 55%,rgba(2,16,14,.48));}
-  .hero-copy{max-width:1100px;}
-  .hero h1{font-size:clamp(3.1rem,7vw,6.4rem);max-width:15ch;line-height:.98;text-shadow:0 8px 34px rgba(0,0,0,.22);}
-  .hero-copy::after{content:'';width:54px;height:.5px;background:rgba(255,255,255,.72);margin-top:30px;}
-  .hero-dots{position:absolute;z-index:3;left:50%;bottom:30px;transform:translateX(-50%);display:flex;gap:8px;}
-  .hero-dot{width:7px;height:7px;border:1px solid rgba(255,255,255,.8);border-radius:50%;padding:0;background:transparent;transition:transform .25s,background .25s;}
-  .hero-dot.is-active{background:#fff;transform:scale(1.35);}
-
-  /* Línea fina */
-  .manifiesto-strip{border-top-width:.5px;border-bottom-width:.5px;}
-
-  /* Café Arias: más grande y arrastrable */
-  .cafearias-carousel{overflow:hidden;touch-action:pan-y;cursor:grab;}
-  .cafearias-carousel.is-dragging{cursor:grabbing;}
-  .cafearias-row{display:flex!important;grid-template-columns:none!important;gap:26px!important;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;scroll-behavior:smooth;touch-action:pan-y;}
-  .cafearias-row::-webkit-scrollbar{display:none;}
-  .cafearias-card{width:min(340px,78vw)!important;}
-  .cafearias-card .ph{aspect-ratio:4/5;border-radius:18px;}
-
-  /* Ubicación más premium */
-  .ubicacion-wrap{border:1px solid rgba(255,255,255,.12);border-radius:28px;box-shadow:0 24px 70px rgba(3,73,68,.18);}
-  .ubicacion-grid{overflow:hidden;}
-  .mapa-frame{min-height:430px;}
-  .mapa-frame iframe{min-height:430px;filter:saturate(.72) contrast(1.02);}
-  .ubicacion-copy{padding:64px;}
-  .info-list .item{padding:14px 0;border-bottom:1px solid rgba(255,255,255,.11);}
-  .info-list .item:last-child{border-bottom:0;}
-  @media(max-width:900px){.ubicacion-wrap{border-radius:22px;}.ubicacion-copy{padding:40px 28px;}.mapa-frame,.mapa-frame iframe{min-height:300px;}}
-
-  /* Botones sociales en colores oficiales reconocibles */
-  .fab-whatsapp{background:#25D366!important;color:#fff!important;}
-  .fab-whatsapp::after{border-color:rgba(37,211,102,.6)!important;}
-  .fab-instagram{background:linear-gradient(135deg,#833AB4 0%,#C13584 35%,#E1306C 58%,#F56040 78%,#FCAF45 100%)!important;color:#fff!important;}
-
-  /* Reserva flotante: visible, elegante y persistente */
-  #fab-reservar{left:auto;right:24px;bottom:24px;padding:15px 23px;border:1px solid rgba(255,255,255,.18);box-shadow:0 14px 36px rgba(3,73,68,.34),0 0 0 1px rgba(10,124,118,.12);}
-  #fab-reservar:hover{box-shadow:0 18px 42px rgba(3,73,68,.42),0 0 0 4px rgba(10,124,118,.08);}
-  @media(max-width:560px){#fab-reservar{right:16px;left:auto;bottom:16px;padding:12px 17px;}}
-
-  /* Reserva: logo protagonista */
-  .reserva-hero{padding-top:62px;}
-  .reserva-hero .logo-menu{width:104px;height:104px;margin-bottom:22px;box-shadow:0 12px 32px rgba(3,73,68,.12);}
-  .reserva-hero p{font-size:.95rem;}
-
-  /* Menú: tarjetas más grandes, sin cambiar productos ni precios */
-  .menu-cards-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;}
-  .menu-card{border-radius:18px;box-shadow:0 12px 30px rgba(3,73,68,.08);}
-  .menu-card .photo{aspect-ratio:1/1;}
-  .menu-card .info{padding:20px 22px 22px;min-height:108px;}
-  .menu-card .info h4{font-size:1.35rem;}
-  @media(max-width:900px){.menu-cards-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
-  @media(max-width:560px){.menu-cards-grid{grid-template-columns:1fr;gap:18px;}.menu-card .photo{aspect-ratio:4/3;}}
-
-  /* FAQ */
-  #faq{background:var(--hueso-2);}
-  .faq-list{max-width:900px;border-top:1px solid var(--linea);}
-  .faq-item{border-bottom:1px solid var(--linea);}
-  .faq-question{width:100%;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:22px 0;text-align:left;font-family:'Cormorant Garamond',serif;font-size:1.35rem;color:var(--teal-osc);}
-  .faq-question span:last-child{font-family:'Public Sans',sans-serif;font-size:1.25rem;font-weight:300;transition:transform .25s;}
-  .faq-answer{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s ease;}
-  .faq-answer>div{overflow:hidden;color:var(--tinta-suave);line-height:1.65;font-size:.92rem;}
-  .faq-item.open .faq-answer{grid-template-rows:1fr;}
-  .faq-item.open .faq-question span:last-child{transform:rotate(45deg);}
-
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
@@ -1790,7 +1702,94 @@
   .topnav .logo-nav{
     box-shadow:0 0 0 2px var(--hueso), 0 0 0 3px var(--teal-cla);
   }
-  </style></head>
+  </style>
+<style id="cafe-real-ajustes-v2">
+/* ===== AJUSTES V2 — conserva la lógica original ===== */
+.hero{position:relative;overflow:hidden;}
+.hero-slide{transition:opacity 1.1s ease;will-change:opacity;}
+.hero-slide-next{opacity:0;z-index:0;}
+.hero-slide-active{opacity:1;z-index:1;}
+.hero-scrim{z-index:2!important;}
+.hero-copy{z-index:3!important;}
+
+/* Tres experiencias: una imagen + mensaje esencial */
+.beneficios-grid{gap:18px!important;}
+.beneficio-item-imagen{padding:0!important;min-height:0!important;border-radius:18px!important;overflow:hidden;display:flex!important;flex-direction:column!important;justify-content:flex-end!important;background:#f7f7f2!important;position:relative;}
+.beneficio-foto{height:230px;width:100%;overflow:hidden;background:#dfe6e0;}
+.beneficio-foto img{width:100%;height:100%;display:block;object-fit:cover;transition:transform .7s ease,filter .5s ease;}
+.beneficio-item-imagen:hover .beneficio-foto img{transform:scale(1.045);filter:saturate(1.04);}
+.beneficio-copy{padding:25px 26px 28px;}
+.beneficio-kicker{display:block;font:600 .57rem 'JetBrains Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#0a625c;margin-bottom:12px;}
+.beneficio-item-imagen h3{font-size:clamp(1.9rem,2.6vw,2.45rem)!important;margin-bottom:8px!important;}
+.beneficio-item-imagen p{font-size:.78rem!important;line-height:1.5!important;margin:0!important;}
+
+/* Menú: tarjetas/fichas más grandes; en móvil entran aprox. 3 y el resto se desplaza */
+#menu-view .menu-layout{max-width:1180px;}
+#menu-view .prod-list{gap:18px;}
+#menu-view .prod-row{grid-template-columns:124px 1fr;min-height:142px;padding:14px;border-radius:14px;}
+#menu-view .prod-photo{width:124px;height:124px;border-radius:9px;}
+#menu-view .prod-top h4{font-size:1.45rem;}
+#menu-view .prod-price{font-size:.82rem;}
+#menu-view .prod-info p{font-size:.82rem;line-height:1.55;}
+@media(max-width:760px){
+  #menu-view .menu-layout{display:block;padding-left:20px;padding-right:20px;}
+  #menu-view .menu-sidebar{position:sticky;top:68px;z-index:75;border-right:0;border-bottom:1px solid var(--linea);padding:8px 0;flex-direction:row;overflow-x:auto;background:var(--hueso);}
+  #menu-view .menu-sidebar button{width:auto;min-width:max-content;padding:11px 14px;border-radius:999px;}
+  #menu-view .menu-panel-head{padding:38px 0 24px;}
+  #menu-view .prod-list{gap:16px;}
+  #menu-view .prod-row{grid-template-columns:112px 1fr;min-height:136px;padding:12px;border-radius:13px;}
+  #menu-view .prod-photo{width:112px;height:112px;border-radius:8px;}
+  #menu-view .prod-top h4{font-size:1.38rem;}
+  #menu-view .prod-info p{font-size:.77rem;}
+}
+@media(max-width:430px){
+  #menu-view .prod-row{grid-template-columns:108px 1fr;min-height:132px;}
+  #menu-view .prod-photo{width:108px;height:108px;}
+}
+
+/* Café Arias: arrastre real con dedo + mouse */
+.cafearias-row{touch-action:pan-y!important;cursor:grab!important;user-select:none!important;-webkit-user-select:none!important;overscroll-behavior-x:contain;}
+.cafearias-row.arrastrando{cursor:grabbing!important;}
+.cafearias-row img{pointer-events:none!important;-webkit-user-drag:none!important;}
+
+/* Renta para disfrutar: menos texto, más editorial/premium */
+.piso-grid{border-radius:22px!important;box-shadow:0 24px 60px rgba(3,73,68,.12)!important;}
+.piso-info{padding:clamp(34px,5vw,70px)!important;}
+.premium-eyebrow{display:block;font:600 .58rem 'JetBrains Mono',monospace;letter-spacing:.2em;color:#0a625c;margin-bottom:16px;}
+.piso-info h3{font-size:clamp(2.8rem,5vw,4.5rem)!important;line-height:.88!important;color:#063f3b!important;}
+.piso-lead{margin:18px 0 30px!important;font-family:'Cormorant Garamond',serif!important;font-size:1.35rem!important;font-style:italic!important;color:#68716c!important;line-height:1.25!important;}
+.piso-opciones{display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:10px!important;margin:0 0 24px!important;}
+.piso-opciones .opt{min-height:130px!important;padding:18px!important;border:1px solid rgba(3,73,68,.12)!important;border-radius:14px!important;background:#f7f7f2!important;display:flex!important;flex-direction:column!important;justify-content:space-between!important;}
+.piso-opciones .opt .opt-num{font:500 .58rem 'JetBrains Mono',monospace!important;letter-spacing:.12em;color:#7c8781!important;}
+.piso-opciones .opt b{font-family:'Cormorant Garamond',serif!important;font-size:1.45rem!important;font-weight:500!important;color:#063f3b!important;}
+.piso-opciones .opt span:last-child{font-size:.7rem!important;color:#737b77!important;}
+.piso-tags{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 28px;}
+.piso-tags span{padding:7px 11px;border:1px solid rgba(3,73,68,.14);border-radius:999px;font:500 .57rem 'JetBrains Mono',monospace;color:#4c5b56;text-transform:uppercase;letter-spacing:.08em;}
+@media(max-width:760px){.beneficio-foto{height:205px}.beneficio-copy{padding:21px 22px 24px}.piso-opciones{grid-template-columns:1fr!important;}.piso-opciones .opt{min-height:96px!important;}.piso-info h3{font-size:3.25rem!important;}}
+
+/* FAQ */
+.faq-section{background:#fff!important;padding-top:78px!important;padding-bottom:100px!important;}
+.faq-head{max-width:650px;margin:0 auto 34px;text-align:center;}
+.faq-head .tag{display:block;font:600 .62rem 'JetBrains Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#0a625c;margin-bottom:13px;}
+.faq-head h2{font-size:clamp(2.8rem,5vw,4.4rem);line-height:.9;color:#063f3b;}
+.faq-head p{margin-top:13px;color:#68716c;}
+.faq-list{max-width:820px;margin:0 auto;border-top:1px solid rgba(3,73,68,.16);}
+.faq-list details{border-bottom:1px solid rgba(3,73,68,.16);padding:0;}
+.faq-list summary{list-style:none;cursor:pointer;padding:22px 4px;font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:#263a38;display:flex;justify-content:space-between;align-items:center;}
+.faq-list summary::-webkit-details-marker{display:none;}
+.faq-list summary:after{content:'+';font:400 1.2rem 'Public Sans',sans-serif;color:#0a625c;transition:transform .25s ease;}
+.faq-list details[open] summary:after{transform:rotate(45deg);}
+.faq-list details p{padding:0 42px 22px 4px;color:#626b67;font-size:.82rem;line-height:1.65;max-width:65ch;}
+
+/* Redes sociales en colores originales */
+#floating-actions .fab-whatsapp{background:#25D366!important;color:#fff!important;}
+#floating-actions .fab-instagram{background:radial-gradient(circle at 30% 110%,#fdf497 0 5%,#fd5949 45%,#d6249f 60%,#285AEB 90%)!important;color:#fff!important;}
+
+/* Reserva flotante existente: más visible sin tocar su función */
+#floating-actions{z-index:600!important;}
+@media(max-width:560px){#floating-actions{right:14px!important;bottom:84px!important;}#floating-actions a{width:56px!important;height:56px!important;}}
+</style>
+</head>
     <body>
 
   <div class="grain"></div>
@@ -1816,22 +1815,12 @@
     </div>
 
     <!-- HERO -->
-    <section class="hero" aria-label="Café Real">
-      <div class="hero-slides" id="hero-slides">
-        <img id="img-hero" class="hero-bg is-active" alt="Terraza de Café Real">
-        <img class="hero-bg" alt="Bar y café de Café Real">
-        <img class="hero-bg" alt="Auditorio de Café Real">
-        <img class="hero-bg" alt="Espacio interior de Café Real">
-      </div>
+    <section class="hero">
+      <img id="img-hero" class="hero-bg hero-slide hero-slide-active" alt="Terraza de Café Real">
+      <img id="img-hero-2" class="hero-bg hero-slide hero-slide-next" alt="Café Real">
       <div class="hero-scrim"></div>
       <div class="hero-copy">
         <h1 class="hero-anim">Un sorbo de café, mil momentos por disfrutar.</h1>
-      </div>
-      <div class="hero-dots" aria-label="Fotos del hero">
-        <button class="hero-dot is-active" aria-label="Foto 1"></button>
-        <button class="hero-dot" aria-label="Foto 2"></button>
-        <button class="hero-dot" aria-label="Foto 3"></button>
-        <button class="hero-dot" aria-label="Foto 4"></button>
       </div>
     </section>
 
@@ -1878,17 +1867,17 @@
         <p>Café, espacio y momentos — sin importar qué te traiga hasta acá.</p>
       </div>
         <div class="beneficios-grid">
-          <div class="beneficio-item gsap-reveal" data-dir="up" onclick="enterView('piso')" style="cursor:pointer;">
-            <h3>Café de origen</h3>
-            <p>Grano seleccionado, preparado con métodos de especialidad.</p>
+          <div class="beneficio-item beneficio-item-imagen gsap-reveal" data-dir="up" onclick="enterView('piso')" style="cursor:pointer;">
+            <div class="beneficio-foto"><img src="images/afuera-2.jpg" alt="Café de origen en Café Real"></div>
+            <div class="beneficio-copy"><span class="beneficio-kicker">Café Real</span><h3>Café de origen</h3><p>Grano seleccionado · preparación de especialidad.</p></div>
           </div>
-          <div class="beneficio-item gsap-reveal" data-dir="up" onclick="enterView('piso')" style="cursor:pointer;">
-            <h3>Auditorio para eventos</h3>
-            <p>Conferencias, tertulias y capacitaciones en un espacio propio.</p>
+          <div class="beneficio-item beneficio-item-imagen gsap-reveal" data-dir="up" onclick="enterView('piso')" style="cursor:pointer;">
+            <div class="beneficio-foto"><img src="images/auditorio-2.jpg" alt="Auditorio para eventos en Café Real"></div>
+            <div class="beneficio-copy"><span class="beneficio-kicker">Café Real</span><h3>Auditorio</h3><p>Conferencias · capacitaciones · eventos.</p></div>
           </div>
-          <div class="beneficio-item gsap-reveal" data-dir="up" onclick="enterView('piso')" style="cursor:pointer;">
-            <h3>Segundo piso para grupos</h3>
-            <p>Cumpleaños, reuniones y celebraciones con privacidad.</p>
+          <div class="beneficio-item beneficio-item-imagen gsap-reveal" data-dir="up" onclick="enterView('piso')" style="cursor:pointer;">
+            <div class="beneficio-foto"><img src="images/segundo-piso.jpg" alt="Segundo piso para grupos en Café Real"></div>
+            <div class="beneficio-copy"><span class="beneficio-kicker">Café Real</span><h3>Segundo piso</h3><p>Privacidad para grupos · celebraciones.</p></div>
           </div>
         </div>
     </section>
@@ -1910,7 +1899,7 @@
       <div class="section-head reveal">
         <span class="tag">Visítanos</span>
         <h2>Ubicación y horario</h2>
-        <p>Encuéntranos, consulta el horario y ven a visitarnos.</p>
+        <p>Datos de ejemplo — reemplázalos por la dirección, horario y contactos reales cuando los tengas.</p>
       </div>
       <div class="ubicacion-wrap gsap-reveal" data-dir="up">
         <div class="ubicacion-grid">
@@ -1961,35 +1950,19 @@
 
 
     <!-- FAQ -->
-    <section id="faq">
-      <div class="section-head reveal">
+    <section class="faq-section" aria-labelledby="faq-title">
+      <div class="faq-head">
         <span class="tag">Preguntas frecuentes</span>
-        <h2>Lo esencial, en un vistazo.</h2>
+        <h2 id="faq-title">Antes de reservar</h2>
+        <p>Lo esencial, en un solo lugar.</p>
       </div>
       <div class="faq-list">
-        <div class="faq-item">
-          <button class="faq-question" type="button" aria-expanded="false"><span>¿Cómo puedo reservar?</span><span>+</span></button>
-          <div class="faq-answer"><div>Puedes hacerlo desde el botón “Reservar” y completar el formulario. Te confirmamos los detalles por WhatsApp.</div></div>
-        </div>
-        <div class="faq-item">
-          <button class="faq-question" type="button" aria-expanded="false"><span>¿Puedo reservar el auditorio para un evento?</span><span>+</span></button>
-          <div class="faq-answer"><div>Sí. En la reserva puedes seleccionar el auditorio y el tipo de montaje que necesitas.</div></div>
-        </div>
-        <div class="faq-item">
-          <button class="faq-question" type="button" aria-expanded="false"><span>¿Dónde están ubicados?</span><span>+</span></button>
-          <div class="faq-answer"><div>Estamos en Cra. 44 #37-156, Tuluá, Valle del Cauca. En la sección de ubicación encontrarás el mapa.</div></div>
-        </div>
-        <div class="faq-item">
-          <button class="faq-question" type="button" aria-expanded="false"><span>¿Cuál es el horario?</span><span>+</span></button>
-          <div class="faq-answer"><div>Lunes a domingo, de 7:00 a.m. a 10:00 p.m.</div></div>
-        </div>
-        <div class="faq-item">
-          <button class="faq-question" type="button" aria-expanded="false"><span>¿Tienen café para llevar a casa?</span><span>+</span></button>
-          <div class="faq-answer"><div>Sí. Café Arias también está disponible en grano para llevar.</div></div>
-        </div>
+        <details><summary>¿Puedo reservar una mesa?</summary><p>Sí. Puedes solicitar una mesa o terraza y te confirmamos por WhatsApp.</p></details>
+        <details><summary>¿Qué puedo reservar para un evento?</summary><p>Mesas, auditorio o segundo piso, según el tipo de encuentro.</p></details>
+        <details><summary>¿Puedo reservar el segundo piso completo?</summary><p>Sí. Está pensado para celebraciones, reuniones y grupos privados.</p></details>
+        <details><summary>¿Cómo confirmo mi reserva?</summary><p>Completa el formulario y recibirás la confirmación por WhatsApp.</p></details>
       </div>
     </section>
-
     <footer>
       <div class="footer-grid">
         <div class="footer-col footer-brand">
@@ -2149,19 +2122,15 @@
       <div class="piso-grid gsap-reveal" data-dir="right">
         <div class="piso-visual"><img id="img-piso" alt="Acceso al segundo piso de Café Real"></div>
         <div class="piso-info">
+          <span class="premium-eyebrow">ESPACIOS PRIVADOS</span>
           <h3>Renta para disfrutar</h3>
-          <p>Un espacio propio, aparte del área principal, para que tu grupo tenga privacidad sin perder el ambiente de Café Real.</p>
+          <p class="piso-lead">Tu espacio. Tu momento. Café Real a tu manera.</p>
           <div class="piso-opciones">
-            <div class="opt"><b>Por mesas</b><span>Reserva solo el espacio que necesitas para tu grupo</span></div>
-            <div class="opt"><b>Piso completo</b><span>Renta todo el segundo piso para tu evento privado</span></div>
-            <div class="opt"><b>Auditorio</b><span>Todo el espacio disponible para tu evento</span></div>
+            <div class="opt"><span class="opt-num">01</span><b>Por mesas</b><span>Grupos pequeños</span></div>
+            <div class="opt"><span class="opt-num">02</span><b>Piso completo</b><span>Celebraciones privadas</span></div>
+            <div class="opt"><span class="opt-num">03</span><b>Auditorio</b><span>Eventos y negocios</span></div>
           </div>
-          <ul class="piso-usos">
-            <li>Cumpleaños y celebraciones</li>
-            <li>Ver partidos en grupo</li>
-            <li>Reuniones y encuentros de trabajo</li>
-            <li>Eventos privados a la medida</li>
-          </ul>
+          <div class="piso-tags"><span>Cumpleaños</span><span>Reuniones</span><span>Eventos privados</span></div>
           <button class="btn btn-solid" onclick="goToReserva('Segundo piso (cumpleaños, ver partido, etc.)')" style="width:fit-content;">Cotizar el espacio</button>
         </div>
       </div>
@@ -2229,7 +2198,7 @@
     <div class="reserva-hero">
       <img class="logo-real logo-menu" alt="Café Real">
       <h2>Reserva tu espacio</h2>
-      <p>Completa tus datos y te confirmamos por WhatsApp.</p>
+      <p>Cuéntanos qué necesitas y te confirmamos por WhatsApp</p>
     </div>
 
     <div class="reserva-body">
@@ -2414,64 +2383,6 @@
   setFoto('g4', PHOTOS.g4, 'Auditorio montado para evento');
   setFoto('g5', PHOTOS.g5, 'Bar, segunda vista');
   setFoto('g6', PHOTOS.g6, 'Auditorio, otro ángulo');
-
-  /* HERO — carrusel automático + navegación por puntos */
-  (function(){
-    const wrap = document.getElementById('hero-slides');
-    if(!wrap) return;
-    const imgs = Array.from(wrap.querySelectorAll('.hero-bg'));
-    const dots = Array.from(document.querySelectorAll('.hero-dot'));
-    const fuentes = [PHOTOS.hero, PHOTOS.g2, PHOTOS.auditorio, PHOTOS.piso];
-    imgs.forEach((img,i)=>{ img.src = fuentes[i] || PHOTOS.hero; });
-    let idx = 0;
-    let timer = null;
-    function mostrar(n){
-      idx = (n + imgs.length) % imgs.length;
-      imgs.forEach((img,i)=>img.classList.toggle('is-active',i===idx));
-      dots.forEach((dot,i)=>{dot.classList.toggle('is-active',i===idx);dot.setAttribute('aria-current',i===idx?'true':'false');});
-    }
-    function arrancar(){ clearInterval(timer); timer=setInterval(()=>mostrar(idx+1),5000); }
-    dots.forEach((dot,i)=>dot.addEventListener('click',()=>{mostrar(i);arrancar();}));
-    wrap.addEventListener('mouseenter',()=>clearInterval(timer));
-    wrap.addEventListener('mouseleave',arrancar);
-    mostrar(0); arrancar();
-  })();
-
-  /* FAQ — acordeón ligero */
-  document.querySelectorAll('.faq-question').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      const item=btn.closest('.faq-item');
-      const abrir=!item.classList.contains('open');
-      document.querySelectorAll('.faq-item.open').forEach(x=>{
-        x.classList.remove('open');
-        const b=x.querySelector('.faq-question'); if(b) b.setAttribute('aria-expanded','false');
-      });
-      if(abrir){item.classList.add('open');btn.setAttribute('aria-expanded','true');}
-    });
-  });
-
-  /* Café Arias — arrastre con mouse/táctil sin eliminar el auto-scroll existente */
-  (function(){
-    const viewport=document.querySelector('.cafearias-carousel');
-    const row=document.getElementById('cafearias-row');
-    if(!viewport || !row) return;
-    let down=false,startX=0,startScroll=0,moved=false;
-    viewport.addEventListener('pointerdown',e=>{
-      if(e.pointerType==='mouse' && e.button!==0) return;
-      down=true;moved=false;startX=e.clientX;startScroll=row.scrollLeft;
-      viewport.classList.add('is-dragging');
-      try{viewport.setPointerCapture(e.pointerId);}catch(_){ }
-    });
-    viewport.addEventListener('pointermove',e=>{
-      if(!down) return;
-      const dx=e.clientX-startX;
-      if(Math.abs(dx)>4) moved=true;
-      row.scrollLeft=startScroll-dx;
-    });
-    const soltar=e=>{down=false;viewport.classList.remove('is-dragging');try{viewport.releasePointerCapture(e.pointerId);}catch(_){}};
-    viewport.addEventListener('pointerup',soltar);viewport.addEventListener('pointercancel',soltar);viewport.addEventListener('pointerleave',e=>{if(down && e.pointerType==='mouse') soltar(e);});
-    viewport.addEventListener('click',e=>{if(moved){e.preventDefault();e.stopPropagation();}},true);
-  })();
 
   /* =========================================================
     DATA — Auditorio: se llena con los eventos reales que el
@@ -3001,11 +2912,11 @@
     document.querySelectorAll(selector).forEach(el=>{
       let isDown=false, startX=0, scrollStart=0;
       el.addEventListener('pointerdown', e=>{
-        if(e.pointerType==='touch') return;
         isDown=true;
         el.classList.add('arrastrando');
         startX = e.pageX;
         scrollStart = el.scrollLeft;
+        try{ el.setPointerCapture(e.pointerId); }catch(_){}
       });
       window.addEventListener('pointerup', ()=>{
         isDown=false;
@@ -3093,6 +3004,7 @@
     }
     requestAnimationFrame(tick);
   }
+  activarArrastreHorizontal('.cafearias-row');
   iniciarAutoScrollCarrusel('.cafearias-row', 0.8);
 
 
@@ -3935,5 +3847,26 @@
       <p id="producto-modal-desc"></p>
     </div>
   </div>
-</div></body>
+</div>
+<script id="cafe-real-ajustes-js-v2">
+(function(){
+  // HERO: varias imágenes, conserva el mismo elemento y la misma lógica de la página.
+  const heroImages=[PHOTOS.hero,PHOTOS.g1,PHOTOS.g3,PHOTOS.g2];
+  const heroA=document.getElementById('img-hero');
+  const heroB=document.getElementById('img-hero-2');
+  if(heroA && heroB && heroImages.length>1){
+    let h=0, visibleA=true;
+    heroA.src=heroImages[0]; heroB.src=heroImages[1];
+    setInterval(function(){
+      h=(h+1)%heroImages.length;
+      const next=heroImages[h];
+      if(visibleA){ heroB.src=next; heroB.classList.add('hero-slide-active'); heroB.classList.remove('hero-slide-next'); heroA.classList.remove('hero-slide-active'); heroA.classList.add('hero-slide-next'); }
+      else{ heroA.src=next; heroA.classList.add('hero-slide-active'); heroA.classList.remove('hero-slide-next'); heroB.classList.remove('hero-slide-active'); heroB.classList.add('hero-slide-next'); }
+      visibleA=!visibleA;
+    },5200);
+  }
+
+})();
+</script>
+</body>
   </html> 
