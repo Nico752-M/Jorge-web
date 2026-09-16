@@ -6354,5 +6354,89 @@
 })();
 </script>
 
+
+<style id="header-ajuste-final">
+/* ===== AJUSTE FINAL DEL HEADER ===== */
+
+/* La barra superior mantiene siempre el mismo blanco crema */
+.topnav,
+.topnav.cr-header-scrolled{
+  background:#f6f1e4 !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+  box-shadow:none !important;
+  border-bottom:1px solid rgba(3,73,68,.10) !important;
+}
+
+/* En móvil: quitar por completo el botón hamburguesa */
+@media (max-width:860px){
+  .topnav .nav-mobile-toggle,
+  .topnav .mobile-nav-panel{
+    display:none !important;
+  }
+
+  .topnav{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    min-height:64px !important;
+    height:64px !important;
+    padding:8px 20px !important;
+    background:#f6f1e4 !important;
+    position:fixed !important;
+  }
+
+  /* Centrar únicamente el logo */
+  .topnav .brand{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    width:auto !important;
+    margin:0 auto !important;
+    transform:none !important;
+  }
+
+  .topnav .brand > div{
+    display:none !important;
+  }
+
+  .topnav .brand .logo-nav{
+    width:46px !important;
+    height:46px !important;
+    margin:0 !important;
+  }
+
+  /* No mostrar elementos laterales */
+  .topnav nav,
+  .topnav .actions{
+    display:none !important;
+  }
+
+  /* El scroll ya no cambia el aspecto del header */
+  .topnav.cr-header-scrolled{
+    background:#f6f1e4 !important;
+    padding:8px 20px !important;
+    box-shadow:none !important;
+    border-bottom:1px solid rgba(3,73,68,.10) !important;
+  }
+
+  .topnav.cr-header-scrolled .brand{
+    transform:none !important;
+    opacity:1 !important;
+  }
+}
+
+/* También mantiene el color crema en escritorio */
+@media (min-width:861px){
+  .topnav{
+    background:#f6f1e4 !important;
+  }
+
+  .topnav.cr-header-scrolled{
+    background:#f6f1e4 !important;
+  }
+}
+</style>
+
 </body>
 </html>
