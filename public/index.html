@@ -1881,8 +1881,8 @@
   .smart-reserve-close{width:22px;height:22px;border-radius:50%;border:1px solid rgba(3,73,68,.13);background:#fff;color:#42605b;display:grid;place-items:center;font-size:13px;line-height:1;padding:0;cursor:pointer;box-shadow:0 5px 15px rgba(0,0,0,.12);transform:translateY(-7px);transition:transform .2s ease,background .2s ease;}
   .smart-reserve-close:hover{transform:translateY(-7px) scale(1.08);background:#f7f4eb;}
   #smart-reserve::after{content:'';position:absolute;right:23px;bottom:-7px;width:13px;height:13px;background:#063f3b;border-right:1px solid rgba(255,255,255,.25);border-bottom:1px solid rgba(255,255,255,.25);transform:rotate(45deg);z-index:-1;}
-  @media(max-width:860px){#smart-reserve{right:14px;bottom:calc(246px + env(safe-area-inset-bottom,0px));}}
-  @media(max-width:560px){#smart-reserve{right:12px;bottom:calc(248px + env(safe-area-inset-bottom,0px));max-width:calc(100vw - 24px)}.smart-reserve-main{min-height:52px;padding:8px 10px 8px 8px;border-radius:16px;gap:8px}.smart-reserve-icon{width:34px;height:34px;border-radius:10px}.smart-reserve-icon svg{width:18px;height:18px}.smart-reserve-copy strong{font-size:.84rem}.smart-reserve-arrow{font-size:.9rem}}
+  @media(max-width:860px){#smart-reserve{right:14px;bottom:calc(330px + env(safe-area-inset-bottom,0px));}}
+  @media(max-width:560px){#smart-reserve{right:12px;bottom:calc(326px + env(safe-area-inset-bottom,0px));max-width:calc(100vw - 24px)}.smart-reserve-main{min-height:52px;padding:8px 10px 8px 8px;border-radius:16px;gap:8px}.smart-reserve-icon{width:34px;height:34px;border-radius:10px}.smart-reserve-icon svg{width:18px;height:18px}.smart-reserve-copy strong{font-size:.84rem}.smart-reserve-arrow{font-size:.9rem}}
   @media(prefers-reduced-motion:reduce){#smart-reserve{transition:none!important}.smart-reserve-main{transition:none!important;}}
 </style>
 
@@ -2069,9 +2069,15 @@
 .piso-tags{margin-top:22px!important;}
 .piso-tags span{background:#fff!important;}
 
-/* Reserva flotante: sigue siendo ocasional, pero se siente parte del diseño. */
+/* Reserva flotante: aireada y separada de Instagram/WhatsApp. */
 #smart-reserve{bottom:104px!important;}
 .smart-reserve-main{border-radius:15px!important;}
+@media(max-width:860px){
+  #smart-reserve{bottom:calc(330px + env(safe-area-inset-bottom,0px))!important;}
+}
+@media(max-width:560px){
+  #smart-reserve{bottom:calc(326px + env(safe-area-inset-bottom,0px))!important;}
+}
 
 @media(max-width:800px){
   .hero{min-height:760px!important;}
@@ -4810,6 +4816,55 @@
   .topnav.is-scrolled{height:52px!important;min-height:52px!important;}
   .topnav .brand .logo-nav{width:39px!important;height:39px!important;flex-basis:39px!important;}
   .topnav.is-scrolled .brand .logo-nav{width:36px!important;height:36px!important;flex-basis:36px!important;}
+}
+
+/* HEADER MÓVIL — brillo orgánico al comenzar/continuar el scroll */
+@media(max-width:860px){
+  .topnav{
+    position:sticky!important;
+    overflow:hidden;
+    transition:min-height .45s cubic-bezier(.2,.8,.2,1),height .45s cubic-bezier(.2,.8,.2,1),
+      padding .45s cubic-bezier(.2,.8,.2,1),box-shadow .45s ease,background .45s ease;
+  }
+  .topnav::after{
+    content:'';
+    position:absolute;
+    top:0;bottom:0;left:-42%;width:28%;
+    pointer-events:none;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.72),transparent);
+    transform:skewX(-18deg);
+    opacity:0;
+  }
+  .topnav.is-scrolled{
+    background:rgba(251,250,246,.97)!important;
+    box-shadow:0 5px 22px rgba(3,73,68,.10);
+  }
+  .topnav.is-scrolled::after{
+    opacity:1;
+    animation:crHeaderShimmer 3.8s cubic-bezier(.4,0,.2,1) infinite;
+  }
+  .topnav .brand .logo-nav{
+    transition:transform .55s cubic-bezier(.2,.8,.2,1),filter .55s ease;
+  }
+  .topnav.is-scrolled .brand .logo-nav{
+    animation:crHeaderPulse 3.8s ease-in-out infinite;
+    filter:drop-shadow(0 0 7px rgba(10,124,118,.20));
+  }
+}
+@keyframes crHeaderShimmer{
+  0%,52%{left:-42%;opacity:0;}
+  58%{opacity:.75;}
+  72%{left:118%;opacity:0;}
+  100%{left:118%;opacity:0;}
+}
+@keyframes crHeaderPulse{
+  0%,100%{transform:scale(1);}
+  45%{transform:scale(1.018);}
+  58%{transform:scale(1.045);}
+  72%{transform:scale(1);}
+}
+@media(prefers-reduced-motion:reduce){
+  .topnav.is-scrolled::after,.topnav.is-scrolled .brand .logo-nav{animation:none!important;}
 }
 </style>
 <script id="mobile-scroll-header-final-script">
