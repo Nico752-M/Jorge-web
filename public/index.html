@@ -3738,8 +3738,7 @@
     requestAnimationFrame(tick);
   }
   activarArrastreHorizontal('.cafearias-row');
-  /* El carrusel de Café Arias usa el auto-avance por tarjeta definido al final. */
-  iniciarAutoScrollCarrusel('.cafearias-row', 0);
+  /* El auto-avance de Café Arias se gestiona por el script final. */
 
 
   function activarHoverPremium(selectorTarjetas){
@@ -6168,135 +6167,123 @@
 <script id="cr-cafe-arias-autoplay-final">
 (function(){
   const INTERVALO = 4200;
-  const REANUDAR = 2800;
+  const PAUSA_DESPUES_DE_GESTO = 1800;
 
-  function init(){
+  function iniciar(){
     const row = document.getElementById('cafearias-row');
-    if(!row || row.dataset.autoCarruselFinal === '1') return;
-    row.dataset.autoCarruselFinal = '1';
+    if(!row || row.dataset.autoCarruselFinal === '2') return;
+    row.dataset.autoCarruselFinal = '2';
 
     let timer = null;
-    let resumeTimer = null;
-    let detenido = false;
+    let pausaTimer = null;
     let tocando = false;
-    let indice = 0;
+    let reproduciendo = false;
 
-    const cards = () => Array.from(row.querySelectorAll('.cafearias-video-card'));
+    const tarjetas = () => Array.from(row.querySelectorAll('.cafearias-video-card'));
 
-    function limpiar(){
+    function cancelar(){
       clearTimeout(timer);
-      clearTimeout(resumeTimer);
+      clearTimeout(pausaTimer);
       timer = null;
-      resumeTimer = null;
+      pausaTimer = null;
     }
 
-    function programar(ms=INTERVALO){
-      clearTimeout(timer);
-      if(detenido) return;
-      timer = setTimeout(avanzar, ms);
+    function siguiente(){
+      if(tocando || reproduciendo) return programar(INTERVALO);
+      const cards = tarjetas();
+      if(cards.length < 2) return programar(INTERVALO);
+
+      const actual = row.scrollLeft;
+      let indice = 0;
+      let menor = Infinity;
+      cards.forEach((card,i)=>{
+        const distancia = Math.abs(card.offsetLeft - actual);
+        if(distancia < menor){ menor = distancia; indice = i; }
+      });
+
+      const siguienteIndice = indice + 1;
+      if(siguienteIndice >= cards.length){
+        row.scrollTo({left:0, behavior:'smooth'});
+      }else{
+        const destino = Math.max(0, cards[siguienteIndice].offsetLeft - 20);
+        row.scrollTo({left:destino, behavior:'smooth'});
+      }
+      programar(INTERVALO);
     }
 
-    function pausar(){
+    function programar(ms){
       clearTimeout(timer);
-      clearTimeout(resumeTimer);
-      timer = null;
-      resumeTimer = null;
+      if(tocando || reproduciendo) return;
+      timer = setTimeout(siguiente, ms);
     }
 
     function reanudar(){
-      if(detenido || tocando) return;
-      clearTimeout(resumeTimer);
-      resumeTimer = setTimeout(()=>programar(INTERVALO), REANUDAR);
-    }
-
-    function avanzar(){
-      if(detenido || tocando) return;
-      const lista = cards();
-      if(lista.length < 2){ programar(INTERVALO); return; }
-
-      indice = Math.min(indice + 1, lista.length - 1);
-      const destino = lista[indice];
-      if(!destino){ indice=0; programar(INTERVALO); return; }
-
-      row.scrollTo({left: Math.max(0, destino.offsetLeft - 20), behavior:'smooth'});
-
-      if(indice >= lista.length - 1){
-        // Espera a que termine el desplazamiento y vuelve al primero suavemente.
-        clearTimeout(timer);
-        timer = setTimeout(()=>{
-          if(detenido || tocando) return;
-          indice = 0;
-          row.scrollTo({left:0, behavior:'smooth'});
-          programar(INTERVALO);
-        }, 900);
-      }else{
-        programar(INTERVALO);
-      }
-    }
-
-    function sincronizarIndice(){
-      const lista = cards();
-      if(!lista.length) return;
-      const objetivo = row.scrollLeft + 25;
-      let mejor=0, distancia=Infinity;
-      lista.forEach((card,i)=>{
-        const d=Math.abs(card.offsetLeft-objetivo);
-        if(d<distancia){distancia=d;mejor=i;}
-      });
-      indice=mejor;
+      clearTimeout(pausaTimer);
+      if(tocando || reproduciendo) return;
+      pausaTimer = setTimeout(()=>programar(INTERVALO), PAUSA_DESPUES_DE_GESTO);
     }
 
     row.addEventListener('pointerdown', ()=>{
-      tocando=true;
-      pausar();
-    });
-    window.addEventListener('pointerup', ()=>{
-      if(!tocando) return;
-      tocando=false;
-      sincronizarIndice();
-      reanudar();
-    });
-    window.addEventListener('pointercancel', ()=>{
-      tocando=false;
-      sincronizarIndice();
-      reanudar();
-    });
-
-    row.addEventListener('touchstart', ()=>{ pausar(); }, {passive:true});
-    row.addEventListener('touchend', ()=>{ sincronizarIndice(); reanudar(); }, {passive:true});
-
-    row.addEventListener('wheel', ()=>{
-      pausar();
-      clearTimeout(resumeTimer);
-      resumeTimer=setTimeout(()=>{sincronizarIndice();reanudar();},700);
+      tocando = true;
+      cancelar();
     }, {passive:true});
 
-    // Si una persona reproduce un video, el carrusel deja de moverse.
+    window.addEventListener('pointerup', ()=>{
+      if(!tocando) return;
+      tocando = false;
+      reanudar();
+    }, {passive:true});
+
+    window.addEventListener('pointercancel', ()=>{
+      tocando = false;
+      reanudar();
+    }, {passive:true});
+
+    row.addEventListener('touchstart', ()=>{
+      tocando = true;
+      cancelar();
+    }, {passive:true});
+
+    row.addEventListener('touchend', ()=>{
+      tocando = false;
+      reanudar();
+    }, {passive:true});
+
+    row.addEventListener('wheel', ()=>{
+      cancelar();
+      reanudar();
+    }, {passive:true});
+
     row.querySelectorAll('video').forEach(video=>{
-      video.addEventListener('play', ()=>{ detenido=true; pausar(); });
-      video.addEventListener('pause', ()=>{ detenido=false; sincronizarIndice(); reanudar(); });
-      video.addEventListener('ended', ()=>{ detenido=false; sincronizarIndice(); reanudar(); });
+      video.addEventListener('play', ()=>{
+        reproduciendo = true;
+        cancelar();
+      });
+      video.addEventListener('pause', ()=>{
+        reproduciendo = false;
+        reanudar();
+      });
+      video.addEventListener('ended', ()=>{
+        reproduciendo = false;
+        reanudar();
+      });
     });
 
-    // Si el usuario deja la sección, no consume movimiento innecesario.
-    const observer = new IntersectionObserver(entries=>{
-      const visible=entries[0] && entries[0].isIntersecting;
-      if(visible){
-        detenido=false;
-        sincronizarIndice();
-        programar(INTERVALO);
-      }else{
-        pausar();
-      }
-    }, {threshold:0.18});
-    observer.observe(row);
+    // Si la pestaña está oculta, pausamos; al volver, retomamos el ciclo.
+    document.addEventListener('visibilitychange', ()=>{
+      if(document.hidden) cancelar();
+      else reanudar();
+    });
 
-    // Arranque inicial: no mueve inmediatamente; deja leer la primera tarjeta.
-    setTimeout(()=>{ sincronizarIndice(); programar(INTERVALO); }, 900);
+    // Arranca después de mostrar la primera tarjeta unos segundos.
+    programar(INTERVALO);
   }
 
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
-  else init();
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', iniciar, {once:true});
+  }else{
+    iniciar();
+  }
 })();
 </script>
 
