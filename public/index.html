@@ -4582,7 +4582,7 @@
       </svg>
       <span>Ubicación</span>
     </button>
-  </nav></nav>
+  </nav>
 
   <script>
   (function(){
@@ -5119,7 +5119,6 @@
   #mobile-bottom-nav .btab{flex:1!important;height:62px!important;border-radius:13px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:4px!important;color:#123d3a!important;font-size:.55rem!important;}
   #mobile-bottom-nav .btab svg{width:24px!important;height:24px!important;stroke-width:1.7!important;}
   #mobile-bottom-nav .btab.btab-active{background:#034944!important;color:#fff!important;}
-  #mobile-bottom-nav .btab:nth-child(4){display:none!important;}
   #floating-actions{bottom:calc(88px + env(safe-area-inset-bottom,0px))!important;z-index:9998!important;}
 }
 @media(max-width:520px){
@@ -5131,34 +5130,69 @@
 <script id="cr-reference-match-v3-js">
 (function(){
   function apply(){
-    /* Cambiar el texto del encabezado de experiencias para coincidir con la referencia. */
     var exp=document.querySelector('#site-view .beneficios .section-head h2');
     if(exp) exp.textContent='NUESTRAS EXPERIENCIAS';
-    /* La tercera pestaña inferior es Reservas y la quinta se conserva como Contacto. */
+
     var nav=document.getElementById('mobile-bottom-nav');
     if(nav){
-      var tabs=nav.querySelectorAll('.btab');
-      if(tabs.length>=5){
-        var locationTab=tabs[2], eventsTab=tabs[3], reserveTab=tabs[4];
-        eventsTab.style.display='none';
-        locationTab.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 3v4M16 3v4M4 9h16"/><path d="M8 13h2M14 13h2M8 17h2"/></svg><span>Reservas</span>';
-        locationTab.setAttribute('data-view','piso');
-        locationTab.setAttribute('onclick',"mobileNavGo('piso')");
-        reserveTab.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 21c.7-4 3-6 7-6s6.3 2 7 6"/></svg><span>Contacto</span>';
-        reserveTab.setAttribute('data-view','ubicacion');
-        reserveTab.setAttribute('onclick',"mobileNavGo('ubicacion')");
-        reserveTab.classList.remove('flash-cta');
-        /* Reordenar: Inicio, Menú, Reservas, Contacto */
-        nav.appendChild(locationTab);
-        nav.appendChild(reserveTab);
-      }
+      var tabs=Array.prototype.slice.call(nav.querySelectorAll('.btab'));
+      var byView={};
+      tabs.forEach(function(t){ byView[t.getAttribute('data-view')]=t; });
+
+      // Orden exacto de la barra solicitada: Inicio, Menú, Eventos, Reservas, Ubicación.
+      ['site','menu','auditorio','piso','ubicacion'].forEach(function(view){
+        if(byView[view]) nav.appendChild(byView[view]);
+      });
+
+      var labels={site:'Inicio',menu:'Menú',auditorio:'Eventos',piso:'Reservas',ubicacion:'Ubicación'};
+      Object.keys(labels).forEach(function(view){
+        var t=byView[view];
+        if(t){
+          var span=t.querySelector('span');
+          if(span) span.textContent=labels[view];
+          t.style.display='flex';
+        }
+      });
     }
-    /* Quitar la etiqueta Café Real de las tarjetas de experiencias. */
+
     document.querySelectorAll('#site-view .beneficio-item-imagen .beneficio-kicker').forEach(function(k){k.style.display='none';});
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',apply); else apply();
 })();
 </script>
+
+<style id="mobile-bottom-nav-reference-final">
+@media (max-width:860px){
+  #mobile-bottom-nav{
+    display:flex!important;
+    position:fixed!important;
+    left:0!important;right:0!important;bottom:0!important;
+    height:78px!important;
+    padding:7px 8px calc(7px + env(safe-area-inset-bottom,0px))!important;
+    gap:6px!important;
+    background:rgba(250,249,244,.98)!important;
+    border-top:1px solid rgba(3,73,68,.12)!important;
+    box-shadow:0 -8px 28px rgba(3,73,68,.12)!important;
+    z-index:9999!important;
+  }
+  #mobile-bottom-nav .btab{
+    display:flex!important;
+    flex:1 1 20%!important;
+    width:20%!important;max-width:none!important;
+    height:62px!important;
+    margin:0!important;
+    border-radius:13px!important;
+    flex-direction:column!important;
+    align-items:center!important;justify-content:center!important;
+    gap:4px!important;
+    color:#123d3a!important;
+    font-size:.55rem!important;
+  }
+  #mobile-bottom-nav .btab svg{width:24px!important;height:24px!important;stroke-width:1.7!important;}
+  #mobile-bottom-nav .btab.btab-active{background:#034944!important;color:#fff!important;}
+  #floating-actions{bottom:calc(88px + env(safe-area-inset-bottom,0px))!important;z-index:9998!important;}
+}
+</style>
 
 </body>
 </html>
