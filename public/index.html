@@ -4753,3 +4753,84 @@
   .topnav .horario-pill{font-size:.43rem!important;padding:4px 6px!important;}
 }
 </style>
+
+<!-- CAFÉ REAL · AJUSTE MÓVIL FINAL -->
+<style id="mobile-scroll-header-final">
+@media (max-width:860px){
+  /* El menú hamburguesa no se usa en móvil: la navegación inferior ya cumple esa función. */
+  .nav-mobile-toggle,
+  .mobile-nav-panel{display:none!important;}
+
+  /* Header más limpio y con respuesta al scroll */
+  .topnav{
+    height:64px!important;
+    min-height:64px!important;
+    transition:
+      height .45s cubic-bezier(.22,.9,.25,1),
+      min-height .45s cubic-bezier(.22,.9,.25,1),
+      background-color .35s ease,
+      box-shadow .45s ease,
+      backdrop-filter .45s ease;
+    box-shadow:0 1px 0 rgba(3,73,68,.08);
+    will-change:height,box-shadow;
+  }
+  .topnav.is-scrolled{
+    height:54px!important;
+    min-height:54px!important;
+    background:rgba(255,255,255,.94)!important;
+    box-shadow:0 7px 24px rgba(3,73,68,.10)!important;
+    backdrop-filter:blur(12px);
+  }
+  .topnav .brand{
+    transition:transform .45s cubic-bezier(.22,.9,.25,1);
+  }
+  .topnav.is-scrolled .brand{
+    transform:translate(-50%,-50%) scale(.92)!important;
+  }
+  .topnav .actions{
+    transition:transform .45s cubic-bezier(.22,.9,.25,1);
+  }
+  .topnav.is-scrolled .actions{
+    transform:translateY(-50%) scale(.94)!important;
+  }
+
+  /* Quita los rótulos repetidos de las tarjetas de imágenes. */
+  .beneficio-item-imagen::before,
+  .beneficio-item-imagen .beneficio-kicker{
+    display:none!important;
+    content:none!important;
+  }
+  .beneficio-item-imagen .beneficio-copy{
+    padding-top:22px!important;
+  }
+}
+
+@media (max-width:520px){
+  .topnav{height:60px!important;min-height:60px!important;}
+  .topnav.is-scrolled{height:52px!important;min-height:52px!important;}
+  .topnav .brand .logo-nav{width:39px!important;height:39px!important;flex-basis:39px!important;}
+  .topnav.is-scrolled .brand .logo-nav{width:36px!important;height:36px!important;flex-basis:36px!important;}
+}
+</style>
+<script id="mobile-scroll-header-final-script">
+(function(){
+  function updateMobileHeaders(){
+    var mobile = window.innerWidth <= 860;
+    document.querySelectorAll('.topnav').forEach(function(nav){
+      nav.classList.toggle('is-scrolled', mobile && window.scrollY > 18);
+    });
+  }
+  var ticking=false;
+  window.addEventListener('scroll',function(){
+    if(ticking)return;
+    ticking=true;
+    requestAnimationFrame(function(){
+      updateMobileHeaders();
+      ticking=false;
+    });
+  },{passive:true});
+  window.addEventListener('resize',updateMobileHeaders);
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',updateMobileHeaders);
+  else updateMobileHeaders();
+})();
+</script>
