@@ -6098,5 +6098,71 @@
 }
 </style>
 
+
+<style id="cafe-real-product-size-reference">
+@media (max-width:860px){
+  /* Mantener buscador y categorías exactamente como están.
+     Solo damos más protagonismo a los productos. */
+  #menu-view .menu-panel-body .prod-list{
+    gap:10px !important;
+  }
+
+  #menu-view .menu-panel-body .prod-row{
+    grid-template-columns:118px minmax(0,1fr) !important;
+    min-height:138px !important;
+    padding:10px !important;
+    gap:13px !important;
+    border-radius:18px !important;
+  }
+
+  #menu-view .menu-panel-body .prod-photo{
+    width:118px !important;
+    height:118px !important;
+    border-radius:14px !important;
+  }
+
+  #menu-view .menu-panel-body .prod-top h4{
+    font-size:1.22rem !important;
+    line-height:1.08 !important;
+  }
+
+  #menu-view .menu-panel-body .prod-price{
+    font-size:.78rem !important;
+  }
+
+  #menu-view .prod-detail-hint{
+    margin-top:9px !important;
+    font-size:.61rem !important;
+  }
+}
+
+@media (max-width:430px){
+  #menu-view .menu-panel-body .prod-row{
+    grid-template-columns:108px minmax(0,1fr) !important;
+    min-height:128px !important;
+    padding:9px !important;
+    gap:11px !important;
+  }
+
+  #menu-view .menu-panel-body .prod-photo{
+    width:108px !important;
+    height:108px !important;
+    border-radius:13px !important;
+  }
+
+  #menu-view .menu-panel-body .prod-top h4{
+    font-size:1.16rem !important;
+  }
+
+  #menu-view .menu-panel-body .prod-price{
+    font-size:.74rem !important;
+  }
+
+  #menu-view .prod-detail-hint{
+    font-size:.59rem !important;
+  }
+}
+</style>
+
 </body>
 </html>
