@@ -6660,5 +6660,30 @@
 }
 </style>
 
+
+<style id="cr-header-no-overlap">
+/* El header es "position:fixed" en móvil (para poder animarse), así que
+   no ocupa espacio real dentro de la página y queda flotando ENCIMA del
+   contenido: tapa el texto del inicio, el buscador del menú, etc.
+
+   El intento anterior usaba ".topnav + *" (el hermano siguiente), pero en
+   varias vistas ese hermano inmediato está oculto con display:none (p.ej.
+   .menu-hero en #menu-view), así que no ocupaba espacio y el elemento
+   realmente visible (el buscador) seguía quedando tapado a medias.
+
+   La solución correcta: reservar el espacio directamente en cada vista
+   (el contenedor padre), no en "el hermano siguiente al header". */
+@media (max-width:860px){
+  #site-view,
+  #menu-view,
+  #reserva-view,
+  #auditorio-view,
+  #galeria-view,
+  #piso-view{
+    padding-top:64px !important;
+  }
+}
+</style>
+
 </body>
 </html>
