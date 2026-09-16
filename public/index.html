@@ -2786,6 +2786,18 @@
       <div class="destacados-row" id="destacados-row"></div>
     </div>
 
+
+    <div class="menu-mobile-tools" aria-label="Buscar en el menú">
+      <label class="menu-search-box">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="M20 20l-4-4"></path>
+        </svg>
+        <input id="menu-search-input" type="search" placeholder="Buscar en el menú..." autocomplete="off">
+      </label>
+      <div id="menu-search-status" class="menu-search-status" aria-live="polite"></div>
+    </div>
+
     <div class="menu-layout">
       <div class="menu-sidebar" id="menu-sidebar"></div>
       <div class="menu-panel-body" id="menu-panel-body"></div>
@@ -3417,7 +3429,7 @@
     const id = PRODUCTOS_FLAT.length;
     PRODUCTOS_FLAT.push(it);
     return `
-      <div class="prod-row" onclick="abrirProducto(${id})" style="cursor:pointer;">
+      <div class="prod-row" data-search-text="${(it.n + ' ' + (it.d || '')).toLowerCase().replace(/"/g,'&quot;')}" onclick="abrirProducto(${id})" style="cursor:pointer;">
         <div class="prod-photo">
           <img src="${imgPathFor(it.n)}" alt="${it.n}" onerror="onImgErr(this, '${it.n.replace(/'/g, "\\'")}')">
         </div>
@@ -3455,11 +3467,37 @@
   function buildTabs(){
     const tabsEl = document.getElementById('menu-sidebar');
     const keys = Object.keys(MENU);
-    tabsEl.innerHTML = keys.map((k,i)=>{
-      const cat = MENU[k];
-      const count = cat.layout === 'cards' ? cat.items.length : cat.shelves.reduce((a,s)=>a+s.items.length,0);
-      return `<button data-k="${k}" class="${i===0?'active':''}" onclick="showCat('${k}')">${cat.label}<span class="cnt">${count}</span></button>`;
-    }).join('');
+    const first = MENU[keys[0]];
+    tabsEl.innerHTML = `
+      <div class="menu-category-heading">
+        <span class="menu-category-heading-line"></span>
+        <span>Categorías del menú</span>
+        <span class="menu-category-heading-line"></span>
+      </div>
+      <div class="menu-category-options" id="menu-category-options">
+        ${keys.map((k,i)=>{
+          const cat = MENU[k];
+          const count = cat.layout === 'cards'
+            ? cat.items.length
+            : cat.shelves.reduce((a,s)=>a+s.items.length,0);
+          return `<button type="button" data-k="${k}" class="${i===0?'active':''}"
+                    onclick="showCat('${k}')">
+                    <span>${cat.label}</span><span class="cnt">${count}</span>
+                  </button>`;
+        }).join('')}
+      </div>
+    `;
+
+    const trigger = document.getElementById('menu-category-trigger');
+    const options = document.getElementById('menu-category-options');
+
+    if(trigger && options){
+      trigger.addEventListener('click', function(){
+        const open = options.classList.toggle('open');
+        trigger.classList.toggle('open', open);
+        trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+    }
   }
 
   function buildBody(){
@@ -3508,7 +3546,17 @@
   }
 
   function showCat(k){
-    document.querySelectorAll('.menu-sidebar button').forEach(b=>b.classList.toggle('active', b.dataset.k===k));
+    document.querySelectorAll('.menu-category-options button').forEach(b=>b.classList.toggle('active', b.dataset.k===k));
+    const cat = MENU[k];
+    const current = document.querySelector('.menu-category-current');
+    if(current && cat) current.textContent = cat.label;
+    const trigger = document.getElementById('menu-category-trigger');
+    const options = document.getElementById('menu-category-options');
+    if(trigger && options){
+      options.classList.remove('open');
+      trigger.classList.remove('open');
+      trigger.setAttribute('aria-expanded','false');
+    }
     const actual = document.querySelector('.menu-cat.active');
     const nuevo = document.getElementById('cat-'+k);
     if(!nuevo || nuevo === actual) return;
@@ -5191,6 +5239,321 @@
   #mobile-bottom-nav .btab svg{width:24px!important;height:24px!important;stroke-width:1.7!important;}
   #mobile-bottom-nav .btab.btab-active{background:#034944!important;color:#fff!important;}
   #floating-actions{bottom:calc(88px + env(safe-area-inset-bottom,0px))!important;z-index:9998!important;}
+}
+</style>
+
+
+<style id="menu-mobile-clean-navigation">
+@media (max-width: 860px){
+  #menu-view .menu-mobile-tools{
+    display:block;
+    padding:22px 20px 0;
+    background:var(--hueso);
+  }
+
+  #menu-view .menu-search-box{
+    height:52px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:0 16px;
+    border:1px solid rgba(3,73,68,.18);
+    border-radius:16px;
+    background:rgba(255,255,255,.72);
+    box-shadow:0 4px 16px rgba(3,73,68,.04);
+  }
+
+  #menu-view .menu-search-box svg{
+    width:22px;
+    height:22px;
+    flex:none;
+    fill:none;
+    stroke:var(--teal-osc);
+    stroke-width:2;
+    stroke-linecap:round;
+  }
+
+  #menu-view .menu-search-box input{
+    width:100%;
+    border:0;
+    outline:0;
+    background:transparent;
+    color:var(--tinta);
+    font:500 .9rem 'Public Sans',sans-serif;
+  }
+
+  #menu-view .menu-search-box input::placeholder{color:#899391;}
+
+  #menu-view .menu-search-status{
+    min-height:18px;
+    padding:6px 4px 0;
+    color:var(--tinta-suave);
+    font:500 .62rem 'JetBrains Mono',monospace;
+    letter-spacing:.04em;
+  }
+
+  #menu-view .menu-layout{
+    display:block;
+    padding:0 20px 90px;
+  }
+
+  #menu-view .menu-sidebar{
+    position:static;
+    display:block;
+    overflow:visible;
+    padding:10px 0 0;
+    border:0;
+    background:transparent;
+  }
+
+  #menu-view .menu-category-trigger{
+    width:100%;
+    min-height:68px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    padding:13px 18px;
+    border:1px solid rgba(3,73,68,.14);
+    border-radius:18px;
+    background:rgba(255,255,255,.78);
+    color:var(--teal-osc);
+    box-shadow:0 8px 22px rgba(3,73,68,.05);
+    cursor:pointer;
+    text-align:left;
+  }
+
+  #menu-view .menu-category-trigger-copy{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+
+  #menu-view .menu-category-trigger small{
+    font:600 .58rem 'JetBrains Mono',monospace;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--tinta-suave);
+  }
+
+  #menu-view .menu-category-trigger strong{
+    font:600 1rem 'Public Sans',sans-serif;
+    color:var(--teal-osc);
+  }
+
+  #menu-view .menu-category-chevron{
+    font-size:1.8rem;
+    line-height:1;
+    transform:translateY(-3px);
+    transition:transform .25s ease;
+  }
+
+  #menu-view .menu-category-trigger.open .menu-category-chevron{
+    transform:rotate(180deg) translateY(2px);
+  }
+
+  #menu-view .menu-category-options{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    max-height:0;
+    opacity:0;
+    overflow:hidden;
+    padding:0;
+    margin:0;
+    border:1px solid transparent;
+    border-radius:18px;
+    background:rgba(255,255,255,.9);
+    transition:max-height .3s ease, opacity .2s ease, padding .3s ease, margin .3s ease, border-color .3s ease;
+  }
+
+  #menu-view .menu-category-options.open{
+    max-height:360px;
+    opacity:1;
+    padding:10px;
+    margin-top:8px;
+    border-color:rgba(3,73,68,.1);
+  }
+
+  #menu-view .menu-category-options button{
+    min-height:48px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    padding:9px 12px;
+    border:1px solid rgba(3,73,68,.09);
+    border-radius:12px;
+    background:var(--hueso);
+    color:var(--tinta);
+    font:600 .72rem 'Public Sans',sans-serif;
+    text-align:left;
+    cursor:pointer;
+  }
+
+  #menu-view .menu-category-options button .cnt{
+    font:500 .58rem 'JetBrains Mono',monospace;
+    color:var(--tinta-suave);
+  }
+
+  #menu-view .menu-category-options button.active{
+    background:var(--teal-osc);
+    color:var(--blanco);
+    border-color:var(--teal-osc);
+  }
+
+  #menu-view .menu-category-options button.active .cnt{
+    color:rgba(255,255,255,.7);
+  }
+
+  #menu-view .menu-panel-head{
+    padding:30px 0 20px;
+  }
+
+  #menu-view .menu-cat.search-hidden{
+    display:none !important;
+  }
+
+  #menu-view .menu-cat.search-match{
+    display:block !important;
+  }
+
+  #menu-view .prod-row.search-hidden{
+    display:none !important;
+  }
+
+  #menu-view .menu-cat.search-match .menu-panel-head{
+    padding-top:22px;
+  }
+}
+
+@media (min-width:861px){
+  #menu-view .menu-mobile-tools{display:none;}
+}
+</style>
+
+<script id="menu-mobile-search-script">
+(function(){
+  function initMenuSearch(){
+    const input = document.getElementById('menu-search-input');
+    const status = document.getElementById('menu-search-status');
+    if(!input || input.dataset.ready === '1') return;
+    input.dataset.ready = '1';
+
+    input.addEventListener('input', function(){
+      const q = this.value.trim().toLowerCase();
+      const cats = document.querySelectorAll('#menu-view .menu-cat');
+      const rows = document.querySelectorAll('#menu-view .prod-row');
+
+      if(!q){
+        cats.forEach(cat=>{
+          cat.classList.remove('search-match','search-hidden');
+          cat.querySelectorAll('.prod-row').forEach(row=>row.classList.remove('search-hidden'));
+        });
+        const active = document.querySelector('#menu-view .menu-cat.active');
+        cats.forEach(cat=>{ if(cat !== active) cat.classList.add('search-hidden'); });
+        if(status) status.textContent = '';
+        return;
+      }
+
+      let total = 0;
+      cats.forEach(cat=>{
+        let catMatches = 0;
+        cat.querySelectorAll('.prod-row').forEach(row=>{
+          const text = row.getAttribute('data-search-text') || '';
+          const match = text.includes(q);
+          row.classList.toggle('search-hidden', !match);
+          if(match){ catMatches++; total++; }
+        });
+        cat.classList.toggle('search-match', catMatches > 0);
+        cat.classList.toggle('search-hidden', catMatches === 0);
+      });
+
+      if(status){
+        status.textContent = total
+          ? `${total} resultado${total === 1 ? '' : 's'} encontrado${total === 1 ? '' : 's'}`
+          : 'No encontramos ese producto';
+      }
+    });
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initMenuSearch);
+  }else{
+    initMenuSearch();
+  }
+})();
+</script>
+
+
+<style id="menu-categories-always-visible-final">
+@media (max-width: 860px){
+  #menu-view .menu-category-heading{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    margin:18px 0 10px;
+    color:var(--teal-osc);
+    font:700 .68rem 'JetBrains Mono',monospace;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+  }
+
+  #menu-view .menu-category-heading-line{
+    width:30px;
+    height:1px;
+    background:rgba(3,73,68,.35);
+  }
+
+  #menu-view .menu-category-trigger{
+    display:none !important;
+  }
+
+  #menu-view .menu-category-options,
+  #menu-view .menu-category-options.open{
+    display:grid !important;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    max-height:none !important;
+    height:auto !important;
+    overflow:visible !important;
+    opacity:1 !important;
+    padding:0 !important;
+    margin:0 !important;
+    border:0 !important;
+    background:transparent !important;
+    box-shadow:none !important;
+  }
+
+  #menu-view .menu-category-options button{
+    min-height:46px;
+    padding:9px 12px;
+    border-radius:14px;
+    background:rgba(255,255,255,.68);
+    border:1px solid rgba(3,73,68,.13);
+    box-shadow:0 3px 10px rgba(3,73,68,.035);
+    font-size:.70rem;
+  }
+
+  #menu-view .menu-category-options button.active{
+    background:var(--teal-osc);
+    color:var(--blanco);
+    border-color:var(--teal-osc);
+    box-shadow:0 5px 14px rgba(3,73,68,.13);
+  }
+
+  #menu-view .menu-category-options button .cnt{
+    font-size:.54rem;
+  }
+
+  #menu-view .menu-category-options button.active .cnt{
+    color:rgba(255,255,255,.72);
+  }
+
+  #menu-view .menu-panel-head{
+    padding-top:26px;
+  }
 }
 </style>
 
