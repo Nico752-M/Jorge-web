@@ -6165,6 +6165,140 @@
 }
 </style>
 
-\n<script id="cr-cafe-arias-autoplay-final">\n(function(){\n  const INTERVALO = 4200;\n  const REANUDAR = 2800;\n\n  function init(){\n    const row = document.getElementById('cafearias-row');\n    if(!row || row.dataset.autoCarruselFinal === '1') return;\n    row.dataset.autoCarruselFinal = '1';\n\n    let timer = null;\n    let resumeTimer = null;\n    let detenido = false;\n    let tocando = false;\n    let indice = 0;\n\n    const cards = () => Array.from(row.querySelectorAll('.cafearias-video-card'));\n\n    function limpiar(){\n      clearTimeout(timer);\n      clearTimeout(resumeTimer);\n      timer = null;\n      resumeTimer = null;\n    }\n\n    function programar(ms=INTERVALO){\n      clearTimeout(timer);\n      if(detenido) return;\n      timer = setTimeout(avanzar, ms);\n    }\n\n    function pausar(){\n      clearTimeout(timer);\n      clearTimeout(resumeTimer);\n      timer = null;\n      resumeTimer = null;\n    }\n\n    function reanudar(){\n      if(detenido || tocando) return;\n      clearTimeout(resumeTimer);\n      resumeTimer = setTimeout(()=>programar(INTERVALO), REANUDAR);\n    }\n\n    function avanzar(){\n      if(detenido || tocando) return;\n      const lista = cards();\n      if(lista.length < 2){ programar(INTERVALO); return; }\n\n      indice = Math.min(indice + 1, lista.length - 1);\n      const destino = lista[indice];\n      if(!destino){ indice=0; programar(INTERVALO); return; }\n\n      row.scrollTo({left: Math.max(0, destino.offsetLeft - 20), behavior:'smooth'});\n\n      if(indice >= lista.length - 1){\n        // Espera a que termine el desplazamiento y vuelve al primero suavemente.\n        clearTimeout(timer);\n        timer = setTimeout(()=>{\n          if(detenido || tocando) return;\n          indice = 0;\n          row.scrollTo({left:0, behavior:'smooth'});\n          programar(INTERVALO);\n        }, 900);\n      }else{\n        programar(INTERVALO);\n      }\n    }\n\n    function sincronizarIndice(){\n      const lista = cards();\n      if(!lista.length) return;\n      const objetivo = row.scrollLeft + 25;\n      let mejor=0, distancia=Infinity;\n      lista.forEach((card,i)=>{\n        const d=Math.abs(card.offsetLeft-objetivo);\n        if(d<distancia){distancia=d;mejor=i;}\n      });\n      indice=mejor;\n    }\n\n    row.addEventListener('pointerdown', ()=>{\n      tocando=true;\n      pausar();\n    });\n    window.addEventListener('pointerup', ()=>{\n      if(!tocando) return;\n      tocando=false;\n      sincronizarIndice();\n      reanudar();\n    });\n    window.addEventListener('pointercancel', ()=>{\n      tocando=false;\n      sincronizarIndice();\n      reanudar();\n    });\n\n    row.addEventListener('touchstart', ()=>{ pausar(); }, {passive:true});\n    row.addEventListener('touchend', ()=>{ sincronizarIndice(); reanudar(); }, {passive:true});\n\n    row.addEventListener('wheel', ()=>{\n      pausar();\n      clearTimeout(resumeTimer);\n      resumeTimer=setTimeout(()=>{sincronizarIndice();reanudar();},700);\n    }, {passive:true});\n\n    // Si una persona reproduce un video, el carrusel deja de moverse.\n    row.querySelectorAll('video').forEach(video=>{\n      video.addEventListener('play', ()=>{ detenido=true; pausar(); });\n      video.addEventListener('pause', ()=>{ detenido=false; sincronizarIndice(); reanudar(); });\n      video.addEventListener('ended', ()=>{ detenido=false; sincronizarIndice(); reanudar(); });\n    });\n\n    // Si el usuario deja la sección, no consume movimiento innecesario.\n    const observer = new IntersectionObserver(entries=>{\n      const visible=entries[0] && entries[0].isIntersecting;\n      if(visible){\n        detenido=false;\n        sincronizarIndice();\n        programar(INTERVALO);\n      }else{\n        pausar();\n      }\n    }, {threshold:0.18});\n    observer.observe(row);\n\n    // Arranque inicial: no mueve inmediatamente; deja leer la primera tarjeta.\n    setTimeout(()=>{ sincronizarIndice(); programar(INTERVALO); }, 900);\n  }\n\n  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);\n  else init();\n})();\n</script>\n
+<script id="cr-cafe-arias-autoplay-final">
+(function(){
+  const INTERVALO = 4200;
+  const REANUDAR = 2800;
+
+  function init(){
+    const row = document.getElementById('cafearias-row');
+    if(!row || row.dataset.autoCarruselFinal === '1') return;
+    row.dataset.autoCarruselFinal = '1';
+
+    let timer = null;
+    let resumeTimer = null;
+    let detenido = false;
+    let tocando = false;
+    let indice = 0;
+
+    const cards = () => Array.from(row.querySelectorAll('.cafearias-video-card'));
+
+    function limpiar(){
+      clearTimeout(timer);
+      clearTimeout(resumeTimer);
+      timer = null;
+      resumeTimer = null;
+    }
+
+    function programar(ms=INTERVALO){
+      clearTimeout(timer);
+      if(detenido) return;
+      timer = setTimeout(avanzar, ms);
+    }
+
+    function pausar(){
+      clearTimeout(timer);
+      clearTimeout(resumeTimer);
+      timer = null;
+      resumeTimer = null;
+    }
+
+    function reanudar(){
+      if(detenido || tocando) return;
+      clearTimeout(resumeTimer);
+      resumeTimer = setTimeout(()=>programar(INTERVALO), REANUDAR);
+    }
+
+    function avanzar(){
+      if(detenido || tocando) return;
+      const lista = cards();
+      if(lista.length < 2){ programar(INTERVALO); return; }
+
+      indice = Math.min(indice + 1, lista.length - 1);
+      const destino = lista[indice];
+      if(!destino){ indice=0; programar(INTERVALO); return; }
+
+      row.scrollTo({left: Math.max(0, destino.offsetLeft - 20), behavior:'smooth'});
+
+      if(indice >= lista.length - 1){
+        // Espera a que termine el desplazamiento y vuelve al primero suavemente.
+        clearTimeout(timer);
+        timer = setTimeout(()=>{
+          if(detenido || tocando) return;
+          indice = 0;
+          row.scrollTo({left:0, behavior:'smooth'});
+          programar(INTERVALO);
+        }, 900);
+      }else{
+        programar(INTERVALO);
+      }
+    }
+
+    function sincronizarIndice(){
+      const lista = cards();
+      if(!lista.length) return;
+      const objetivo = row.scrollLeft + 25;
+      let mejor=0, distancia=Infinity;
+      lista.forEach((card,i)=>{
+        const d=Math.abs(card.offsetLeft-objetivo);
+        if(d<distancia){distancia=d;mejor=i;}
+      });
+      indice=mejor;
+    }
+
+    row.addEventListener('pointerdown', ()=>{
+      tocando=true;
+      pausar();
+    });
+    window.addEventListener('pointerup', ()=>{
+      if(!tocando) return;
+      tocando=false;
+      sincronizarIndice();
+      reanudar();
+    });
+    window.addEventListener('pointercancel', ()=>{
+      tocando=false;
+      sincronizarIndice();
+      reanudar();
+    });
+
+    row.addEventListener('touchstart', ()=>{ pausar(); }, {passive:true});
+    row.addEventListener('touchend', ()=>{ sincronizarIndice(); reanudar(); }, {passive:true});
+
+    row.addEventListener('wheel', ()=>{
+      pausar();
+      clearTimeout(resumeTimer);
+      resumeTimer=setTimeout(()=>{sincronizarIndice();reanudar();},700);
+    }, {passive:true});
+
+    // Si una persona reproduce un video, el carrusel deja de moverse.
+    row.querySelectorAll('video').forEach(video=>{
+      video.addEventListener('play', ()=>{ detenido=true; pausar(); });
+      video.addEventListener('pause', ()=>{ detenido=false; sincronizarIndice(); reanudar(); });
+      video.addEventListener('ended', ()=>{ detenido=false; sincronizarIndice(); reanudar(); });
+    });
+
+    // Si el usuario deja la sección, no consume movimiento innecesario.
+    const observer = new IntersectionObserver(entries=>{
+      const visible=entries[0] && entries[0].isIntersecting;
+      if(visible){
+        detenido=false;
+        sincronizarIndice();
+        programar(INTERVALO);
+      }else{
+        pausar();
+      }
+    }, {threshold:0.18});
+    observer.observe(row);
+
+    // Arranque inicial: no mueve inmediatamente; deja leer la primera tarjeta.
+    setTimeout(()=>{ sincronizarIndice(); programar(INTERVALO); }, 900);
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
+  else init();
+})();
+</script>
+
 </body>
 </html>
