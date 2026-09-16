@@ -5820,5 +5820,96 @@
 }
 </style>
 
+
+<style id="cafe-real-menu-category-final-size">
+@media (max-width:860px){
+  /* Categorías más pequeñas para dar prioridad a los productos */
+  #menu-view .menu-category-options{
+    max-width:100% !important;
+    grid-template-columns:1fr 1fr !important;
+    gap:9px 10px !important;
+  }
+
+  #menu-view .menu-category-options button{
+    min-height:52px !important;
+    height:52px !important;
+    padding:8px 11px !important;
+    border-radius:16px !important;
+    grid-template-columns:24px minmax(0,1fr) auto 9px !important;
+    gap:6px !important;
+    font-size:.69rem !important;
+  }
+
+  #menu-view .category-icon{
+    width:22px !important;
+    height:22px !important;
+    font-size:.82rem !important;
+  }
+
+  #menu-view .menu-category-options .cnt{
+    font-size:.55rem !important;
+  }
+
+  #menu-view .category-arrow{
+    font-size:1.05rem !important;
+  }
+
+  /* La categoría impar queda centrada en la última fila */
+  #menu-view .menu-category-options button:last-child:nth-child(odd){
+    grid-column:1 / -1 !important;
+    justify-self:center !important;
+    width:calc(50% - 5px) !important;
+  }
+
+  /* Acercamos los productos a las categorías */
+  #menu-view .menu-panel-head{
+    padding-top:31px !important;
+    padding-bottom:17px !important;
+  }
+
+  #menu-view .menu-panel-head h3{
+    font-size:2rem !important;
+  }
+}
+
+@media (max-width:430px){
+  #menu-view .menu-category-options{
+    gap:8px 9px !important;
+  }
+
+  #menu-view .menu-category-options button{
+    min-height:48px !important;
+    height:48px !important;
+    padding:7px 9px !important;
+    border-radius:14px !important;
+    grid-template-columns:21px minmax(0,1fr) auto 8px !important;
+    gap:5px !important;
+    font-size:.64rem !important;
+  }
+
+  #menu-view .category-icon{
+    width:20px !important;
+    height:20px !important;
+    font-size:.76rem !important;
+  }
+
+  #menu-view .menu-category-options .cnt{
+    font-size:.51rem !important;
+  }
+
+  #menu-view .category-arrow{
+    font-size:.95rem !important;
+  }
+
+  #menu-view .menu-category-options button:last-child:nth-child(odd){
+    width:calc(50% - 4.5px) !important;
+  }
+
+  #menu-view .menu-panel-head{
+    padding-top:27px !important;
+  }
+}
+</style>
+
 </body>
 </html>
