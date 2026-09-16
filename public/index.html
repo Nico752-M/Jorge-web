@@ -3439,6 +3439,7 @@
             ${it.p ? `<span class="prod-price">$${it.p}</span>` : ''}
           </div>
           ${it.tag ? `<span class="prod-tag">${it.tag}</span>` : ''}
+          <span class="prod-detail-hint"><span class="hint-hand">♧</span> Toca para ver detalles <span>→</span></span>
           ${it.d ? `<p>${it.d}</p>` : ''}
         </div>
       </div>`;
@@ -3467,7 +3468,15 @@
   function buildTabs(){
     const tabsEl = document.getElementById('menu-sidebar');
     const keys = Object.keys(MENU);
-    const first = MENU[keys[0]];
+    const icons = {
+      tarderos:'♨',
+      cafes:'☕',
+      'bebidas-frias':'🥤',
+      limonadas:'🍋',
+      cervezas:'🍺',
+      postres:'🍰',
+      desayunos:'☀'
+    };
     tabsEl.innerHTML = `
       <div class="menu-category-heading">
         <span class="menu-category-heading-line"></span>
@@ -3480,9 +3489,13 @@
           const count = cat.layout === 'cards'
             ? cat.items.length
             : cat.shelves.reduce((a,s)=>a+s.items.length,0);
+          const icon = icons[k] || '•';
           return `<button type="button" data-k="${k}" class="${i===0?'active':''}"
                     onclick="showCat('${k}')">
-                    <span>${cat.label}</span><span class="cnt">${count}</span>
+                    <span class="category-icon">${icon}</span>
+                    <span class="category-name">${cat.label}</span>
+                    <span class="cnt">${count}</span>
+                    <span class="category-arrow">›</span>
                   </button>`;
         }).join('')}
       </div>
@@ -5554,6 +5567,256 @@
   #menu-view .menu-panel-head{
     padding-top:26px;
   }
+}
+</style>
+
+
+<style id="cafe-real-menu-reference-polish">
+@media (max-width:860px){
+  /* El menú móvil entra directo al contenido, como en la referencia. */
+  #menu-view .menu-hero,
+  #menu-view .destacados{
+    display:none !important;
+  }
+
+  #menu-view .menu-mobile-tools{
+    padding:20px 32px 0 !important;
+  }
+
+  #menu-view .menu-search-box{
+    height:66px !important;
+    border-radius:20px !important;
+    padding:0 20px !important;
+    background:rgba(255,255,255,.88) !important;
+  }
+
+  #menu-view .menu-search-box input{
+    font-size:1rem !important;
+  }
+
+  #menu-view .menu-layout{
+    padding:0 32px 112px !important;
+  }
+
+  #menu-view .menu-sidebar{
+    padding-top:46px !important;
+  }
+
+  #menu-view .menu-category-heading{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:12px !important;
+    margin:0 0 16px !important;
+    color:var(--teal-osc) !important;
+    font:700 .74rem 'JetBrains Mono',monospace !important;
+    letter-spacing:.16em !important;
+    text-transform:uppercase !important;
+  }
+
+  #menu-view .menu-category-heading-line{
+    display:block !important;
+    width:54px !important;
+    height:1px !important;
+    background:rgba(3,73,68,.42) !important;
+  }
+
+  #menu-view .menu-category-options{
+    display:grid !important;
+    grid-template-columns:1fr 1fr !important;
+    gap:12px !important;
+    max-height:none !important;
+    opacity:1 !important;
+    overflow:visible !important;
+    padding:0 !important;
+    margin:0 !important;
+    border:0 !important;
+    background:transparent !important;
+  }
+
+  #menu-view .menu-category-options button{
+    min-height:68px !important;
+    display:grid !important;
+    grid-template-columns:30px 1fr auto 14px !important;
+    align-items:center !important;
+    gap:8px !important;
+    padding:10px 13px !important;
+    border:1px solid rgba(3,73,68,.14) !important;
+    border-radius:20px !important;
+    background:rgba(255,255,255,.72) !important;
+    color:var(--teal-osc) !important;
+    box-shadow:0 4px 14px rgba(3,73,68,.035) !important;
+    font:600 .78rem 'Public Sans',sans-serif !important;
+  }
+
+  #menu-view .menu-category-options button.active{
+    background:var(--teal-osc) !important;
+    color:#fff !important;
+    border-color:var(--teal-osc) !important;
+    box-shadow:0 8px 18px rgba(3,73,68,.13) !important;
+  }
+
+  #menu-view .category-icon{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:28px;
+    height:28px;
+    font-size:1.05rem;
+    filter:saturate(.7);
+  }
+
+  #menu-view .category-name{
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  #menu-view .menu-category-options .cnt{
+    font:500 .62rem 'JetBrains Mono',monospace !important;
+    color:rgba(3,73,68,.58) !important;
+  }
+
+  #menu-view .menu-category-options button.active .cnt{
+    color:rgba(255,255,255,.78) !important;
+  }
+
+  #menu-view .category-arrow{
+    font-size:1.35rem;
+    line-height:1;
+    color:rgba(3,73,68,.55);
+  }
+
+  #menu-view .menu-category-options button.active .category-arrow{
+    color:#fff;
+  }
+
+  #menu-view .menu-panel-head{
+    padding:44px 0 22px !important;
+  }
+
+  #menu-view .menu-panel-head h3{
+    margin:0 !important;
+    font:italic 400 2.15rem/1.05 'Cormorant Garamond',Georgia,serif !important;
+    color:var(--teal-osc) !important;
+  }
+
+  #menu-view .menu-panel-head p{
+    margin:10px 0 0 !important;
+    font-size:1rem !important;
+    color:var(--tinta-suave) !important;
+  }
+
+  #menu-view .menu-panel-body .prod-list{
+    display:flex !important;
+    flex-direction:column !important;
+    gap:12px !important;
+  }
+
+  #menu-view .menu-panel-body .prod-row{
+    grid-template-columns:112px 1fr !important;
+    min-height:0 !important;
+    height:auto !important;
+    padding:12px !important;
+    border-radius:18px !important;
+    gap:14px !important;
+    align-items:center !important;
+    background:rgba(255,255,255,.9) !important;
+    box-shadow:0 3px 12px rgba(3,73,68,.045) !important;
+  }
+
+  #menu-view .menu-panel-body .prod-photo{
+    width:112px !important;
+    height:112px !important;
+    border-radius:14px !important;
+    overflow:hidden !important;
+  }
+
+  #menu-view .menu-panel-body .prod-info{
+    min-width:0 !important;
+    padding:0 !important;
+  }
+
+  #menu-view .menu-panel-body .prod-top{
+    display:flex !important;
+    align-items:flex-start !important;
+    justify-content:space-between !important;
+    gap:10px !important;
+  }
+
+  #menu-view .menu-panel-body .prod-top h4{
+    margin:0 !important;
+    font:italic 400 1.25rem/1.1 'Cormorant Garamond',Georgia,serif !important;
+    color:var(--tinta) !important;
+  }
+
+  #menu-view .menu-panel-body .prod-price{
+    flex:none !important;
+    font:600 .88rem 'JetBrains Mono',monospace !important;
+    color:var(--teal-osc) !important;
+    white-space:nowrap !important;
+  }
+
+  #menu-view .prod-detail-hint{
+    display:flex !important;
+    align-items:center !important;
+    gap:6px !important;
+    margin-top:12px !important;
+    color:rgba(3,73,68,.65) !important;
+    font:600 .65rem 'Public Sans',sans-serif !important;
+    letter-spacing:.01em !important;
+  }
+
+  #menu-view .hint-hand{
+    font-size:.9rem;
+    color:var(--teal-osc);
+  }
+
+  #menu-view .menu-panel-body .prod-info > p{
+    display:none !important;
+  }
+
+  #menu-view .menu-shelf-2 + .menu-shelf-2{
+    margin-top:24px !important;
+  }
+
+  #menu-view .shelf-title{
+    margin:20px 0 12px !important;
+  }
+
+  #menu-view .menu-cat.search-match .menu-panel-head{
+    padding-top:28px !important;
+  }
+
+  #menu-view .menu-final-cta{
+    margin-top:20px !important;
+  }
+}
+
+@media(max-width:430px){
+  #menu-view .menu-mobile-tools{padding-left:24px !important;padding-right:24px !important;}
+  #menu-view .menu-layout{padding-left:24px !important;padding-right:24px !important;}
+  #menu-view .menu-category-options{gap:10px !important;}
+  #menu-view .menu-category-options button{
+    grid-template-columns:25px 1fr auto 10px !important;
+    min-height:62px !important;
+    padding:9px 10px !important;
+    border-radius:17px !important;
+    font-size:.73rem !important;
+  }
+  #menu-view .category-icon{width:24px;height:24px;font-size:.95rem;}
+  #menu-view .menu-panel-body .prod-row{
+    grid-template-columns:94px 1fr !important;
+    gap:11px !important;
+    padding:10px !important;
+    border-radius:16px !important;
+  }
+  #menu-view .menu-panel-body .prod-photo{
+    width:94px !important;height:94px !important;border-radius:12px !important;
+  }
+  #menu-view .menu-panel-body .prod-top h4{font-size:1.12rem !important;}
+  #menu-view .menu-panel-body .prod-price{font-size:.76rem !important;}
+  #menu-view .prod-detail-hint{font-size:.6rem !important;margin-top:9px !important;}
 }
 </style>
 
