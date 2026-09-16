@@ -6262,5 +6262,97 @@
   }
 }
 </style>
-\n</body>
+\n
+<style id="cafe-real-header-scroll-final">
+@media (max-width:860px){
+  /* Sin hamburguesa ni navegación duplicada en la parte superior */
+  .nav-mobile-toggle,
+  .mobile-nav-panel{
+    display:none !important;
+  }
+
+  .topnav nav{
+    display:none !important;
+  }
+
+  /* Header superior: acompaña el scroll con transición visual */
+  .topnav{
+    position:fixed !important;
+    top:0 !important;
+    left:0 !important;
+    right:0 !important;
+    z-index:9990 !important;
+    transform:translateY(0) !important;
+    transition:
+      background .45s ease,
+      backdrop-filter .45s ease,
+      box-shadow .45s ease,
+      padding .45s ease,
+      border-color .45s ease !important;
+    padding-top:12px !important;
+    padding-bottom:12px !important;
+    background:rgba(246,241,228,.10) !important;
+    border-bottom:1px solid transparent !important;
+  }
+
+  .topnav.cr-header-scrolled{
+    background:rgba(246,241,228,.93) !important;
+    backdrop-filter:blur(16px) saturate(120%) !important;
+    -webkit-backdrop-filter:blur(16px) saturate(120%) !important;
+    box-shadow:0 5px 22px rgba(3,73,68,.10) !important;
+    border-bottom-color:rgba(3,73,68,.10) !important;
+    padding-top:8px !important;
+    padding-bottom:8px !important;
+  }
+
+  .topnav .brand{
+    transition:transform .45s ease, opacity .45s ease, letter-spacing .45s ease !important;
+  }
+
+  .topnav.cr-header-scrolled .brand{
+    transform:scale(.91) !important;
+    opacity:.98 !important;
+  }
+
+  /* Deja espacio para que el header fijo no tape contenido */
+  body{
+    scroll-padding-top:74px;
+  }
+}
+</style>
+
+<script id="cafe-real-header-scroll-final-js">
+(function(){
+  function initCaffeRealHeader(){
+    const header = document.querySelector('.topnav');
+    if(!header || header.dataset.scrollReady === '1') return;
+    header.dataset.scrollReady = '1';
+
+    let ticking = false;
+
+    function update(){
+      const y = window.scrollY || document.documentElement.scrollTop || 0;
+      header.classList.toggle('cr-header-scrolled', y > 45);
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', function(){
+      if(!ticking){
+        window.requestAnimationFrame(update);
+        ticking = true;
+      }
+    }, {passive:true});
+
+    update();
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initCaffeRealHeader);
+  }else{
+    initCaffeRealHeader();
+  }
+})();
+</script>
+
+</body>
 </html>
