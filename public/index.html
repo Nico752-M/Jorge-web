@@ -6166,123 +6166,118 @@
 
 <script id="cr-cafe-arias-autoplay-final">
 (function(){
-  const INTERVALO = 4200;
-  const PAUSA_DESPUES_DE_GESTO = 1800;
+  /* Café Arias: carrusel continuo + control manual por dedo. */
+  const VELOCIDAD = 0.38; // px por frame: movimiento suave y constante
+  let iniciado = false;
 
-  function iniciar(){
+  function init(){
+    if(iniciado) return;
     const row = document.getElementById('cafearias-row');
-    if(!row || row.dataset.autoCarruselFinal === '2') return;
-    row.dataset.autoCarruselFinal = '2';
+    if(!row) return;
+    const cards = Array.from(row.querySelectorAll('.cafearias-video-card'));
+    if(cards.length < 2) return;
+    iniciado = true;
 
-    let timer = null;
-    let pausaTimer = null;
-    let tocando = false;
-    let reproduciendo = false;
-
-    const tarjetas = () => Array.from(row.querySelectorAll('.cafearias-video-card'));
-
-    function cancelar(){
-      clearTimeout(timer);
-      clearTimeout(pausaTimer);
-      timer = null;
-      pausaTimer = null;
-    }
-
-    function siguiente(){
-      if(tocando || reproduciendo) return programar(INTERVALO);
-      const cards = tarjetas();
-      if(cards.length < 2) return programar(INTERVALO);
-
-      const actual = row.scrollLeft;
-      let indice = 0;
-      let menor = Infinity;
-      cards.forEach((card,i)=>{
-        const distancia = Math.abs(card.offsetLeft - actual);
-        if(distancia < menor){ menor = distancia; indice = i; }
+    /* Duplicamos el conjunto para poder dar la vuelta sin salto visual. */
+    const originales = cards.map(c => c.cloneNode(true));
+    originales.forEach(c => {
+      c.setAttribute('aria-hidden','true');
+      c.querySelectorAll('video').forEach(v => {
+        v.removeAttribute('autoplay');
+        v.pause();
       });
+      row.appendChild(c);
+    });
 
-      const siguienteIndice = indice + 1;
-      if(siguienteIndice >= cards.length){
-        row.scrollTo({left:0, behavior:'smooth'});
-      }else{
-        const destino = Math.max(0, cards[siguienteIndice].offsetLeft - 20);
-        row.scrollTo({left:destino, behavior:'smooth'});
+    row.style.scrollSnapType = 'none';
+    row.style.scrollBehavior = 'auto';
+
+    let pausa = false;
+    let arrastrando = false;
+    let mitad = 0;
+    let ultima = performance.now();
+
+    function calcularMitad(){
+      const originalesActuales = Array.from(row.querySelectorAll('.cafearias-video-card')).slice(0, cards.length);
+      if(originalesActuales.length) {
+        const primera = originalesActuales[0];
+        const ultimaOriginal = originalesActuales[originalesActuales.length - 1];
+        mitad = (ultimaOriginal.offsetLeft + ultimaOriginal.offsetWidth +
+          parseFloat(getComputedStyle(row).columnGap || getComputedStyle(row).gap || '0')) - primera.offsetLeft;
       }
-      programar(INTERVALO);
+      if(!mitad || mitad < 1) mitad = row.scrollWidth / 2;
     }
 
-    function programar(ms){
-      clearTimeout(timer);
-      if(tocando || reproduciendo) return;
-      timer = setTimeout(siguiente, ms);
+    function normalizar(){
+      if(!mitad) return;
+      while(row.scrollLeft >= mitad) row.scrollLeft -= mitad;
+      while(row.scrollLeft < 0) row.scrollLeft += mitad;
     }
 
+    function tick(ahora){
+      const dt = Math.min(40, ahora - ultima);
+      ultima = ahora;
+      if(!pausa && !arrastrando && mitad > 0 && !document.hidden){
+        row.scrollLeft += VELOCIDAD * dt;
+        normalizar();
+      }
+      requestAnimationFrame(tick);
+    }
+
+    function pausar(){ pausa = true; }
     function reanudar(){
-      clearTimeout(pausaTimer);
-      if(tocando || reproduciendo) return;
-      pausaTimer = setTimeout(()=>programar(INTERVALO), PAUSA_DESPUES_DE_GESTO);
+      normalizar();
+      pausa = false;
+      ultima = performance.now();
     }
 
-    row.addEventListener('pointerdown', ()=>{
-      tocando = true;
-      cancelar();
+    row.addEventListener('pointerdown', e=>{
+      if(e.pointerType === 'mouse' && e.button !== 0) return;
+      arrastrando = true;
+      pausa = true;
     }, {passive:true});
 
     window.addEventListener('pointerup', ()=>{
-      if(!tocando) return;
-      tocando = false;
+      if(!arrastrando) return;
+      arrastrando = false;
       reanudar();
     }, {passive:true});
-
     window.addEventListener('pointercancel', ()=>{
-      tocando = false;
+      arrastrando = false;
       reanudar();
     }, {passive:true});
 
-    row.addEventListener('touchstart', ()=>{
-      tocando = true;
-      cancelar();
-    }, {passive:true});
-
-    row.addEventListener('touchend', ()=>{
-      tocando = false;
-      reanudar();
-    }, {passive:true});
-
-    row.addEventListener('wheel', ()=>{
-      cancelar();
-      reanudar();
-    }, {passive:true});
+    row.addEventListener('touchstart', pausar, {passive:true});
+    row.addEventListener('touchend', reanudar, {passive:true});
+    row.addEventListener('touchcancel', reanudar, {passive:true});
 
     row.querySelectorAll('video').forEach(video=>{
-      video.addEventListener('play', ()=>{
-        reproduciendo = true;
-        cancelar();
-      });
-      video.addEventListener('pause', ()=>{
-        reproduciendo = false;
-        reanudar();
-      });
-      video.addEventListener('ended', ()=>{
-        reproduciendo = false;
-        reanudar();
-      });
+      video.addEventListener('play', pausar);
+      video.addEventListener('pause', reanudar);
+      video.addEventListener('ended', reanudar);
     });
 
-    // Si la pestaña está oculta, pausamos; al volver, retomamos el ciclo.
     document.addEventListener('visibilitychange', ()=>{
-      if(document.hidden) cancelar();
+      if(document.hidden) pausar();
       else reanudar();
     });
 
-    // Arranca después de mostrar la primera tarjeta unos segundos.
-    programar(INTERVALO);
+    setTimeout(calcularMitad, 150);
+    setTimeout(calcularMitad, 600);
+    window.addEventListener('resize', calcularMitad);
+    requestAnimationFrame(tick);
+  }
+
+  function esperarCarrusel(){
+    const row = document.getElementById('cafearias-row');
+    if(row && row.querySelectorAll('.cafearias-video-card').length >= 2) init();
+    else setTimeout(esperarCarrusel, 100);
   }
 
   if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', iniciar, {once:true});
+    document.addEventListener('DOMContentLoaded', esperarCarrusel, {once:true});
   }else{
-    iniciar();
+    esperarCarrusel();
   }
 })();
 </script>
