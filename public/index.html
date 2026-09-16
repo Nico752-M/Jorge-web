@@ -4671,485 +4671,287 @@
 })();
 </script>
 
-
-<!-- =========================================================
-     CAFÉ REAL · IMPLEMENTACIÓN MÓVIL V2
-     - Hero compacto para revelar contenido inferior
-     - Navegación inferior fija restaurada
-     - Experiencias en carrusel horizontal
-     - Café Arias como carrusel de videos
-     ========================================================= -->
-<style id="cr-mobile-v2">
-@media (max-width:860px){
-  /* HERO: más corto para que se entienda que hay contenido debajo */
-  #site-view .hero{
-    height:clamp(520px,68vh,650px)!important;
-    min-height:520px!important;
-    max-height:650px!important;
-    border-radius:0 0 30px 30px!important;
-  }
-  #site-view .hero-copy{
-    padding:26px 22px 42px!important;
-    justify-content:center!important;
-  }
-  #site-view .hero-copy:before,
-  #site-view .hero-copy:after{display:none!important;}
-  #site-view .hero-kicker{font-size:.56rem!important;letter-spacing:.18em!important;margin-bottom:13px!important;}
-  #site-view .hero-copy h1{
-    font-size:clamp(2.8rem,12vw,4.25rem)!important;
-    line-height:.9!important;
-    max-width:10ch!important;
-    margin:0!important;
-  }
-  #site-view .hero-sub{
-    margin:17px 0 20px!important;
-    font-size:1rem!important;
-    max-width:31ch!important;
-    line-height:1.35!important;
-  }
-  #site-view .hero-actions{width:min(100%,310px)!important;gap:8px!important;}
-  #site-view .hero-cta{min-height:50px!important;border-radius:15px!important;font-size:.57rem!important;}
-
-  /* Indicador claro de que hay más contenido */
-  #site-view .hero::after{
-    content:'⌄';
-    position:absolute;
-    z-index:4;
-    left:50%;bottom:12px;
-    transform:translateX(-50%);
-    color:rgba(255,255,255,.9);
-    font:400 25px/1 'Public Sans',sans-serif;
-    animation:crHeroHint 1.8s ease-in-out infinite;
-    pointer-events:none;
-  }
-  @keyframes crHeroHint{0%,100%{transform:translate(-50%,0);opacity:.55}50%{transform:translate(-50%,6px);opacity:1}}
-
-  /* FRANJA inmediatamente posterior: compacta */
-  #site-view .manifiesto-strip{height:46px!important;min-height:46px!important;}
-  #site-view .manifiesto-strip .track{font-size:.55rem!important;letter-spacing:.12em!important;}
-
-  /* EXPERIENCIAS: carrusel, dejando ver parte de la siguiente tarjeta */
-  #site-view .beneficios{padding:46px 0 54px!important;overflow:hidden!important;}
-  #site-view .beneficios .section-head{padding:0 20px!important;margin-bottom:18px!important;}
-  #site-view .beneficios .section-head h2{font-size:2.45rem!important;line-height:.95!important;}
-  #site-view .beneficios .section-head p{font-size:.78rem!important;}
-  #site-view .beneficios-grid{
-    display:flex!important;
-    overflow-x:auto!important;
-    overflow-y:hidden!important;
-    gap:12px!important;
-    padding:0 0 8px 20px!important;
-    margin:0!important;
-    scroll-snap-type:x mandatory!important;
-    scrollbar-width:none!important;
-    -webkit-overflow-scrolling:touch!important;
-  }
-  #site-view .beneficios-grid::-webkit-scrollbar{display:none!important;}
-  #site-view .beneficio-item-imagen{
-    flex:0 0 78vw!important;
-    width:78vw!important;
-    max-width:320px!important;
-    min-height:350px!important;
-    scroll-snap-align:start!important;
-    border-radius:18px!important;
-  }
-  #site-view .beneficio-item-imagen .beneficio-foto{height:220px!important;}
-  #site-view .beneficio-item-imagen .beneficio-foto img{height:100%!important;object-fit:cover!important;}
-  #site-view .beneficio-item-imagen .beneficio-copy{padding:18px 18px 20px!important;}
-  #site-view .beneficio-item-imagen h3{font-size:1.8rem!important;}
-  #site-view .beneficio-item-imagen p{font-size:.75rem!important;}
-
-  /* Señal de desplazamiento */
-  #site-view .beneficios::after{
-    content:'DESLIZA  →';
-    display:block;
-    margin:13px 20px 0 auto;
-    width:max-content;
-    font:600 .54rem 'JetBrains Mono',monospace;
-    letter-spacing:.18em;
-    color:#164f4d;
+<!-- CAFÉ REAL · NAVEGACIÓN MÓVIL FINAL -->
+<style id="mobile-navigation-only-final">
+@media (max-width: 860px){
+  /* En móvil la navegación vive únicamente en la barra inferior. */
+  .topnav nav,
+  .nav-mobile-toggle,
+  .mobile-nav-panel{
+    display:none !important;
   }
 
-  /* CAFÉ ARIAS: sección compacta y videos dentro del carrusel */
-  #site-view .cafearias{padding:52px 0 58px!important;overflow:hidden!important;}
-  #site-view .cafearias .section-head{padding:0 20px!important;margin-bottom:18px!important;}
-  #site-view .cafearias .section-head h2{font-size:3rem!important;}
-  #site-view .cafearias-carousel{overflow:hidden!important;}
-  #site-view .cafearias-row{
-    display:flex!important;
-    gap:14px!important;
-    overflow-x:auto!important;
-    padding:0 20px 10px!important;
-    scroll-snap-type:x mandatory!important;
-    scrollbar-width:none!important;
-  }
-  #site-view .cafearias-row::-webkit-scrollbar{display:none!important;}
-  #site-view .cafearias-video-card{
-    flex:0 0 78vw!important;
-    max-width:330px!important;
-    scroll-snap-align:start!important;
-    border-radius:18px!important;
-    overflow:hidden!important;
-    background:#063f3b!important;
-    position:relative!important;
-    min-height:420px!important;
-  }
-  #site-view .cafearias-video-card video,
-  #site-view .cafearias-video-card .video-poster{
-    width:100%!important;height:420px!important;display:block!important;object-fit:cover!important;
-  }
-  #site-view .cafearias-video-card::after{
-    content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.78),transparent 55%);pointer-events:none;
-  }
-  #site-view .cafearias-video-card .video-copy{position:absolute;left:18px;right:18px;bottom:18px;z-index:2;color:#fff;}
-  #site-view .cafearias-video-card .video-copy small{font:600 .52rem 'JetBrains Mono',monospace;letter-spacing:.16em;text-transform:uppercase;opacity:.8;}
-  #site-view .cafearias-video-card .video-copy h3{font:italic 1.85rem 'Cormorant Garamond',serif;margin:4px 0 0;font-weight:400;}
-  #site-view .cafearias-video-card .video-play{
-    position:absolute;top:18px;right:18px;z-index:3;width:46px;height:46px;border-radius:50%;
-    border:1px solid rgba(255,255,255,.75);background:rgba(255,255,255,.9);color:#063f3b;
-    display:grid;place-items:center;font-size:17px;pointer-events:none;
-  }
-
-  /* Barra de tareas inferior restaurada */
-  #mobile-bottom-nav{
-    display:flex!important;
-    position:fixed!important;
-    left:0!important;right:0!important;bottom:0!important;
-    height:68px!important;
-    z-index:9990!important;
-    background:rgba(251,250,246,.97)!important;
-    border-top:1px solid rgba(3,73,68,.12)!important;
-    box-shadow:0 -8px 30px rgba(3,73,68,.12)!important;
-    padding-bottom:env(safe-area-inset-bottom,0px)!important;
-  }
-  #mobile-bottom-nav .btab{font-size:.56rem!important;min-width:0!important;}
-  #mobile-bottom-nav .btab svg{width:22px!important;height:22px!important;}
-  body{padding-bottom:calc(68px + env(safe-area-inset-bottom,0px))!important;}
-  #floating-actions{bottom:calc(82px + env(safe-area-inset-bottom,0px))!important;z-index:9995!important;}
-
-  /* El menú hamburguesa superior sí queda disponible para navegación */
-  #site-view .topnav .nav-mobile-toggle{display:flex!important;}
-}
-
-@media(max-width:520px){
-  #site-view .hero{height:540px!important;min-height:540px!important;max-height:540px!important;}
-  #site-view .hero-copy{padding-top:12px!important;padding-bottom:38px!important;}
-  #site-view .hero-copy h1{font-size:clamp(2.75rem,13vw,3.55rem)!important;}
-  #site-view .hero-sub{font-size:.92rem!important;margin-top:14px!important;margin-bottom:16px!important;}
-  #site-view .hero-cta{min-height:48px!important;}
-  #site-view .beneficio-item-imagen{flex-basis:78vw!important;}
-  #site-view .cafearias-video-card{flex-basis:78vw!important;min-height:390px!important;}
-  #site-view .cafearias-video-card video,
-  #site-view .cafearias-video-card .video-poster{height:390px!important;}
-}
-</style>
-
-<script id="cr-mobile-v2-script">
-(function(){
-  /* Convierte las tarjetas de Café Arias en un carrusel de videos.
-     Los archivos reales se colocan en /videos/cafe-arias-1.mp4, etc. */
-  const VIDEOS = [
-    {src:'videos/cafe-arias-1.mp4', poster:'images/cafearias/cafearias-granos.webp', kicker:'Historia del café', title:'Del grano a la taza.'},
-    {src:'videos/cafe-arias-2.mp4', poster:'images/cafearias/cafearias-canasta.webp', kicker:'Así se vive', title:'Café, origen y territorio.'},
-    {src:'videos/cafe-arias-3.mp4', poster:'images/cafearias/cafearias-preparado.webp', kicker:'Nuestra gente', title:'Historias detrás del café.'},
-    {src:'videos/cafe-arias-4.mp4', poster:'images/cafearias/cafearias-paquete.webp', kicker:'Café Real', title:'Una taza con historia.'}
-  ];
-  function buildVideoCarousel(){
-    const row=document.getElementById('cafearias-row');
-    if(!row) return;
-    row.innerHTML=VIDEOS.map(v=>`<article class="cafearias-video-card">
-      <video class="video-poster" controls playsinline preload="metadata" poster="${v.poster}">
-        <source src="${v.src}" type="video/mp4">
-      </video>
-      <span class="video-play" aria-hidden="true">▶</span>
-      <div class="video-copy"><small>${v.kicker}</small><h3>${v.title}</h3></div>
-    </article>`).join('');
-  }
-  function init(){
-    buildVideoCarousel();
-    const nav=document.getElementById('mobile-bottom-nav');
-    if(nav){
-      nav.setAttribute('aria-label','Navegación principal móvil');
-      nav.querySelectorAll('.btab').forEach(b=>b.setAttribute('type','button'));
-    }
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
-})();
-</script>
-
-<style id="cafe-real-mobile-exact-final">
-@media (max-width:860px){
-  body{padding-bottom:calc(78px + env(safe-area-inset-bottom,0px))!important;background:#f7f4ec!important;}
-
-  /* HEADER — logo a la izquierda, hamburguesa a la derecha */
   .topnav{
-    position:sticky!important;top:0!important;z-index:1200!important;
-    height:64px!important;min-height:64px!important;padding:0 18px!important;
-    display:flex!important;align-items:center!important;justify-content:space-between!important;
-    background:rgba(247,244,236,.97)!important;border-bottom:1px solid rgba(3,73,68,.10)!important;
-    box-shadow:0 2px 18px rgba(3,73,68,.08)!important;backdrop-filter:blur(12px)!important;
+    justify-content:flex-start !important;
   }
+
   .topnav .brand{
-    position:relative!important;left:auto!important;top:auto!important;transform:none!important;
-    display:flex!important;align-items:center!important;gap:9px!important;margin:0!important;z-index:2!important;
-    font-size:1.08rem!important;line-height:1!important;
+    margin-left:0 !important;
   }
-  .topnav .brand .logo-nav{width:42px!important;height:42px!important;flex:0 0 42px!important;}
-  .topnav .brand small{font-size:.47rem!important;letter-spacing:.13em!important;margin-top:4px!important;}
-  .topnav .actions{display:none!important;}
-  .nav-mobile-toggle{
-    display:flex!important;position:relative!important;left:auto!important;top:auto!important;transform:none!important;
-    width:42px!important;height:42px!important;align-items:center!important;justify-content:center!important;
-    margin-left:auto!important;border:0!important;background:transparent!important;z-index:5!important;
-  }
-  .nav-mobile-toggle span,.nav-mobile-toggle:before,.nav-mobile-toggle:after{
-    content:'';position:absolute!important;width:26px!important;height:2px!important;background:#034944!important;
-    border-radius:3px!important;transition:.3s ease!important;
-  }
-  .nav-mobile-toggle span{transform:translateY(0)!important;}
-  .nav-mobile-toggle:before{transform:translateY(-8px)!important;}
-  .nav-mobile-toggle:after{transform:translateY(8px)!important;}
-  .nav-mobile-toggle.open span{opacity:0!important;}
-  .nav-mobile-toggle.open:before{transform:rotate(45deg)!important;}
-  .nav-mobile-toggle.open:after{transform:rotate(-45deg)!important;}
-  .mobile-nav-panel{top:64px!important;z-index:1199!important;}
 
-  /* HERO compacto: deja visible el comienzo de la siguiente sección */
-  #site-view .hero{
-    height:500px!important;min-height:500px!important;max-height:500px!important;
-    border-radius:0 0 34px 34px!important;
+  .mobile-bottom-nav{
+    display:flex !important;
   }
-  #site-view .hero-copy{padding:0 28px 34px!important;max-width:100%!important;align-items:flex-start!important;text-align:left!important;}
-  #site-view .hero-copy span.tag{font-size:.55rem!important;letter-spacing:.19em!important;margin-bottom:13px!important;}
-  #site-view .hero h1{font-size:clamp(2.65rem,11.5vw,3.45rem)!important;line-height:.93!important;max-width:10ch!important;margin:0!important;}
-  #site-view .hero p{font-size:.92rem!important;line-height:1.35!important;max-width:31ch!important;margin:15px 0 18px!important;}
-  #site-view .hero-actions{width:min(100%,330px)!important;gap:8px!important;align-items:stretch!important;}
-  #site-view .hero-cta{min-height:48px!important;border-radius:15px!important;font-size:.56rem!important;}
-  #site-view .hero .hero-dots{bottom:19px!important;}
-  #site-view .hero::after{
-    content:'⌄';position:absolute;z-index:6;left:50%;bottom:9px;transform:translateX(-50%);
-    color:#fff;font:400 26px/1 'Public Sans',sans-serif;animation:crArrow 1.7s ease-in-out infinite;pointer-events:none;
-  }
-  @keyframes crArrow{0%,100%{transform:translate(-50%,0);opacity:.45}50%{transform:translate(-50%,6px);opacity:1}}
 
-  /* franja entre hero y experiencias: pequeña */
-  #site-view .manifiesto-strip{height:44px!important;min-height:44px!important;}
-  #site-view .manifiesto-strip .track{padding:10px 18px!important;font-size:.54rem!important;letter-spacing:.13em!important;}
-
-  /* EXPERIENCIAS — tarjetas oscuras como la referencia */
-  #site-view .beneficios{padding:40px 0 44px!important;overflow:hidden!important;background:#f7f4ec!important;}
-  #site-view .beneficios .section-head{padding:0 20px!important;margin:0 0 18px!important;text-align:center!important;max-width:none!important;}
-  #site-view .beneficios .section-head h2{font-size:1.65rem!important;line-height:1!important;font-style:normal!important;letter-spacing:.11em!important;text-transform:uppercase!important;}
-  #site-view .beneficios .section-head p{display:none!important;}
-  #site-view .beneficios-grid{
-    display:flex!important;gap:12px!important;overflow-x:auto!important;overflow-y:hidden!important;
-    padding:0 0 5px 20px!important;margin:0!important;scroll-snap-type:x mandatory!important;
-    scrollbar-width:none!important;-webkit-overflow-scrolling:touch!important;
+  .mobile-bottom-nav .btab{
+    flex:1 1 20% !important;
+    max-width:none !important;
   }
-  #site-view .beneficios-grid::-webkit-scrollbar{display:none!important;}
-  #site-view .beneficio-item-imagen{
-    position:relative!important;flex:0 0 68vw!important;width:68vw!important;max-width:245px!important;
-    min-height:235px!important;height:235px!important;padding:0!important;border:0!important;border-radius:16px!important;
-    overflow:hidden!important;background:#063f3b!important;scroll-snap-align:start!important;box-shadow:0 7px 22px rgba(3,73,68,.13)!important;
-  }
-  #site-view .beneficio-item-imagen .beneficio-foto{position:absolute!important;inset:0!important;height:100%!important;z-index:0!important;}
-  #site-view .beneficio-item-imagen .beneficio-foto img{width:100%!important;height:100%!important;object-fit:cover!important;display:block!important;}
-  #site-view .beneficio-item-imagen:after{content:''!important;position:absolute!important;inset:0!important;z-index:1!important;background:linear-gradient(0deg,rgba(0,25,22,.88),rgba(0,25,22,.10) 65%,rgba(0,25,22,.05))!important;pointer-events:none!important;}
-  #site-view .beneficio-item-imagen .beneficio-copy{position:absolute!important;left:18px!important;right:14px!important;bottom:16px!important;padding:0!important;z-index:2!important;color:#fff!important;}
-  #site-view .beneficio-item-imagen .beneficio-copy:after{content:'→'!important;display:block!important;font:400 25px/1 'Cormorant Garamond',serif!important;margin-top:8px!important;color:#fff!important;}
-  #site-view .beneficio-item-imagen .beneficio-kicker{display:none!important;}
-  #site-view .beneficio-item-imagen h3{font:400 1.55rem/1 'Cormorant Garamond',serif!important;color:#fff!important;margin:0!important;}
-  #site-view .beneficio-item-imagen p{display:none!important;}
-  #site-view .beneficios:after{content:'←   DESLIZA   →'!important;display:block!important;width:max-content!important;margin:13px auto 0!important;font:500 .53rem 'JetBrains Mono',monospace!important;letter-spacing:.16em!important;color:#164f4d!important;}
-
-  /* CAFÉ ARIAS — videos dentro del carrusel */
-  #site-view .cafearias{padding:48px 0 54px!important;background:#f7f4ec!important;color:#034944!important;overflow:hidden!important;}
-  #site-view .cafearias .section-head{padding:0 20px!important;margin:0 0 20px!important;text-align:center!important;}
-  #site-view .cafearias .section-head .tag{font-size:.58rem!important;letter-spacing:.18em!important;color:#034944!important;}
-  #site-view .cafearias .section-head h2{font:500 2.05rem/1 'Cormorant Garamond',serif!important;color:#034944!important;text-transform:uppercase!important;letter-spacing:.16em!important;}
-  #site-view .cafearias .section-head p{font:italic 1.15rem/1.15 'Cormorant Garamond',serif!important;color:#365e5a!important;margin-top:8px!important;}
-  #site-view .cafearias-row{
-    display:flex!important;gap:14px!important;overflow-x:auto!important;padding:0 0 8px 20px!important;
-    scroll-snap-type:x mandatory!important;scrollbar-width:none!important;
-  }
-  #site-view .cafearias-row::-webkit-scrollbar{display:none!important;}
-  #site-view .cafearias-video-card{
-    flex:0 0 82vw!important;max-width:590px!important;height:330px!important;min-height:330px!important;
-    position:relative!important;overflow:hidden!important;border-radius:17px!important;background:#063f3b!important;scroll-snap-align:start!important;
-  }
-  #site-view .cafearias-video-card video{width:100%!important;height:100%!important;object-fit:cover!important;display:block!important;}
-  #site-view .cafearias-video-card:after{content:''!important;position:absolute!important;inset:0!important;background:linear-gradient(0deg,rgba(0,0,0,.78),transparent 58%)!important;pointer-events:none!important;}
-  #site-view .cafearias-video-card .video-play{top:50%!important;right:auto!important;left:50%!important;transform:translate(-50%,-50%)!important;width:54px!important;height:54px!important;border:1px solid rgba(255,255,255,.85)!important;background:rgba(0,55,50,.30)!important;color:#fff!important;pointer-events:none!important;}
-  #site-view .cafearias-video-card .video-copy{left:18px!important;bottom:17px!important;right:18px!important;z-index:3!important;}
-  #site-view .cafearias-video-card .video-copy h3{font-size:1.75rem!important;color:#fff!important;}
-
-  /* BARRA INFERIOR — cuadritos de navegación */
-  #mobile-bottom-nav{
-    display:flex!important;position:fixed!important;left:0!important;right:0!important;bottom:0!important;
-    height:78px!important;padding:7px 8px calc(7px + env(safe-area-inset-bottom,0px))!important;
-    z-index:9999!important;background:rgba(250,249,244,.98)!important;border-top:1px solid rgba(3,73,68,.12)!important;
-    box-shadow:0 -8px 28px rgba(3,73,68,.12)!important;gap:5px!important;
-  }
-  #mobile-bottom-nav .btab{
-    flex:1!important;min-width:0!important;height:62px!important;border-radius:13px!important;
-    display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:4px!important;
-    color:#123d3a!important;font-size:.56rem!important;font-family:'Public Sans',sans-serif!important;transition:.25s ease!important;
-  }
-  #mobile-bottom-nav .btab svg{width:23px!important;height:23px!important;stroke-width:1.7!important;}
-  #mobile-bottom-nav .btab.btab-active{background:#034944!important;color:#fff!important;box-shadow:0 4px 12px rgba(3,73,68,.16)!important;}
-  #mobile-bottom-nav .btab:active{transform:scale(.97)!important;}
-
-  /* flotantes nunca tapan la barra */
-  #floating-actions{bottom:calc(88px + env(safe-area-inset-bottom,0px))!important;z-index:9998!important;}
-}
-@media(max-width:520px){
-  .topnav{height:60px!important;min-height:60px!important;padding:0 13px!important;}
-  .topnav .brand{font-size:.98rem!important;gap:7px!important;}
-  .topnav .brand .logo-nav{width:39px!important;height:39px!important;flex-basis:39px!important;}
-  .nav-mobile-toggle{width:38px!important;height:38px!important;}
-  .nav-mobile-toggle span,.nav-mobile-toggle:before,.nav-mobile-toggle:after{width:23px!important;}
-  .mobile-nav-panel{top:60px!important;}
-  #site-view .hero{height:475px!important;min-height:475px!important;max-height:475px!important;}
-  #site-view .hero-copy{padding:0 24px 32px!important;}
-  #site-view .hero h1{font-size:clamp(2.55rem,12.5vw,3.2rem)!important;}
-  #site-view .beneficio-item-imagen{flex-basis:58vw!important;width:58vw!important;max-width:225px!important;height:225px!important;min-height:225px!important;}
-  #site-view .cafearias-video-card{flex-basis:84vw!important;height:300px!important;min-height:300px!important;}
 }
 </style>
-<script id="cafe-real-mobile-final-script">
+
+<script id="mobile-navigation-only-final-js">
 (function(){
-  function ready(){
-    var nav=document.getElementById('mobile-bottom-nav');
-    if(nav){
-      nav.setAttribute('aria-label','Navegación principal');
-      nav.querySelectorAll('.btab').forEach(function(b){b.type='button';});
-    }
-    /* Al tocar una tarjeta de experiencias se conserva su función existente. */
-    var grid=document.querySelector('#site-view .beneficios-grid');
-    if(grid){
-      var downX=0, downY=0;
-      grid.addEventListener('touchstart',function(e){if(e.touches[0]){downX=e.touches[0].clientX;downY=e.touches[0].clientY;}},{passive:true});
-      grid.addEventListener('click',function(e){
-        if(Math.abs((e.clientX||downX)-downX)>10 || Math.abs((e.clientY||downY)-downY)>10) e.preventDefault();
-      },true);
+  function removeDuplicateMobileNavigation(){
+    if (window.innerWidth <= 860) {
+      document.querySelectorAll('.nav-mobile-toggle, .mobile-nav-panel').forEach(function(el){
+        el.remove();
+      });
     }
   }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',ready); else ready();
-})();
-</script>
 
+  function reorderBottomNavigation(){
+    var bar = document.getElementById('mobile-bottom-nav');
+    if (!bar) return;
 
-<style id="cr-reference-match-v3">
-@media (max-width:860px){
-  html,body{background:#f7f4ec!important;overflow-x:hidden!important;}
-  body{padding-bottom:82px!important;}
-
-  /* HEADER de la referencia */
-  .topnav{height:64px!important;min-height:64px!important;padding:0 20px!important;background:#f7f4ec!important;box-shadow:none!important;border-bottom:1px solid rgba(3,73,68,.09)!important;}
-  .topnav .brand{gap:9px!important;}
-  .topnav .brand .logo-nav{width:46px!important;height:46px!important;flex-basis:46px!important;}
-  .topnav .brand span{font-size:1.18rem!important;}
-  .topnav .brand small{font-size:.49rem!important;letter-spacing:.18em!important;}
-  .nav-mobile-toggle{width:44px!important;height:44px!important;background:transparent!important;border:0!important;}
-  .nav-mobile-toggle span,.nav-mobile-toggle:before,.nav-mobile-toggle:after{width:27px!important;height:2px!important;background:#034944!important;}
-
-  /* HERO: compacto y con más contenido visible */
-  #site-view .hero{height:500px!important;min-height:500px!important;max-height:500px!important;border-radius:0 0 34px 34px!important;}
-  #site-view .hero-copy{padding:20px 28px 48px!important;justify-content:center!important;align-items:flex-start!important;}
-  #site-view .hero-kicker{font-size:.54rem!important;letter-spacing:.22em!important;margin-bottom:13px!important;}
-  #site-view .hero-copy h1{font-size:clamp(2.8rem,12.6vw,3.55rem)!important;line-height:.88!important;max-width:9.5ch!important;}
-  #site-view .hero-sub{font-size:.93rem!important;line-height:1.35!important;margin:14px 0 18px!important;max-width:30ch!important;}
-  #site-view .hero-actions{width:100%!important;max-width:330px!important;gap:9px!important;}
-  #site-view .hero-cta{height:50px!important;min-height:50px!important;border-radius:16px!important;font-size:.56rem!important;letter-spacing:.16em!important;}
-  #site-view .hero::after{content:'⌄'!important;left:auto!important;right:28px!important;bottom:38px!important;transform:none!important;font-size:31px!important;}
-  #site-view .hero .hero-dots{bottom:21px!important;right:28px!important;left:auto!important;}
-
-  /* franja entre hero y contenido */
-  #site-view .manifiesto-strip{height:38px!important;min-height:38px!important;overflow:hidden!important;}
-  #site-view .manifiesto-strip .track{font-size:.5rem!important;}
-
-  /* EXPERIENCIAS: exactamente tipo tarjetas sobre foto */
-  #site-view .beneficios{padding:30px 0 42px!important;background:#f7f4ec!important;}
-  #site-view .beneficios .section-head{padding:0 18px!important;margin-bottom:16px!important;text-align:center!important;}
-  #site-view .beneficios .section-head h2{font-family:'Public Sans',sans-serif!important;font-size:1.03rem!important;line-height:1!important;letter-spacing:.16em!important;text-transform:uppercase!important;color:#034944!important;}
-  #site-view .beneficios .section-head h2:before,#site-view .beneficios .section-head h2:after{content:'—'!important;margin:0 10px!important;font-weight:400!important;color:#76a6a0!important;}
-  #site-view .beneficios .section-head p{display:none!important;}
-  #site-view .beneficios-grid{display:flex!important;gap:12px!important;overflow-x:auto!important;padding:0 0 6px 20px!important;margin:0!important;scroll-snap-type:x mandatory!important;scrollbar-width:none!important;}
-  #site-view .beneficios-grid::-webkit-scrollbar{display:none!important;}
-  #site-view .beneficio-item-imagen{position:relative!important;flex:0 0 64vw!important;width:64vw!important;max-width:250px!important;height:280px!important;min-height:280px!important;border-radius:15px!important;overflow:hidden!important;background:#063f3b!important;scroll-snap-align:start!important;box-shadow:0 6px 18px rgba(3,73,68,.12)!important;}
-  #site-view .beneficio-item-imagen .beneficio-foto{position:absolute!important;inset:0!important;height:100%!important;z-index:0!important;}
-  #site-view .beneficio-item-imagen .beneficio-foto img{width:100%!important;height:100%!important;object-fit:cover!important;}
-  #site-view .beneficio-item-imagen:after{content:''!important;position:absolute!important;inset:0!important;background:linear-gradient(0deg,rgba(0,24,22,.82),rgba(0,30,27,.04) 68%)!important;z-index:1!important;pointer-events:none!important;}
-  #site-view .beneficio-item-imagen .beneficio-copy{position:absolute!important;left:18px!important;right:15px!important;bottom:17px!important;padding:0!important;z-index:2!important;color:#fff!important;background:transparent!important;}
-  #site-view .beneficio-item-imagen .beneficio-kicker{display:none!important;}
-  #site-view .beneficio-item-imagen h3{margin:0!important;font:400 1.58rem/1.05 'Cormorant Garamond',serif!important;color:#fff!important;}
-  #site-view .beneficio-item-imagen p{display:none!important;}
-  #site-view .beneficio-item-imagen .beneficio-copy:after{content:'→'!important;display:block!important;margin-top:12px!important;font:400 1.5rem/1 'Cormorant Garamond',serif!important;color:#fff!important;}
-  #site-view .beneficios:after{content:'←    DESLIZA    →'!important;display:block!important;width:max-content!important;margin:14px auto 0!important;font:500 .54rem 'JetBrains Mono',monospace!important;letter-spacing:.14em!important;color:#164f4d!important;}
-
-  /* CAFÉ ARIAS: título + videos dentro del carrusel */
-  #site-view .cafearias{padding:38px 0 42px!important;background:#f7f4ec!important;color:#034944!important;}
-  #site-view .cafearias .section-head{padding:0 20px!important;margin:0 0 18px!important;text-align:center!important;}
-  #site-view .cafearias .section-head .tag{font-size:0!important;color:transparent!important;}
-  #site-view .cafearias .section-head .tag:after{content:'—   CAFÉ ARIAS   —';font:600 .95rem 'Public Sans',sans-serif!important;letter-spacing:.17em;color:#034944!important;}
-  #site-view .cafearias .section-head h2{display:none!important;}
-  #site-view .cafearias .section-head p{font:italic 1.15rem/1.1 'Cormorant Garamond',serif!important;color:#365e5a!important;margin:8px 0 0!important;}
-  #site-view .cafearias-row{display:flex!important;gap:14px!important;overflow-x:auto!important;padding:0 0 8px 20px!important;scroll-snap-type:x mandatory!important;scrollbar-width:none!important;}
-  #site-view .cafearias-row::-webkit-scrollbar{display:none!important;}
-  #site-view .cafearias-video-card{flex:0 0 84vw!important;width:84vw!important;max-width:330px!important;height:282px!important;min-height:282px!important;border-radius:17px!important;scroll-snap-align:start!important;position:relative!important;overflow:hidden!important;background:#063f3b!important;}
-  #site-view .cafearias-video-card video,#site-view .cafearias-video-card .video-poster{width:100%!important;height:100%!important;object-fit:cover!important;display:block!important;}
-  #site-view .cafearias-video-card:after{content:''!important;position:absolute!important;inset:0!important;background:linear-gradient(0deg,rgba(0,0,0,.78),transparent 60%)!important;pointer-events:none!important;}
-  #site-view .cafearias-video-card .video-play{top:50%!important;left:50%!important;right:auto!important;transform:translate(-50%,-50%)!important;width:52px!important;height:52px!important;border-radius:50%!important;background:rgba(255,255,255,.9)!important;color:#063f3b!important;border:1px solid rgba(255,255,255,.85)!important;z-index:4!important;}
-  #site-view .cafearias-video-card .video-copy{left:18px!important;right:18px!important;bottom:17px!important;z-index:4!important;}
-  #site-view .cafearias-video-card .video-copy small{font-size:.5rem!important;letter-spacing:.16em!important;}
-  #site-view .cafearias-video-card .video-copy h3{font:italic 1.7rem/1.05 'Cormorant Garamond',serif!important;color:#fff!important;margin:5px 0 0!important;}
-  #site-view .cafearias:after{content:'●   ○   ○   ○'!important;display:block!important;text-align:center!important;margin-top:9px!important;font-size:.6rem!important;letter-spacing:.25em!important;color:#2b746e!important;}
-
-  /* BARRA INFERIOR: 4 cuadros como referencia */
-  #mobile-bottom-nav{display:flex!important;position:fixed!important;left:0!important;right:0!important;bottom:0!important;height:78px!important;padding:7px 8px calc(7px + env(safe-area-inset-bottom,0px))!important;gap:6px!important;background:rgba(250,249,244,.98)!important;border-top:1px solid rgba(3,73,68,.12)!important;box-shadow:0 -8px 28px rgba(3,73,68,.12)!important;z-index:9999!important;}
-  #mobile-bottom-nav .btab{flex:1!important;height:62px!important;border-radius:13px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:4px!important;color:#123d3a!important;font-size:.55rem!important;}
-  #mobile-bottom-nav .btab svg{width:24px!important;height:24px!important;stroke-width:1.7!important;}
-  #mobile-bottom-nav .btab.btab-active{background:#034944!important;color:#fff!important;}
-  #mobile-bottom-nav .btab:nth-child(4){display:none!important;}
-  #floating-actions{bottom:calc(88px + env(safe-area-inset-bottom,0px))!important;z-index:9998!important;}
-}
-@media(max-width:520px){
-  #site-view .hero{height:500px!important;min-height:500px!important;max-height:500px!important;}
-  #site-view .beneficio-item-imagen{flex-basis:64vw!important;width:64vw!important;height:275px!important;min-height:275px!important;}
-  #site-view .cafearias-video-card{flex-basis:84vw!important;width:84vw!important;height:278px!important;min-height:278px!important;}
-}
-</style>
-<script id="cr-reference-match-v3-js">
-(function(){
-  function apply(){
-    /* Cambiar el texto del encabezado de experiencias para coincidir con la referencia. */
-    var exp=document.querySelector('#site-view .beneficios .section-head h2');
-    if(exp) exp.textContent='NUESTRAS EXPERIENCIAS';
-    /* La tercera pestaña inferior es Reservas y la quinta se conserva como Contacto. */
-    var nav=document.getElementById('mobile-bottom-nav');
-    if(nav){
-      var tabs=nav.querySelectorAll('.btab');
-      if(tabs.length>=5){
-        var locationTab=tabs[2], eventsTab=tabs[3], reserveTab=tabs[4];
-        eventsTab.style.display='none';
-        locationTab.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 3v4M16 3v4M4 9h16"/><path d="M8 13h2M14 13h2M8 17h2"/></svg><span>Reservas</span>';
-        locationTab.setAttribute('data-view','piso');
-        locationTab.setAttribute('onclick',"mobileNavGo('piso')");
-        reserveTab.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 21c.7-4 3-6 7-6s6.3 2 7 6"/></svg><span>Contacto</span>';
-        reserveTab.setAttribute('data-view','ubicacion');
-        reserveTab.setAttribute('onclick',"mobileNavGo('ubicacion')");
-        reserveTab.classList.remove('flash-cta');
-        /* Reordenar: Inicio, Menú, Reservas, Contacto */
-        nav.appendChild(locationTab);
-        nav.appendChild(reserveTab);
-      }
-    }
-    /* Quitar la etiqueta Café Real de las tarjetas de experiencias. */
-    document.querySelectorAll('#site-view .beneficio-item-imagen .beneficio-kicker').forEach(function(k){k.style.display='none';});
+    var desired = ['site','menu','auditorio','piso','ubicacion'];
+    desired.forEach(function(view){
+      var item = bar.querySelector('.btab[data-view="' + view + '"]');
+      if (item) bar.appendChild(item);
+    });
   }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',apply); else apply();
+
+  function initMobileNavigation(){
+    removeDuplicateMobileNavigation();
+    reorderBottomNavigation();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMobileNavigation);
+  } else {
+    initMobileNavigation();
+  }
+
+  window.addEventListener('resize', initMobileNavigation);
 })();
 </script>
 
 </body>
-</html>
+  </html> 
+<style id="mobile-header-real">
+/* CAFÉ REAL — HEADER MÓVIL REAL / DELGADO Y CENTRADO */
+@media (max-width:860px){
+  .topnav{
+    min-height:64px!important;
+    height:64px!important;
+    padding:0 14px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    position:sticky!important;
+  }
+  .topnav .brand{
+    position:absolute!important;
+    left:50%!important;
+    top:50%!important;
+    transform:translate(-50%,-50%)!important;
+    gap:8px!important;
+    margin:0!important;
+    z-index:2;
+    line-height:1!important;
+  }
+  .topnav .brand .logo-nav{
+    width:42px!important;
+    height:42px!important;
+    flex:0 0 42px!important;
+  }
+  .topnav .brand small{
+    margin-top:4px!important;
+    font-size:.47rem!important;
+    letter-spacing:.13em!important;
+  }
+  .topnav .actions{
+    position:absolute!important;
+    right:14px!important;
+    top:50%!important;
+    transform:translateY(-50%)!important;
+    gap:0!important;
+    z-index:3;
+  }
+  .topnav .horario-pill{
+    font-size:.53rem!important;
+    padding:5px 8px!important;
+    border-radius:999px!important;
+    letter-spacing:0!important;
+  }
+  .topnav .horario-pill .dot{
+    width:6px!important;
+    height:6px!important;
+  }
+  .topnav .actions .btn{display:none!important;}
+  .nav-mobile-toggle{
+    display:flex!important;
+    position:absolute!important;
+    left:14px!important;
+    top:50%!important;
+    transform:translateY(-50%)!important;
+    width:36px!important;
+    height:36px!important;
+    border:0!important;
+    background:transparent!important;
+    border-radius:0!important;
+    z-index:4;
+  }
+  .nav-mobile-toggle span,.nav-mobile-toggle:before,.nav-mobile-toggle:after{
+    width:18px!important;
+    height:1.5px!important;
+  }
+  .mobile-nav-panel{top:64px!important;}
+}
+@media (max-width:520px){
+  .topnav .brand{gap:7px!important;}
+  .topnav .brand .logo-nav{width:39px!important;height:39px!important;flex-basis:39px!important;}
+  .topnav .brand{font-size:.9rem!important;}
+  .topnav .brand small{font-size:.43rem!important;letter-spacing:.11em!important;}
+  .topnav .horario-pill{font-size:.48rem!important;padding:4px 7px!important;}
+  .topnav{padding:0 10px!important;}
+  .nav-mobile-toggle{left:10px!important;}
+  .topnav .actions{right:10px!important;}
+}
+@media (max-width:400px){
+  .topnav .brand{font-size:.82rem!important;gap:6px!important;}
+  .topnav .brand .logo-nav{width:36px!important;height:36px!important;flex-basis:36px!important;}
+  .topnav .brand small{font-size:.39rem!important;}
+  .topnav .horario-pill{font-size:.43rem!important;padding:4px 6px!important;}
+}
+</style>
+
+<!-- CAFÉ REAL · AJUSTE MÓVIL FINAL -->
+<style id="mobile-scroll-header-final">
+@media (max-width:860px){
+  /* El menú hamburguesa no se usa en móvil: la navegación inferior ya cumple esa función. */
+  .nav-mobile-toggle,
+  .mobile-nav-panel{display:none!important;}
+
+  /* Header más limpio y con respuesta al scroll */
+  .topnav{
+    height:64px!important;
+    min-height:64px!important;
+    transition:
+      height .45s cubic-bezier(.22,.9,.25,1),
+      min-height .45s cubic-bezier(.22,.9,.25,1),
+      background-color .35s ease,
+      box-shadow .45s ease,
+      backdrop-filter .45s ease;
+    box-shadow:0 1px 0 rgba(3,73,68,.08);
+    will-change:height,box-shadow;
+  }
+  .topnav.is-scrolled{
+    height:54px!important;
+    min-height:54px!important;
+    background:rgba(255,255,255,.94)!important;
+    box-shadow:0 7px 24px rgba(3,73,68,.10)!important;
+    backdrop-filter:blur(12px);
+  }
+  .topnav .brand{
+    transition:transform .45s cubic-bezier(.22,.9,.25,1);
+  }
+  .topnav.is-scrolled .brand{
+    transform:translate(-50%,-50%) scale(.92)!important;
+  }
+  .topnav .actions{
+    transition:transform .45s cubic-bezier(.22,.9,.25,1);
+  }
+  .topnav.is-scrolled .actions{
+    transform:translateY(-50%) scale(.94)!important;
+  }
+
+  /* Quita los rótulos repetidos de las tarjetas de imágenes. */
+  .beneficio-item-imagen::before,
+  .beneficio-item-imagen .beneficio-kicker{
+    display:none!important;
+    content:none!important;
+  }
+  .beneficio-item-imagen .beneficio-copy{
+    padding-top:22px!important;
+  }
+}
+
+@media (max-width:520px){
+  .topnav{height:60px!important;min-height:60px!important;}
+  .topnav.is-scrolled{height:52px!important;min-height:52px!important;}
+  .topnav .brand .logo-nav{width:39px!important;height:39px!important;flex-basis:39px!important;}
+  .topnav.is-scrolled .brand .logo-nav{width:36px!important;height:36px!important;flex-basis:36px!important;}
+}
+
+/* HEADER MÓVIL — brillo orgánico al comenzar/continuar el scroll */
+@media(max-width:860px){
+  .topnav{
+    position:sticky!important;
+    overflow:hidden;
+    transition:min-height .45s cubic-bezier(.2,.8,.2,1),height .45s cubic-bezier(.2,.8,.2,1),
+      padding .45s cubic-bezier(.2,.8,.2,1),box-shadow .45s ease,background .45s ease;
+  }
+  .topnav::after{
+    content:'';
+    position:absolute;
+    top:0;bottom:0;left:-42%;width:28%;
+    pointer-events:none;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.72),transparent);
+    transform:skewX(-18deg);
+    opacity:0;
+  }
+  .topnav.is-scrolled{
+    background:rgba(251,250,246,.97)!important;
+    box-shadow:0 5px 22px rgba(3,73,68,.10);
+  }
+  .topnav.is-scrolled::after{
+    opacity:1;
+    animation:crHeaderShimmer 3.8s cubic-bezier(.4,0,.2,1) infinite;
+  }
+  .topnav .brand .logo-nav{
+    transition:transform .55s cubic-bezier(.2,.8,.2,1),filter .55s ease;
+  }
+  .topnav.is-scrolled .brand .logo-nav{
+    animation:crHeaderPulse 3.8s ease-in-out infinite;
+    filter:drop-shadow(0 0 7px rgba(10,124,118,.20));
+  }
+}
+@keyframes crHeaderShimmer{
+  0%,52%{left:-42%;opacity:0;}
+  58%{opacity:.75;}
+  72%{left:118%;opacity:0;}
+  100%{left:118%;opacity:0;}
+}
+@keyframes crHeaderPulse{
+  0%,100%{transform:scale(1);}
+  45%{transform:scale(1.018);}
+  58%{transform:scale(1.045);}
+  72%{transform:scale(1);}
+}
+@media(prefers-reduced-motion:reduce){
+  .topnav.is-scrolled::after,.topnav.is-scrolled .brand .logo-nav{animation:none!important;}
+}
+</style>
+<script id="mobile-scroll-header-final-script">
+(function(){
+  function updateMobileHeaders(){
+    var mobile = window.innerWidth <= 860;
+    document.querySelectorAll('.topnav').forEach(function(nav){
+      nav.classList.toggle('is-scrolled', mobile && window.scrollY > 18);
+    });
+  }
+  var ticking=false;
+  window.addEventListener('scroll',function(){
+    if(ticking)return;
+    ticking=true;
+    requestAnimationFrame(function(){
+      updateMobileHeaders();
+      ticking=false;
+    });
+  },{passive:true});
+  window.addEventListener('resize',updateMobileHeaders);
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',updateMobileHeaders);
+  else updateMobileHeaders();
+})();
+</script>
