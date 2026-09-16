@@ -2198,6 +2198,307 @@
 @media(max-width:760px){.journey-bridge{padding:58px 20px 62px}.journey-inner{grid-template-columns:1fr;gap:30px}.journey-final{padding:68px 20px 78px}.journey-choice button{padding:15px 16px}}
 </style>
 
+
+<style id="cliente-cambios-2026">
+/* =========================================================
+   CAMBIOS CLIENTE — HERO, BENEFICIOS, MENÚ Y CAFÉ ARIAS
+   ========================================================= */
+
+/* HERO: el primer vistazo queda limpio; el header entra al salir del hero */
+#site-view > .topnav:first-child{
+  transition:opacity .38s ease, transform .38s ease, background .38s ease, box-shadow .38s ease;
+}
+#site-view > .topnav:first-child.hero-nav-hidden{
+  opacity:0;
+  transform:translateY(-100%);
+  pointer-events:none;
+}
+#site-view > .topnav:first-child.hero-nav-hidden .mobile-nav-panel{
+  display:none!important;
+}
+
+/* Cuando el header aparece, se siente integrado y no roba protagonismo */
+#site-view > .topnav:first-child.hero-nav-visible{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* La franja inferior del hero no debe tapar los CTA */
+#site-view .manifiesto-strip{
+  margin-top:0!important;
+}
+
+/* En móvil usamos el hamburguesa del header como navegación principal.
+   Se elimina la barra inferior que ocupaba espacio y podía tapar CTA. */
+@media(max-width:860px){
+  .mobile-bottom-nav{display:none!important;}
+  body{padding-bottom:0!important;}
+  footer{padding-bottom:50px!important;}
+  #floating-actions{bottom:18px!important;}
+  #fab-reservar{bottom:18px!important;}
+  #bot-teaser{bottom:84px!important;}
+  #bot-window{bottom:88px!important;}
+
+  #site-view > .topnav:first-child{
+    position:fixed!important;
+    left:0;right:0;top:0;
+    z-index:700!important;
+  }
+
+  #site-view .hero{
+    min-height:100svh!important;
+    height:100svh!important;
+  }
+  #site-view .hero-copy{
+    padding-bottom:clamp(100px,16vh,150px)!important;
+  }
+
+  /* El header reaparece al empezar a salir del hero */
+  #site-view > .topnav:first-child.hero-nav-visible{
+    background:rgba(248,246,239,.92)!important;
+    backdrop-filter:blur(18px) saturate(120%);
+    -webkit-backdrop-filter:blur(18px) saturate(120%);
+  }
+}
+
+/* BENEFICIOS: carrusel horizontal, dejando ver parte de la siguiente tarjeta */
+.beneficios .beneficios-grid{
+  position:relative;
+  display:flex!important;
+  overflow-x:auto;
+  overflow-y:visible;
+  gap:18px!important;
+  padding:4px 8px 22px 0;
+  scroll-snap-type:x mandatory;
+  scroll-behavior:smooth;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.beneficios .beneficios-grid::-webkit-scrollbar{display:none;}
+.beneficios .beneficio-item-imagen{
+  flex:0 0 min(410px,78vw);
+  scroll-snap-align:start;
+}
+.beneficios .beneficios-grid:after{
+  content:'';
+  flex:0 0 8px;
+}
+@media(min-width:861px){
+  .beneficios .beneficio-item-imagen{flex-basis:min(390px,29vw);}
+  .beneficios .beneficios-grid{padding-right:0;}
+}
+@media(max-width:760px){
+  .beneficios{padding-left:20px!important;padding-right:0!important;}
+  .beneficios .section-head{padding-right:20px;}
+  .beneficios .beneficios-grid{
+    margin-right:-20px;
+    padding-right:20px;
+    gap:14px!important;
+  }
+  .beneficios .beneficio-item-imagen{
+    flex-basis:82vw;
+    border-radius:16px!important;
+  }
+  .beneficios .beneficio-foto{height:210px;}
+}
+
+/* Indicador sutil para comunicar que la fila se puede deslizar */
+.beneficios .beneficios-grid::before{
+  content:'DESLIZA →';
+  position:absolute;
+  margin-top:-27px;
+  right:8vw;
+  font:600 .52rem var(--cr-mono);
+  letter-spacing:.16em;
+  color:rgba(3,73,68,.48);
+  pointer-events:none;
+}
+@media(max-width:760px){
+  .beneficios .beneficios-grid::before{right:20px;margin-top:-24px;}
+}
+
+/* CAFÉ ARIAS: zona visual preparada para microvideos */
+.cafearias-media{
+  display:flex;
+  gap:14px;
+  overflow-x:auto;
+  padding:4px 0 20px;
+  scroll-snap-type:x mandatory;
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+}
+.cafearias-media::-webkit-scrollbar{display:none;}
+.cafearias-video-card{
+  position:relative;
+  flex:0 0 min(330px,78vw);
+  aspect-ratio:9/13;
+  border-radius:14px;
+  overflow:hidden;
+  background:#102f2c;
+  scroll-snap-align:start;
+}
+.cafearias-video-card img,
+.cafearias-video-card video{
+  width:100%;height:100%;object-fit:cover;display:block;
+}
+.cafearias-video-card video{position:absolute;inset:0;}
+.cafearias-video-placeholder{
+  position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;
+  padding:22px;color:#fff;background:linear-gradient(0deg,rgba(0,0,0,.72),rgba(0,0,0,0) 62%);
+  pointer-events:none;
+}
+.cafearias-video-placeholder small{
+  font:600 .55rem var(--cr-mono);letter-spacing:.14em;text-transform:uppercase;opacity:.72;
+}
+.cafearias-video-placeholder strong{
+  margin-top:7px;font:500 1.65rem var(--cr-serif);font-style:italic;
+}
+.cafearias-video-card .video-badge{
+  position:absolute;top:14px;right:14px;z-index:2;
+  width:40px;height:40px;border-radius:50%;display:grid;place-items:center;
+  background:rgba(255,255,255,.9);color:#063f3b;
+  font-size:.8rem;
+}
+
+/* MENÚ: categorías visuales en una pantalla horizontal/compacta */
+#menu-view .menu-layout{grid-template-columns:220px 1fr;}
+#menu-view .menu-sidebar{
+  position:sticky;
+  top:96px;
+  padding:28px 14px 28px 0;
+}
+#menu-view .menu-sidebar button{
+  min-height:54px;
+  border-radius:12px;
+}
+#menu-view .menu-sidebar button:before{
+  content:'';
+  width:34px;height:34px;flex:none;border-radius:10px;
+  background:var(--hueso-2);
+  margin-right:10px;
+}
+#menu-view .menu-sidebar button{
+  display:grid;
+  grid-template-columns:34px 1fr auto;
+  align-items:center;
+}
+#menu-view .menu-sidebar button.active:before{
+  background:rgba(255,255,255,.14);
+}
+#menu-view .prod-row{
+  position:relative;
+  cursor:pointer;
+}
+#menu-view .prod-row:after{
+  content:'Ver más  →';
+  position:absolute;
+  right:14px;
+  bottom:12px;
+  font:600 .52rem var(--cr-mono);
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--teal-cla);
+  opacity:.9;
+}
+#menu-view .prod-info{padding-bottom:20px;}
+#menu-view .prod-more{
+  display:inline-flex;align-items:center;align-self:flex-start;
+  margin-top:9px;padding:7px 10px;border-radius:999px;
+  background:rgba(3,73,68,.07);color:var(--teal-osc);
+  font:600 .52rem var(--cr-mono);letter-spacing:.06em;text-transform:uppercase;
+}
+#menu-view .prod-row:hover .prod-more{background:var(--teal-osc);color:#fff;}
+
+#menu-view .menu-search{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:0 auto 18px;
+  max-width:1180px;
+  padding:0 8vw;
+}
+#menu-view .menu-search-input{
+  width:100%;
+  height:52px;
+  border:1px solid var(--cr-line);
+  border-radius:999px;
+  background:rgba(255,255,255,.72);
+  padding:0 20px 0 48px;
+  font:500 .8rem 'Public Sans',sans-serif;
+  color:var(--tinta);
+  outline:none;
+}
+#menu-view .menu-search-input:focus{border-color:var(--teal-cla);box-shadow:0 0 0 4px rgba(10,124,118,.08);}
+#menu-view .menu-search-wrap{position:relative;width:100%;}
+#menu-view .menu-search-wrap svg{
+  position:absolute;left:18px;top:50%;transform:translateY(-50%);
+  width:19px;height:19px;color:var(--teal-cla);pointer-events:none;
+}
+#menu-view .menu-search-count{
+  font:600 .56rem var(--cr-mono);
+  letter-spacing:.08em;color:var(--tinta-suave);white-space:nowrap;
+}
+#menu-view .menu-no-results{
+  padding:50px 20px;text-align:center;color:var(--tinta-suave);
+  border:1px dashed var(--cr-line);border-radius:14px;
+}
+@media(max-width:900px){
+  #menu-view .menu-layout{grid-template-columns:1fr;}
+  #menu-view .menu-sidebar{
+    position:sticky;top:68px;z-index:75;
+    display:grid;grid-template-columns:repeat(4,minmax(118px,1fr));
+    grid-auto-flow:row;
+    overflow-x:auto;
+    padding:10px 0;
+    gap:8px;
+    border-bottom:1px solid var(--linea);
+    background:var(--hueso);
+  }
+  #menu-view .menu-sidebar button{
+    width:132px;
+    grid-template-columns:30px 1fr auto;
+    min-height:62px;
+    padding:8px 10px;
+    border:1px solid rgba(3,73,68,.08);
+    background:#fff;
+  }
+  #menu-view .menu-sidebar button:before{width:30px;height:30px;border-radius:9px;}
+  #menu-view .menu-sidebar button.active{background:var(--teal-osc);}
+  #menu-view .menu-search{padding:0 20px;margin-top:18px;}
+}
+@media(max-width:560px){
+  #menu-view .menu-hero{min-height:64svh;padding:100px 20px 60px;}
+  #menu-view .menu-search{padding:0 16px;}
+  #menu-view .menu-sidebar{
+    grid-template-columns:repeat(4,132px);
+    overflow-x:auto;
+  }
+  #menu-view .menu-panel-head{padding-top:30px;}
+  #menu-view .prod-row{
+    grid-template-columns:94px 1fr!important;
+    min-height:120px!important;
+    padding:10px!important;
+  }
+  #menu-view .prod-photo{width:94px!important;height:94px!important;}
+  #menu-view .prod-top h4{font-size:1.18rem!important;}
+  #menu-view .prod-info p{font-size:.7rem!important;}
+  #menu-view .prod-row:after{right:10px;bottom:8px;font-size:.48rem;}
+}
+
+/* Modal de producto: el CTA explícito vive dentro de cada ficha */
+.producto-modal-body .producto-modal-hint{
+  display:inline-flex;align-items:center;gap:8px;
+  margin-top:15px;padding:10px 13px;border-radius:999px;
+  background:#f3efe5;color:#063f3b;
+  font:600 .56rem var(--cr-mono);letter-spacing:.08em;text-transform:uppercase;
+}
+
+/* Reducir movimiento si el usuario lo solicita */
+@media(prefers-reduced-motion:reduce){
+  #site-view > .topnav:first-child{transition:none;}
+}
+</style>
+
 </head>
     <body>
 
@@ -2466,6 +2767,34 @@
         <h2>Café Arias</h2>
         <p>Una primera probada de lo que hace especial la experiencia en Café Real.</p>
       </div>
+
+      <div class="cafearias-media" aria-label="Historias de Café Arias">
+        <article class="cafearias-video-card">
+          <img src="images/cafearias/cafearias-granos.webp" alt="Café de origen y granos de Café Arias">
+          <video controls playsinline preload="metadata" poster="images/cafearias/cafearias-granos.webp">
+            <source src="videos/cafe-recoleccion.mp4" type="video/mp4">
+          </video>
+          <div class="video-badge">▶</div>
+          <div class="cafearias-video-placeholder"><small>Historia del café</small><strong>Del grano a la taza.</strong></div>
+        </article>
+        <article class="cafearias-video-card">
+          <img src="images/cafearias/cafearias-preparado.webp" alt="Preparación del café Arias">
+          <video controls playsinline preload="metadata" poster="images/cafearias/cafearias-preparado.webp">
+            <source src="videos/cafe-preparacion.mp4" type="video/mp4">
+          </video>
+          <div class="video-badge">▶</div>
+          <div class="cafearias-video-placeholder"><small>Así se prepara</small><strong>Una taza con historia.</strong></div>
+        </article>
+        <article class="cafearias-video-card">
+          <img src="images/cafearias/cafearias-paquete.webp" alt="Café Arias">
+          <video controls playsinline preload="metadata" poster="images/cafearias/cafearias-paquete.webp">
+            <source src="videos/historia-cafe-real.mp4" type="video/mp4">
+          </video>
+          <div class="video-badge">▶</div>
+          <div class="cafearias-video-placeholder"><small>Personas y origen</small><strong>Conoce quién está detrás.</strong></div>
+        </article>
+      </div>
+
       <div class="cafearias-carousel">
         <div class="cafearias-row" id="cafearias-row"></div>
       </div>
@@ -2777,6 +3106,19 @@
       </div>
       <div class="destacados-row" id="destacados-row"></div>
     </div>
+
+
+<div class="menu-search" aria-label="Buscar en toda la carta">
+  <div class="menu-search-wrap">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+      <circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path>
+    </svg>
+    <input id="menu-global-search" class="menu-search-input" type="search"
+      placeholder="¿Qué se te antoja? Ej. huevos revueltos"
+      autocomplete="off" aria-label="Buscar productos en toda la carta">
+  </div>
+  <span id="menu-search-count" class="menu-search-count" aria-live="polite"></span>
+</div>
 
     <div class="menu-layout">
       <div class="menu-sidebar" id="menu-sidebar"></div>
@@ -3420,6 +3762,7 @@
           </div>
           ${it.tag ? `<span class="prod-tag">${it.tag}</span>` : ''}
           ${it.d ? `<p>${it.d}</p>` : ''}
+          <button class="prod-more" type="button" onclick="event.stopPropagation(); abrirProducto(${id})">Ver descripción&nbsp; →</button>
         </div>
       </div>`;
   }
@@ -4670,6 +5013,97 @@
 
 })();
 </script>
+
+<script id="cliente-cambios-js">
+(function(){
+  /* ---------- HERO / HEADER ---------- */
+  const home = document.getElementById('site-view');
+  const hero = home && home.querySelector('.hero');
+  const homeNav = home && home.querySelector('.topnav');
+  if(home && hero && homeNav && 'IntersectionObserver' in window){
+    const setNavState = (visible) => {
+      homeNav.classList.toggle('hero-nav-hidden', !visible);
+      homeNav.classList.toggle('hero-nav-visible', visible);
+    };
+    setNavState(true);
+    const io = new IntersectionObserver((entries)=>{
+      const entry = entries[0];
+      setNavState(entry.isIntersecting && entry.intersectionRatio > 0.18);
+    }, {threshold:[0,.18,.35]});
+    io.observe(hero);
+  }
+
+  /* ---------- BUSCADOR GLOBAL DEL MENÚ ---------- */
+  function initMenuSearch(){
+    const input=document.getElementById('menu-global-search');
+    const count=document.getElementById('menu-search-count');
+    if(!input || input.dataset.ready) return;
+    input.dataset.ready='1';
+
+    function normalize(v){
+      return (v||'').toString().toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    }
+
+    input.addEventListener('input', function(){
+      const q=normalize(this.value.trim());
+      let total=0;
+      document.querySelectorAll('#menu-panel-body .prod-row').forEach(row=>{
+        const text=normalize(row.textContent);
+        const match=!q || text.includes(q);
+        row.style.display=match?'grid':'none';
+        if(match) total++;
+      });
+
+      document.querySelectorAll('#menu-panel-body .menu-shelf-2').forEach(shelf=>{
+        const visible=shelf.querySelectorAll('.prod-row:not([style*="display: none"])').length;
+        shelf.style.display=visible?'block':'none';
+      });
+
+      document.querySelectorAll('#menu-panel-body .menu-cat').forEach(cat=>{
+        const visible=cat.querySelectorAll('.prod-row:not([style*="display: none"])').length;
+        cat.style.display=(!q || visible)?'block':'none';
+      });
+
+      if(count){
+        count.textContent=q ? (total ? total+' resultado'+(total===1?'':'s') : 'Sin resultados') : '';
+      }
+    });
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',initMenuSearch);
+  }else{
+    initMenuSearch();
+  }
+
+  /* Re-inicializar el buscador al volver a la vista Menú */
+  const oldEnter=window.enterView;
+  if(typeof oldEnter==='function' && !oldEnter.__clienteCambios){
+    const wrapped=function(view){
+      const result=oldEnter.apply(this,arguments);
+      if(view==='menu'){
+        setTimeout(initMenuSearch,40);
+      }
+      return result;
+    };
+    wrapped.__clienteCambios=true;
+    window.enterView=wrapped;
+  }
+})();
+</script>
+
+
+<script>
+document.querySelectorAll('.cafearias-video-card video').forEach(function(v){
+  v.addEventListener('error',function(){
+    this.style.display='none';
+    const badge=this.parentElement.querySelector('.video-badge');
+    if(badge) badge.style.display='none';
+  });
+});
+</script>
+
 </body>
   </html> 
 <style id="mobile-header-real">
