@@ -6438,5 +6438,72 @@
 }
 </style>
 
+
+<style id="header-ajuste-final-v2">
+/* ===== HEADER MÓVIL: SIN HAMBURGUESA + ENCOGIMIENTO AL HACER SCROLL ===== */
+
+/* Ocultar el botón hamburguesa aunque otro CSS lo fuerce con !important */
+@media (max-width:860px){
+  .topnav .nav-mobile-toggle,
+  .topnav .nav-mobile-toggle span,
+  .topnav .nav-mobile-toggle::before,
+  .topnav .nav-mobile-toggle::after,
+  .topnav .mobile-nav-panel{
+    display:none !important;
+    visibility:hidden !important;
+    opacity:0 !important;
+    pointer-events:none !important;
+  }
+
+  /* Estado normal */
+  .topnav{
+    height:64px !important;
+    min-height:64px !important;
+    padding:8px 20px !important;
+    background:#f6f1e4 !important;
+    transition:height .25s ease, min-height .25s ease, padding .25s ease !important;
+  }
+
+  .topnav .brand{
+    margin:0 auto !important;
+    transform:none !important;
+    opacity:1 !important;
+    transition:transform .25s ease, opacity .25s ease !important;
+  }
+
+  .topnav .brand .logo-nav{
+    width:46px !important;
+    height:46px !important;
+    transition:width .25s ease, height .25s ease !important;
+  }
+
+  /* Al hacer scroll, la barra se encoge un poco */
+  .topnav.cr-header-scrolled{
+    height:52px !important;
+    min-height:52px !important;
+    padding:4px 20px !important;
+    background:#f6f1e4 !important;
+    box-shadow:none !important;
+    border-bottom:1px solid rgba(3,73,68,.10) !important;
+  }
+
+  .topnav.cr-header-scrolled .brand .logo-nav{
+    width:38px !important;
+    height:38px !important;
+  }
+
+  .topnav.cr-header-scrolled .brand{
+    transform:none !important;
+    opacity:1 !important;
+  }
+}
+
+/* Escritorio/tablet: conservar el blanco crema */
+.topnav,
+.topnav.cr-header-scrolled{
+  background:#f6f1e4 !important;
+}
+</style>
+
 </body>
 </html>
