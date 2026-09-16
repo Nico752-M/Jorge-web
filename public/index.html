@@ -2195,6 +2195,132 @@
 </head>
     <body>
 
+<!-- INTRO CAFÉ REAL · LOGO MOTION -->
+<div id="cafe-real-intro" aria-hidden="true">
+  <div class="cri-logo-stage">
+    <div class="cri-logo-glow"></div>
+    <div class="cri-logo-wrap">
+      <img src="images/LOGO_SRC.png" alt="Café Real">
+    </div>
+  </div>
+</div>
+
+<style id="cafe-real-intro-style">
+/* LOGO INTRO — halo + luz + movimiento orgánico, sin sensación de tarjeta. */
+#cafe-real-intro{
+  position:fixed;inset:0;z-index:99999;overflow:hidden;
+  display:grid;place-items:center;
+  background:#073b32;
+  opacity:1;visibility:visible;pointer-events:auto;
+  transition:opacity 1.15s cubic-bezier(.16,.8,.24,1),visibility 1.15s;
+}
+#cafe-real-intro.done{opacity:0;visibility:hidden;pointer-events:none}
+.cri-logo-stage{
+  position:relative;width:320px;height:320px;display:grid;place-items:center;
+}
+.cri-logo-stage::before{
+  content:"";position:absolute;inset:50% auto auto 50%;
+  width:220px;height:220px;border-radius:50%;
+  border:1px solid rgba(230,202,145,.34);
+  transform:translate(-50%,-50%) scale(.25);
+  opacity:0;
+  animation:criHalo 2.9s cubic-bezier(.16,.82,.24,1) .05s forwards;
+}
+.cri-logo-stage::after{
+  content:"";position:absolute;left:50%;top:50%;
+  width:285px;height:285px;border-radius:50%;
+  transform:translate(-50%,-50%) scale(.42);
+  background:radial-gradient(circle,rgba(230,202,145,.17) 0%,rgba(230,202,145,.055) 34%,transparent 69%);
+  filter:blur(24px);opacity:0;
+  animation:criAura 3.15s cubic-bezier(.2,.75,.22,1) forwards;
+}
+.cri-logo-glow{
+  position:absolute;z-index:1;left:50%;top:50%;width:245px;height:245px;
+  transform:translate(-50%,-50%) scale(.5);
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(255,244,213,.18) 0%,rgba(230,202,145,.07) 38%,transparent 70%);
+  filter:blur(18px);opacity:0;
+  animation:criGlow 2.8s cubic-bezier(.2,.75,.22,1) .1s forwards;
+}
+.cri-logo-wrap{
+  position:relative;z-index:3;width:190px;height:190px;
+  display:grid;place-items:center;border-radius:50%;overflow:hidden;
+  opacity:0;
+  transform:translate3d(0,18px,0) rotateZ(-18deg) scale(.34);
+  transform-origin:50% 50%;
+  filter:blur(9px) drop-shadow(0 22px 40px rgba(0,0,0,.20));
+  animation:criLogoBloom 2.85s cubic-bezier(.12,.86,.2,1) .08s forwards;
+  will-change:transform,opacity,filter;
+}
+.cri-logo-wrap img{
+  width:100%;height:100%;object-fit:cover;display:block;border-radius:50%;
+}
+.cri-logo-wrap::after{
+  content:"";position:absolute;inset:-18%;border-radius:50%;
+  background:linear-gradient(115deg,transparent 34%,rgba(255,250,231,.32) 49%,transparent 61%);
+  transform:translateX(-120%) rotate(7deg);
+  opacity:0;
+  animation:criSheen 2.9s cubic-bezier(.18,.7,.25,1) .62s forwards;
+  pointer-events:none;
+}
+@keyframes criLogoBloom{
+  0%{opacity:0;transform:translate3d(0,18px,0) rotateZ(-18deg) scale(.34);filter:blur(9px) drop-shadow(0 22px 40px rgba(0,0,0,.20))}
+  22%{opacity:.72;transform:translate3d(-4px,8px,0) rotateZ(-11deg) scale(.62);filter:blur(5px) drop-shadow(0 20px 36px rgba(0,0,0,.20))}
+  46%{opacity:1;transform:translate3d(5px,-7px,0) rotateZ(5deg) scale(1.07);filter:blur(1px) drop-shadow(0 25px 42px rgba(0,0,0,.23))}
+  64%{transform:translate3d(-2px,2px,0) rotateZ(-2.2deg) scale(.985);filter:blur(0) drop-shadow(0 22px 36px rgba(0,0,0,.22))}
+  79%{transform:translate3d(1px,-1px,0) rotateZ(.9deg) scale(1.018)}
+  90%{transform:translate3d(0,1px,0) rotateZ(-.3deg) scale(.997)}
+  100%{opacity:1;transform:translate3d(0,0,0) rotateZ(0) scale(1);filter:blur(0) drop-shadow(0 20px 32px rgba(0,0,0,.20))}
+}
+@keyframes criHalo{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.25)}
+  30%{opacity:.8;transform:translate(-50%,-50%) scale(.72)}
+  62%{opacity:.35;transform:translate(-50%,-50%) scale(1.02)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1.34)}
+}
+@keyframes criAura{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.42)}
+  36%{opacity:.75;transform:translate(-50%,-50%) scale(.86)}
+  68%{opacity:.28;transform:translate(-50%,-50%) scale(1.08)}
+  100%{opacity:.12;transform:translate(-50%,-50%) scale(1.16)}
+}
+@keyframes criGlow{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}
+  42%{opacity:.72;transform:translate(-50%,-50%) scale(.9)}
+  72%{opacity:.28;transform:translate(-50%,-50%) scale(1.08)}
+  100%{opacity:.12;transform:translate(-50%,-50%) scale(1.13)}
+}
+@keyframes criSheen{
+  0%{opacity:0;transform:translateX(-120%) rotate(7deg)}
+  22%{opacity:.55}
+  56%{opacity:.18;transform:translateX(105%) rotate(7deg)}
+  100%{opacity:0;transform:translateX(125%) rotate(7deg)}
+}
+@media(max-width:760px){
+  .cri-logo-stage{width:230px;height:230px}
+  .cri-logo-wrap{width:150px;height:150px}
+  .cri-logo-stage::before{width:175px;height:175px}
+  .cri-logo-stage::after{width:215px;height:215px}
+  .cri-logo-glow{width:190px;height:190px}
+}
+@media(prefers-reduced-motion:reduce){
+  .cri-logo-wrap{opacity:1;transform:none;filter:none;animation:none}
+  .cri-logo-stage::before,.cri-logo-stage::after,.cri-logo-glow,.cri-logo-wrap::after{display:none}
+}
+</style>
+
+<script id="cafe-real-intro-script">
+(function(){
+  var intro=document.getElementById('cafe-real-intro');
+  if(!intro)return;
+  /* V2: la escena respira unos segundos antes de entregar el hero. */
+  setTimeout(function(){
+    intro.classList.add('done');
+    setTimeout(function(){if(intro.parentNode)intro.parentNode.removeChild(intro)},1100);
+  },3200);
+})();
+</script>
+
   <div class="grain"></div>
 
 
@@ -4540,3 +4666,90 @@
 </script>
 </body>
   </html> 
+<style id="mobile-header-real">
+/* CAFÉ REAL — HEADER MÓVIL REAL / DELGADO Y CENTRADO */
+@media (max-width:860px){
+  .topnav{
+    min-height:64px!important;
+    height:64px!important;
+    padding:0 14px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    position:sticky!important;
+  }
+  .topnav .brand{
+    position:absolute!important;
+    left:50%!important;
+    top:50%!important;
+    transform:translate(-50%,-50%)!important;
+    gap:8px!important;
+    margin:0!important;
+    z-index:2;
+    line-height:1!important;
+  }
+  .topnav .brand .logo-nav{
+    width:42px!important;
+    height:42px!important;
+    flex:0 0 42px!important;
+  }
+  .topnav .brand small{
+    margin-top:4px!important;
+    font-size:.47rem!important;
+    letter-spacing:.13em!important;
+  }
+  .topnav .actions{
+    position:absolute!important;
+    right:14px!important;
+    top:50%!important;
+    transform:translateY(-50%)!important;
+    gap:0!important;
+    z-index:3;
+  }
+  .topnav .horario-pill{
+    font-size:.53rem!important;
+    padding:5px 8px!important;
+    border-radius:999px!important;
+    letter-spacing:0!important;
+  }
+  .topnav .horario-pill .dot{
+    width:6px!important;
+    height:6px!important;
+  }
+  .topnav .actions .btn{display:none!important;}
+  .nav-mobile-toggle{
+    display:flex!important;
+    position:absolute!important;
+    left:14px!important;
+    top:50%!important;
+    transform:translateY(-50%)!important;
+    width:36px!important;
+    height:36px!important;
+    border:0!important;
+    background:transparent!important;
+    border-radius:0!important;
+    z-index:4;
+  }
+  .nav-mobile-toggle span,.nav-mobile-toggle:before,.nav-mobile-toggle:after{
+    width:18px!important;
+    height:1.5px!important;
+  }
+  .mobile-nav-panel{top:64px!important;}
+}
+@media (max-width:520px){
+  .topnav .brand{gap:7px!important;}
+  .topnav .brand .logo-nav{width:39px!important;height:39px!important;flex-basis:39px!important;}
+  .topnav .brand{font-size:.9rem!important;}
+  .topnav .brand small{font-size:.43rem!important;letter-spacing:.11em!important;}
+  .topnav .horario-pill{font-size:.48rem!important;padding:4px 7px!important;}
+  .topnav{padding:0 10px!important;}
+  .nav-mobile-toggle{left:10px!important;}
+  .topnav .actions{right:10px!important;}
+}
+@media (max-width:400px){
+  .topnav .brand{font-size:.82rem!important;gap:6px!important;}
+  .topnav .brand .logo-nav{width:36px!important;height:36px!important;flex-basis:36px!important;}
+  .topnav .brand small{font-size:.39rem!important;}
+  .topnav .horario-pill{font-size:.43rem!important;padding:4px 6px!important;}
+}
+</style>
