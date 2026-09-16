@@ -6324,15 +6324,28 @@
 <script id="cafe-real-header-scroll-final-js">
 (function(){
   function initCaffeRealHeader(){
-    const header = document.querySelector('.topnav');
-    if(!header || header.dataset.scrollReady === '1') return;
-    header.dataset.scrollReady = '1';
+    // Antes solo tomaba el primer .topnav (el de "inicio") con querySelector.
+    // Cada vista (menú, eventos, reservas, experiencia, piso) tiene su PROPIO
+    // .topnav en el DOM, así que la animación nunca les llegaba y se quedaban
+    // siempre grandes y opacas, tapando contenido como el buscador del menú.
+    const headers = document.querySelectorAll('.topnav');
+    if(!headers.length) return;
+
+    const readyHeaders = Array.prototype.filter.call(headers, function(header){
+      if(header.dataset.scrollReady === '1') return false;
+      header.dataset.scrollReady = '1';
+      return true;
+    });
+    if(!readyHeaders.length) return;
 
     let ticking = false;
 
     function update(){
       const y = window.scrollY || document.documentElement.scrollTop || 0;
-      header.classList.toggle('cr-header-scrolled', y > 45);
+      const scrolled = y > 45;
+      readyHeaders.forEach(function(header){
+        header.classList.toggle('cr-header-scrolled', scrolled);
+      });
       ticking = false;
     }
 
@@ -6351,6 +6364,13 @@
   }else{
     initCaffeRealHeader();
   }
+
+  // Las vistas (menú, eventos, reservas...) se muestran/ocultan de forma
+  // dinámica; si alguna crea su .topnav después de cargar la página,
+  // esto la engancha también.
+  document.addEventListener('click', function(){
+    setTimeout(initCaffeRealHeader, 50);
+  }, {passive:true});
 })();
 </script>
 
