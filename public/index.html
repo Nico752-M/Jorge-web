@@ -4928,12 +4928,31 @@
     const row=document.getElementById('cafearias-row');
     if(!row) return;
     row.innerHTML=VIDEOS.map(v=>`<article class="cafearias-video-card">
-      <video class="video-poster" controls playsinline preload="metadata" poster="${v.poster}">
+      <video class="video-poster" autoplay muted loop playsinline preload="auto" poster="${v.poster}" aria-label="${v.title}">
         <source src="${v.src}" type="video/mp4">
       </video>
-      <span class="video-play" aria-hidden="true">▶</span>
       <div class="video-copy"><small>${v.kicker}</small><h3>${v.title}</h3></div>
     </article>`).join('');
+
+    // Los videos son tarjetas visuales: sin controles y siempre reproduciéndose.
+    row.querySelectorAll('video').forEach(function(video){
+      video.muted = true;
+      video.setAttribute('muted','');
+      video.setAttribute('autoplay','');
+      video.setAttribute('loop','');
+      video.setAttribute('playsinline','');
+
+      var forcePlay = function(){
+        var promise = video.play();
+        if(promise && typeof promise.catch === 'function') promise.catch(function(){});
+      };
+
+      video.addEventListener('canplay', forcePlay);
+      video.addEventListener('loadeddata', forcePlay);
+      video.addEventListener('pause', forcePlay);
+      video.addEventListener('ended', forcePlay);
+      forcePlay();
+    });
   }
   function init(){
     buildVideoCarousel();
@@ -6165,122 +6184,83 @@
 </style>
 
 <script id="cr-cafe-arias-autoplay-final">
-(function(){
-  /* Café Arias: carrusel continuo + control manual por dedo. */
-  const VELOCIDAD = 0.38; // px por frame: movimiento suave y constante
-  let iniciado = false;
-
-  function init(){
-    if(iniciado) return;
-    const row = document.getElementById('cafearias-row');
-    if(!row) return;
-    const cards = Array.from(row.querySelectorAll('.cafearias-video-card'));
-    if(cards.length < 2) return;
-    iniciado = true;
-
-    /* Duplicamos el conjunto para poder dar la vuelta sin salto visual. */
-    const originales = cards.map(c => c.cloneNode(true));
-    originales.forEach(c => {
-      c.setAttribute('aria-hidden','true');
-      c.querySelectorAll('video').forEach(v => {
-        v.removeAttribute('autoplay');
-        v.pause();
-      });
-      row.appendChild(c);
-    });
-
-    row.style.scrollSnapType = 'none';
-    row.style.scrollBehavior = 'auto';
-
-    let pausa = false;
-    let arrastrando = false;
-    let mitad = 0;
-    let ultima = performance.now();
-
-    function calcularMitad(){
-      const originalesActuales = Array.from(row.querySelectorAll('.cafearias-video-card')).slice(0, cards.length);
-      if(originalesActuales.length) {
-        const primera = originalesActuales[0];
-        const ultimaOriginal = originalesActuales[originalesActuales.length - 1];
-        mitad = (ultimaOriginal.offsetLeft + ultimaOriginal.offsetWidth +
-          parseFloat(getComputedStyle(row).columnGap || getComputedStyle(row).gap || '0')) - primera.offsetLeft;
-      }
-      if(!mitad || mitad < 1) mitad = row.scrollWidth / 2;
-    }
-
-    function normalizar(){
-      if(!mitad) return;
-      while(row.scrollLeft >= mitad) row.scrollLeft -= mitad;
-      while(row.scrollLeft < 0) row.scrollLeft += mitad;
-    }
-
-    function tick(ahora){
-      const dt = Math.min(40, ahora - ultima);
-      ultima = ahora;
-      if(!pausa && !arrastrando && mitad > 0 && !document.hidden){
-        row.scrollLeft += VELOCIDAD * dt;
-        normalizar();
-      }
-      requestAnimationFrame(tick);
-    }
-
-    function pausar(){ pausa = true; }
-    function reanudar(){
-      normalizar();
-      pausa = false;
-      ultima = performance.now();
-    }
-
-    row.addEventListener('pointerdown', e=>{
-      if(e.pointerType === 'mouse' && e.button !== 0) return;
-      arrastrando = true;
-      pausa = true;
-    }, {passive:true});
-
-    window.addEventListener('pointerup', ()=>{
-      if(!arrastrando) return;
-      arrastrando = false;
-      reanudar();
-    }, {passive:true});
-    window.addEventListener('pointercancel', ()=>{
-      arrastrando = false;
-      reanudar();
-    }, {passive:true});
-
-    row.addEventListener('touchstart', pausar, {passive:true});
-    row.addEventListener('touchend', reanudar, {passive:true});
-    row.addEventListener('touchcancel', reanudar, {passive:true});
-
-    row.querySelectorAll('video').forEach(video=>{
-      video.addEventListener('play', pausar);
-      video.addEventListener('pause', reanudar);
-      video.addEventListener('ended', reanudar);
-    });
-
-    document.addEventListener('visibilitychange', ()=>{
-      if(document.hidden) pausar();
-      else reanudar();
-    });
-
-    setTimeout(calcularMitad, 150);
-    setTimeout(calcularMitad, 600);
-    window.addEventListener('resize', calcularMitad);
-    requestAnimationFrame(tick);
-  }
-
-  function esperarCarrusel(){
-    const row = document.getElementById('cafearias-row');
-    if(row && row.querySelectorAll('.cafearias-video-card').length >= 2) init();
-    else setTimeout(esperarCarrusel, 100);
-  }
-
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', esperarCarrusel, {once:true});
-  }else{
-    esperarCarrusel();
-  }
-})();
+/* Café Arias: presentación vertical.
+   El carrusel horizontal/autoplay queda desactivado para mostrar
+   los videos uno debajo del otro. */
 </script>
 
-</body>
+
+<style id="cafe-real-arias-vertical-final">
+@media (max-width:860px){
+  /* Café Arias: videos uno debajo del otro, sin carrusel horizontal */
+  #site-view .cafearias-carousel{
+    overflow:visible !important;
+    width:100% !important;
+  }
+
+  #site-view .cafearias-row{
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:center !important;
+    gap:16px !important;
+    overflow:visible !important;
+    padding:0 20px !important;
+    width:100% !important;
+    box-sizing:border-box !important;
+    scroll-snap-type:none !important;
+    cursor:default !important;
+    touch-action:auto !important;
+  }
+
+  #site-view .cafearias-video-card{
+    flex:0 0 auto !important;
+    width:100% !important;
+    max-width:390px !important;
+    height:300px !important;
+    min-height:300px !important;
+    margin:0 !important;
+    scroll-snap-align:none !important;
+  }
+
+  #site-view .cafearias-video-card video,
+  #site-view .cafearias-video-card .video-poster{
+    width:100% !important;
+    height:100% !important;
+    object-fit:cover !important;
+  }
+
+  /* Ya no necesitamos los indicadores del carrusel */
+  #site-view .cafearias:after{
+    display:none !important;
+  }
+}
+
+@media (max-width:430px){
+  #site-view .cafearias-row{
+    gap:14px !important;
+    padding:0 16px !important;
+  }
+
+  #site-view .cafearias-video-card{
+    max-width:none !important;
+    width:100% !important;
+    height:285px !important;
+    min-height:285px !important;
+    border-radius:17px !important;
+  }
+}
+</style>
+
+<style id="cafe-real-arias-video-no-controls">
+@media (max-width:860px){
+  #site-view .cafearias-video-card video{
+    pointer-events:none !important;
+    cursor:default !important;
+  }
+  #site-view .cafearias-video-card .video-play{
+    display:none !important;
+  }
+}
+</style>
+\n</body>
 </html>
