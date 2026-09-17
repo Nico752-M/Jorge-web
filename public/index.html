@@ -6765,19 +6765,6 @@
 @media (prefers-reduced-motion:reduce){
   .hero-cta-pulse, .hero-social-proof .cr-dot, .menu-cta-social-proof .cr-dot{animation:none !important;}
 }
-
-/* Más aire para el hero en móvil: el texto de prueba social sumó una
-   línea extra. También se reduce un poco la altura para que se alcance
-   a ver el inicio de la siguiente sección y quede claro que hay más
-   contenido abajo (sin volver a poner la flecha animada). */
-@media (max-width:860px){
-  #site-view .hero{
-    height:525px !important;
-    min-height:525px !important;
-    max-height:525px !important;
-  }
-  #site-view .hero-social-proof{margin-top:13px !important;}
-}
 </style>
 
 <script id="cr-reserve-psychology-js">
@@ -6785,7 +6772,7 @@
   function reservasHoy(){
     var d = new Date();
     var seed = d.getFullYear()*372 + (d.getMonth()+1)*31 + d.getDate();
-    return 3 + (seed % 4); // número modesto y creíble, cambia cada día
+    return 8 + (seed % 15); // número creíble, estable durante el día, cambia cada día
   }
   function fill(el, html){ if(el) el.innerHTML = html; }
 
