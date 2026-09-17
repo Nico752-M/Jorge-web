@@ -2766,16 +2766,6 @@
       </div>
     </div>
 
-    <!-- NUEVO: puerta de entrada del menú / categorías a pantalla completa -->
-    <section class="menu-category-gate" id="menu-category-gate" aria-labelledby="menu-gate-title">
-      <div class="menu-gate-inner">
-        <span class="menu-gate-kicker">CARTA · CAFÉ REAL</span>
-        <h1 id="menu-gate-title">Menú</h1>
-        <p class="menu-gate-subtitle">Todo lo que puedes encontrar aquí: desayunos, café, bebidas y más.</p>
-        <div class="menu-gate-list" id="menu-gate-list"></div>
-      </div>
-    </section>
-
     <div class="menu-hero">
       <img id="img-menu-hero" class="menu-hero-bg" alt="">
       <svg class="steam" viewBox="0 0 60 64" aria-hidden="true">
@@ -3582,11 +3572,7 @@
     }
     const actual = document.querySelector('.menu-cat.active');
     const nuevo = document.getElementById('cat-'+k);
-    if(!nuevo) return;
-    if(nuevo === actual){
-      if(typeof openMenuCategoryStage === 'function') openMenuCategoryStage(k);
-      return;
-    }
+    if(!nuevo || nuevo === actual) return;
 
     if(actual){
       gsap.to(actual, {
@@ -3602,7 +3588,6 @@
       { autoAlpha:0, y:14 },
       { autoAlpha:1, y:0, duration:0.35, ease:"power2.out", delay: actual ? 0.15 : 0 }
     );
-    if(typeof openMenuCategoryStage === 'function') openMenuCategoryStage(k);
   }
 
   buildTabs();
@@ -3974,10 +3959,8 @@
     };
     const target = document.getElementById(map[view] || 'site-view');
     target.classList.remove('hidden');
-    if(view === 'menu'){
-      prepararMenuReservaCta();
-      if(typeof resetMenuGate === 'function') resetMenuGate();
-    } else desactivarMenuReservaCta();
+    if(view === 'menu') prepararMenuReservaCta();
+    else desactivarMenuReservaCta();
     if(view === 'reserva') ocultarReservaInteligente();
     window.scrollTo(0,0);
     requestAnimationFrame(()=>{ initReveal(target); initGsapReveals(); initGaleriaStagger(); });
@@ -6729,306 +6712,27 @@
 </style>
 
 
-<style id="menu-category-gate-v3">
-/* =========================================================
-   MENÚ V3 — entrada editorial a pantalla completa
-   El usuario primero elige categoría; después aparece la carta.
-   ========================================================= */
-#menu-view .menu-category-gate{
-  min-height:calc(100svh - 76px);
-  display:flex;
-  align-items:flex-start;
-  justify-content:center;
-  background:var(--cr-paper);
-  color:var(--cr-ink);
-  padding:clamp(58px,8vw,100px) clamp(22px,7vw,100px) 90px;
-  border-bottom:1px solid var(--cr-line);
+<style id="cafe-real-final-client-adjustments">
+/* Ajustes finales solicitados: NO modifica la estructura ni los controles del menú. */
+/* Hero: casi pantalla completa y composición centrada. */
+@media (min-width:861px){
+  #site-view .hero{min-height:calc(100vh - 76px) !important;height:calc(100vh - 76px) !important;}
+  #site-view .hero-copy{max-width:900px !important;margin:0 auto !important;padding:0 8vw !important;align-items:center !important;text-align:center !important;}
+  #site-view .hero-copy:before{margin-bottom:20px !important;}
+  #site-view .hero-copy:after{margin-left:auto !important;margin-right:auto !important;}
 }
-#menu-view .menu-gate-inner{
-  width:min(100%,960px);
-  margin:0 auto;
+@media (max-width:860px){
+  #site-view .hero{min-height:calc(100vh - 64px) !important;height:calc(100vh - 64px) !important;max-height:none !important;}
+  #site-view .hero-copy{align-items:center !important;text-align:center !important;padding:0 24px 34px !important;}
+  #site-view .hero-copy:after{margin-left:auto !important;margin-right:auto !important;}
 }
-#menu-view .menu-gate-kicker{
-  display:block;
-  margin-bottom:18px;
-  font:600 .59rem/1 'JetBrains Mono',monospace;
-  letter-spacing:.24em;
-  color:var(--cr-green-2);
-  text-transform:uppercase;
-  text-align:center;
-}
-#menu-view .menu-gate-inner h1{
-  margin:0;
-  color:var(--cr-green);
-  font:400 clamp(4rem,10vw,7.5rem)/.82 'Cormorant Garamond',serif;
-  letter-spacing:-.045em;
-  text-align:center;
-}
-#menu-view .menu-gate-subtitle{
-  width:min(100%,560px);
-  margin:24px auto 64px;
-  color:var(--cr-muted);
-  font:italic 1.22rem/1.35 'Cormorant Garamond',serif;
-  text-align:center;
-}
-#menu-view .menu-gate-list{
-  border-top:1px solid var(--cr-line);
-}
-#menu-view .menu-gate-item{
-  width:100%;
-  min-height:92px;
-  padding:0 8px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:22px;
-  border:0;
-  border-bottom:1px solid var(--cr-line);
-  background:transparent;
-  color:var(--cr-green);
-  text-align:left;
-  cursor:pointer;
-  transition:padding .35s cubic-bezier(.2,.8,.2,1), background .3s ease, color .3s ease;
-}
-#menu-view .menu-gate-item .gate-number{
-  width:38px;
-  flex:none;
-  font:500 .58rem 'JetBrains Mono',monospace;
-  letter-spacing:.08em;
-  color:var(--cr-muted);
-}
-#menu-view .menu-gate-item .gate-label{
-  flex:1;
-  font:400 clamp(2rem,4vw,3.2rem)/1 'Cormorant Garamond',serif;
-  letter-spacing:-.015em;
-}
-#menu-view .menu-gate-item .gate-count{
-  font:500 .57rem 'JetBrains Mono',monospace;
-  letter-spacing:.08em;
-  color:var(--cr-muted);
-  white-space:nowrap;
-}
-#menu-view .menu-gate-item .gate-arrow{
-  width:30px;
-  flex:none;
-  font:400 1.6rem/1 'Cormorant Garamond',serif;
-  opacity:.5;
-  text-align:right;
-  transition:transform .35s ease, opacity .35s ease;
-}
-#menu-view .menu-gate-item:hover{
-  padding-left:24px;
-  padding-right:24px;
-  background:var(--cr-cream);
-}
-#menu-view .menu-gate-item:hover .gate-arrow{
-  opacity:1;
-  transform:translateX(5px);
-}
-
-#menu-view.menu-category-mode .menu-category-gate{display:none!important;}
-#menu-view:not(.menu-category-mode) .menu-hero,
-#menu-view:not(.menu-category-mode) .destacados,
-#menu-view:not(.menu-category-mode) .menu-mobile-tools,
-#menu-view:not(.menu-category-mode) .menu-layout,
-#menu-view:not(.menu-category-mode) .menu-final-cta{
-  display:none!important;
-}
-#menu-view.menu-category-mode .menu-hero,
-#menu-view.menu-category-mode .destacados,
-#menu-view.menu-category-mode .menu-mobile-tools,
-#menu-view.menu-category-mode .menu-layout,
-#menu-view.menu-category-mode .menu-final-cta{
-  display:block;
-}
-#menu-view.menu-category-mode .menu-final-cta{
-  display:flex;
-}
-#menu-view .menu-category-back{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:18px;
-  max-width:1180px;
-  margin:0 auto;
-  padding:18px clamp(20px,8vw,80px);
-  border-bottom:1px solid var(--cr-line);
-  background:var(--cr-paper);
-}
-#menu-view .menu-category-back button{
-  display:inline-flex;
-  align-items:center;
-  gap:9px;
-  color:var(--cr-green);
-  font:600 .6rem 'JetBrains Mono',monospace;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-}
-#menu-view .menu-category-back button span{
-  font:400 1.1rem 'Cormorant Garamond',serif;
-}
-#menu-view .menu-category-back .back-label{
-  color:var(--cr-muted);
-  font:500 .56rem 'JetBrains Mono',monospace;
-  letter-spacing:.1em;
-  text-transform:uppercase;
-}
-#menu-view.menu-category-mode .menu-layout{
-  padding-top:0;
-}
-@media(max-width:860px){
-  #menu-view .menu-category-gate{
-    min-height:calc(100svh - 60px);
-    padding:48px 20px 70px;
-  }
-  #menu-view .menu-gate-kicker{font-size:.52rem;letter-spacing:.19em;}
-  #menu-view .menu-gate-inner h1{font-size:clamp(3.8rem,19vw,6rem);}
-  #menu-view .menu-gate-subtitle{
-    margin:18px auto 42px;
-    font-size:1.08rem;
-    max-width:340px;
-  }
-  #menu-view .menu-gate-item{
-    min-height:78px;
-    padding:0 2px;
-    gap:10px;
-  }
-  #menu-view .menu-gate-item .gate-number{width:28px;font-size:.52rem;}
-  #menu-view .menu-gate-item .gate-label{font-size:2rem;}
-  #menu-view .menu-gate-item .gate-count{display:none;}
-  #menu-view .menu-gate-item .gate-arrow{width:22px;font-size:1.35rem;}
-  #menu-view .menu-gate-item:hover{padding-left:10px;padding-right:10px;}
-  #menu-view .menu-category-back{
-    padding:15px 20px;
-  }
-  /* La navegación inferior ya no compite con la carta a pantalla completa. */
-  body[data-view="menu"] #mobile-bottom-nav{display:none!important;}
-}
-@media(min-width:861px){
-  #menu-view.menu-category-mode .menu-mobile-tools{
-    display:block;
-    max-width:1180px;
-    margin:0 auto;
-    padding:24px clamp(54px,8vw,120px) 0;
-    background:var(--cr-paper);
-  }
-  #menu-view.menu-category-mode .menu-search-box{
-    width:min(100%,560px);
-    height:52px;
-    display:flex;
-    align-items:center;
-    gap:12px;
-    padding:0 16px;
-    border:1px solid rgba(3,73,68,.15);
-    background:rgba(255,255,255,.72);
-  }
-  #menu-view.menu-category-mode .menu-search-box svg{
-    width:20px;height:20px;fill:none;stroke:var(--cr-green);
-    stroke-width:1.8;stroke-linecap:round;
-  }
-  #menu-view.menu-category-mode .menu-search-box input{
-    width:100%;border:0;outline:0;background:transparent;color:var(--cr-ink);
-    font:500 .82rem 'Public Sans',sans-serif;
-  }
-  #menu-view.menu-category-mode .menu-search-status{
-    min-height:18px;padding:6px 2px 0;color:var(--cr-muted);
-    font:500 .58rem 'JetBrains Mono',monospace;
-  }
-}
-@media(prefers-reduced-motion:reduce){
-  #menu-view .menu-gate-item,
-  #menu-view .menu-gate-item .gate-arrow{transition:none;}
-}
+/* Reserva: título + subtítulo/explicación, manteniendo la sección existente. */
+#reserva-view .reserva-hero p{max-width:52ch !important;line-height:1.65 !important;}
+/* Tipografía: máximo dos familias visuales; se conserva Cormorant + Public Sans. */
+body{font-family:'Public Sans',sans-serif;}
+body h1,body h2,body h3,body h4,body h5,body h6,body .display,
+body .reserva-hero p,body .menu-hero p{font-family:'Cormorant Garamond',serif;}
 </style>
-
-<script id="menu-category-gate-script">
-(function(){
-  function buildMenuGate(){
-    const gate=document.getElementById('menu-gate-list');
-    if(!gate || typeof MENU==='undefined') return;
-    const keys=Object.keys(MENU);
-    gate.innerHTML=keys.map((k,i)=>{
-      const cat=MENU[k];
-      const count=cat.layout==='cards'
-        ? cat.items.length
-        : cat.shelves.reduce((a,s)=>a+s.items.length,0);
-      return `
-        <button type="button" class="menu-gate-item" onclick="showCat('${k}')" aria-label="Abrir ${cat.label}">
-          <span class="gate-number">${String(i+1).padStart(2,'0')}</span>
-          <span class="gate-label">${cat.label}</span>
-          <span class="gate-count">${count} ${count===1?'producto':'productos'}</span>
-          <span class="gate-arrow">→</span>
-        </button>`;
-    }).join('');
-  }
-
-  window.openMenuCategoryStage=function(k){
-    const view=document.getElementById('menu-view');
-    const gate=document.getElementById('menu-category-gate');
-    if(!view || !gate) return;
-    view.classList.add('menu-category-mode');
-    gate.setAttribute('aria-hidden','true');
-
-    let back=document.getElementById('menu-category-back');
-    if(!back){
-      back=document.createElement('div');
-      back.id='menu-category-back';
-      back.className='menu-category-back';
-      back.innerHTML=`
-        <button type="button" onclick="resetMenuGate()">
-          <span>←</span> Categorías
-        </button>
-        <span class="back-label">Carta de Café Real</span>`;
-      const searchTools=document.querySelector('#menu-view .menu-mobile-tools');
-      const layout=document.querySelector('#menu-view .menu-layout');
-      if(searchTools) searchTools.parentNode.insertBefore(back,searchTools);
-      else if(layout) layout.parentNode.insertBefore(back,layout);
-    }
-
-    const input=document.getElementById('menu-search-input');
-    const status=document.getElementById('menu-search-status');
-    if(input) input.value='';
-    if(status) status.textContent='';
-    document.querySelectorAll('#menu-view .prod-row').forEach(row=>row.classList.remove('search-hidden'));
-    document.querySelectorAll('#menu-view .menu-cat').forEach(cat=>{
-      cat.classList.remove('search-match','search-hidden');
-    });
-    const active=document.getElementById('cat-'+k);
-    if(active) active.classList.add('active');
-
-    requestAnimationFrame(()=>{
-      window.scrollTo({top:0,behavior:'smooth'});
-      setTimeout(()=>{
-        const search=document.getElementById('menu-search-input');
-        if(search) search.focus({preventScroll:true});
-      },350);
-    });
-  };
-
-  window.resetMenuGate=function(){
-    const view=document.getElementById('menu-view');
-    const gate=document.getElementById('menu-category-gate');
-    if(!view || !gate) return;
-    view.classList.remove('menu-category-mode');
-    gate.removeAttribute('aria-hidden');
-    const input=document.getElementById('menu-search-input');
-    const status=document.getElementById('menu-search-status');
-    if(input) input.value='';
-    if(status) status.textContent='';
-    document.querySelectorAll('#menu-view .prod-row').forEach(row=>row.classList.remove('search-hidden'));
-    document.querySelectorAll('#menu-view .menu-cat').forEach(cat=>{
-      cat.classList.remove('search-match','search-hidden');
-    });
-    window.scrollTo({top:0,behavior:'auto'});
-  };
-
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',buildMenuGate);
-  }else{
-    buildMenuGate();
-  }
-})();
-</script>
 
 </body>
 </html>
