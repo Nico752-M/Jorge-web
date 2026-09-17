@@ -6262,7 +6262,7 @@
   }
 }
 </style>
-\n
+
 <style id="cafe-real-header-scroll-final">
 @media (max-width:860px){
   /* Sin hamburguesa ni navegación duplicada en la parte superior */
@@ -6660,6 +6660,16 @@
 }
 </style>
 
+
+<style id="cr-hero-remove-scroll-arrow">
+/* Quita la flecha "⌄" animada que aparece abajo a la derecha del hero */
+@media (max-width:860px){
+  #site-view .hero::after{
+    content:none !important;
+    display:none !important;
+  }
+}
+</style>
 
 <style id="cr-header-no-overlap">
 /* El header es "position:fixed" en móvil (para poder animarse), así que
