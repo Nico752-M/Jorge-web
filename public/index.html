@@ -6767,14 +6767,16 @@
 }
 
 /* Más aire para el hero en móvil: el texto de prueba social sumó una
-   línea extra y el hero tenía una altura fija que lo dejaba muy apretado. */
+   línea extra. También se reduce un poco la altura para que se alcance
+   a ver el inicio de la siguiente sección y quede claro que hay más
+   contenido abajo (sin volver a poner la flecha animada). */
 @media (max-width:860px){
   #site-view .hero{
-    height:565px !important;
-    min-height:565px !important;
-    max-height:565px !important;
+    height:525px !important;
+    min-height:525px !important;
+    max-height:525px !important;
   }
-  #site-view .hero-social-proof{margin-top:16px !important;}
+  #site-view .hero-social-proof{margin-top:13px !important;}
 }
 </style>
 
