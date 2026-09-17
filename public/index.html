@@ -5275,6 +5275,22 @@
 </style>
 
 
+<style id="cr-bottom-nav-slimmer">
+/* Barra de navegación inferior más delgada — sobraba espacio en blanco */
+@media (max-width:860px){
+  #mobile-bottom-nav{
+    height:60px !important;
+    padding:5px 8px calc(5px + env(safe-area-inset-bottom,0px)) !important;
+  }
+  #mobile-bottom-nav .btab{
+    height:48px !important;
+    gap:2px !important;
+  }
+  #mobile-bottom-nav .btab svg{width:21px !important;height:21px !important;}
+  #floating-actions{bottom:calc(70px + env(safe-area-inset-bottom,0px)) !important;}
+}
+</style>
+
 <style id="menu-mobile-clean-navigation">
 @media (max-width: 860px){
   #menu-view .menu-mobile-tools{
