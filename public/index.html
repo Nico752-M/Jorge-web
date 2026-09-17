@@ -6712,383 +6712,123 @@
 </style>
 
 
-<style id="nav-three-items-hamburger">
-/* Navegación compacta: Inicio · Menú · Ubicación + menú hamburguesa */
-.topnav{position:sticky !important;}
-.topnav > nav a:nth-child(2),
-.topnav > nav a:nth-child(3),
-.topnav > nav a:nth-child(4){display:none !important;}
-.topnav > nav a:nth-child(1){font-size:0;}
-.topnav > nav a:nth-child(1)::before{content:'Menú';font-size:inherit;}
-.topnav > nav a:nth-child(5){display:inline-flex !important;}
-.topnav > nav a:nth-child(5)::before{content:'Ubicación';}
-.topnav > nav a:nth-child(5){font-size:0;}
-.topnav > nav a:nth-child(5)::before{font-size:inherit;}
-
-/* Hamburguesa fija en la esquina superior izquierda */
-.topnav .nav-mobile-toggle{
-  position:absolute !important;
-  left:14px !important;
-  top:50% !important;
-  transform:translateY(-50%) !important;
-  width:42px !important;
-  height:42px !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  border:0 !important;
-  background:transparent !important;
-  cursor:pointer !important;
-  z-index:300 !important;
-  padding:8px !important;
-}
-.topnav .nav-mobile-toggle::before,
-.topnav .nav-mobile-toggle::after,
-.topnav .nav-mobile-toggle span{
-  content:'' !important;
-  position:absolute !important;
-  width:22px !important;
-  height:2px !important;
-  background:currentColor !important;
-  border-radius:2px !important;
-  transition:transform .25s ease,opacity .2s ease !important;
-}
-.topnav .nav-mobile-toggle::before{transform:translateY(-7px) !important;}
-.topnav .nav-mobile-toggle::after{transform:translateY(7px) !important;}
-.topnav .nav-mobile-toggle.open::before{transform:rotate(45deg) !important;}
-.topnav .nav-mobile-toggle.open::after{transform:rotate(-45deg) !important;}
-.topnav .nav-mobile-toggle.open span{opacity:0 !important;}
-
-/* El panel contiene solo Lugar, Eventos y Reservas */
-.topnav .mobile-nav-panel{
-  position:absolute !important;
-  left:12px !important;
-  top:calc(100% + 10px) !important;
-  width:min(280px,calc(100vw - 24px)) !important;
-  padding:8px !important;
-  background:rgba(247,244,236,.98) !important;
-  border:1px solid rgba(3,73,68,.14) !important;
-  border-radius:14px !important;
-  box-shadow:0 18px 45px rgba(0,0,0,.16) !important;
-  opacity:0 !important;
-  visibility:hidden !important;
-  transform:translateY(-8px) !important;
-  pointer-events:none !important;
-  transition:opacity .2s ease,transform .2s ease,visibility .2s ease !important;
-  z-index:290 !important;
-}
-.topnav .mobile-nav-panel.open{
-  opacity:1 !important;
-  visibility:visible !important;
-  transform:translateY(0) !important;
-  pointer-events:auto !important;
-}
-.topnav .mobile-nav-panel a{display:block !important;padding:13px 14px !important;color:#123b38 !important;text-decoration:none !important;font-size:.72rem !important;letter-spacing:.12em !important;text-transform:uppercase !important;border-bottom:1px solid rgba(3,73,68,.10) !important;}
-.topnav .mobile-nav-panel a:last-child{border-bottom:0 !important;}
-
-/* Ocultar la barra inferior anterior y recrearla con 3 accesos */
-#mobile-bottom-nav .btab[data-view="auditorio"],
-#mobile-bottom-nav .btab[data-view="piso"]{display:none !important;}
-#mobile-bottom-nav{grid-template-columns:repeat(3,1fr) !important;}
-
-@media (min-width:861px){
-  .topnav{padding-left:72px !important;}
-  .topnav > nav{display:flex !important;}
-  .topnav .nav-mobile-toggle{display:flex !important;}
-  .topnav .mobile-nav-panel{display:block !important;}
-}
+<style id="cafe-real-nav-final-request">
+/* ===== NAVEGACIÓN MÓVIL FINAL ===== */
 @media (max-width:860px){
-  .topnav{padding-left:64px !important;}
-  .topnav > nav{display:flex !important;}
-  .topnav .nav-mobile-toggle{display:flex !important;}
-  .topnav .actions{display:none !important;}
-  #mobile-bottom-nav .btab{min-width:0 !important;}
-}
-</style>
-<script id="nav-three-items-hamburger-js">
-(function(){
-  function configure(){
-    document.querySelectorAll('.topnav').forEach(function(nav){
-      var source=nav.querySelector(':scope > nav');
-      if(source){
-        var links=source.querySelectorAll(':scope > a');
-        if(links[0]) links[0].textContent='Menú';
-        if(links[4]) links[4].textContent='Ubicación';
-      }
-      var toggle=nav.querySelector('.nav-mobile-toggle');
-      var panel=nav.querySelector('.mobile-nav-panel');
-      if(!toggle){
-        toggle=document.createElement('button');
-        toggle.className='nav-mobile-toggle';
-        toggle.type='button';
-        toggle.setAttribute('aria-label','Abrir menú');
-        toggle.setAttribute('aria-expanded','false');
-        toggle.innerHTML='<span></span>';
-        nav.appendChild(toggle);
-      }
-      if(!panel){
-        panel=document.createElement('div');
-        panel.className='mobile-nav-panel';
-        nav.appendChild(panel);
-      }
-      panel.innerHTML=''
-        + '<a href="#" onclick="enterView(\'galeria\'); return false;">Lugar</a>'
-        + '<a href="#" onclick="enterView(\'auditorio\'); return false;">Eventos</a>'
-        + '<a href="#" onclick="enterView(\'piso\'); return false;">Reservas</a>';
-      if(!toggle.dataset.bound){
-        toggle.dataset.bound='1';
-        toggle.addEventListener('click',function(){
-          var open=panel.classList.toggle('open');
-          toggle.classList.toggle('open',open);
-          toggle.setAttribute('aria-expanded',String(open));
-        });
-      }
-    });
-    var bottom=document.getElementById('mobile-bottom-nav');
-    if(bottom){
-      bottom.querySelectorAll('.btab').forEach(function(btn){
-        if(btn.dataset.view==='auditorio'||btn.dataset.view==='piso') btn.style.display='none';
-      });
-    }
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',configure); else configure();
-  setTimeout(configure,300);
-  setTimeout(configure,1000);
-})();
-</script>
-
-
-<style id="cr-restaurar-slap-bar-final">
-/* ===== RESTAURA LA ANIMACIÓN "SLAP BRACELET" DEL HEADER ===== */
-@media (max-width:860px){
-  .topnav{
-    position:fixed !important;
-    top:0 !important;
-    left:0 !important;
-    right:0 !important;
-    height:64px !important;
-    min-height:64px !important;
-    padding:0 !important;
+  /* Hamburguesa siempre visible, arriba a la derecha.
+     No depende de que la pulsera se retraiga. */
+  #site-view .topnav .nav-mobile-toggle{
     display:flex !important;
-    align-items:center !important;
-    justify-content:center !important;
-    background:transparent !important;
-    border:0 !important;
-    box-shadow:none !important;
-    overflow:visible !important;
-    z-index:9990 !important;
-  }
-
-  /* La navegación inferior es la barra de tareas; arriba queda solo logo + hamburguesa. */
-  .topnav > nav{display:none !important;}
-  .topnav .actions{display:none !important;}
-
-  .topnav::before{
-    content:"" !important;
-    position:absolute !important;
-    z-index:0 !important;
-    left:0 !important;
-    right:0 !important;
-    top:0 !important;
-    height:64px !important;
-    background:#f6f1e4 !important;
-    border-bottom:1px solid rgba(3,73,68,.10) !important;
-    border-radius:0 !important;
-    transition:left .55s cubic-bezier(.22,.61,.36,1),
-               right .55s cubic-bezier(.22,.61,.36,1),
-               border-radius .55s cubic-bezier(.22,.61,.36,1),
-               box-shadow .45s ease,
-               border-bottom-color .45s ease !important;
-  }
-
-  .topnav.cr-header-scrolled::before{
-    left:calc(50% - 36px) !important;
-    right:calc(50% - 36px) !important;
-    top:0 !important;
-    height:64px !important;
-    border-radius:36px !important;
-    border-bottom-color:rgba(3,73,68,.08) !important;
-    box-shadow:0 4px 16px rgba(3,73,68,.12) !important;
-  }
-
-  .topnav .brand{
-    position:absolute !important;
-    z-index:2 !important;
-    left:50% !important;
-    top:50% !important;
-    width:auto !important;
-    margin:0 !important;
-    transform:translate(-50%,-50%) !important;
+    visibility:visible !important;
     opacity:1 !important;
-  }
-
-  .topnav .brand > div{display:none !important;}
-  .topnav .brand .logo-nav{
-    width:48px !important;
-    height:48px !important;
-    margin:0 !important;
-  }
-
-  .topnav .nav-mobile-toggle{
-    display:flex !important;
+    pointer-events:auto !important;
     position:absolute !important;
-    left:14px !important;
+    right:16px !important;
+    left:auto !important;
     top:50% !important;
     transform:translateY(-50%) !important;
-    z-index:5 !important;
+    width:42px !important;
+    height:42px !important;
+    z-index:20 !important;
+    border:0 !important;
+    background:transparent !important;
   }
-
-  .topnav.cr-header-scrolled .nav-mobile-toggle{
-    transform:translateY(-50%) !important;
+  #site-view .topnav .nav-mobile-toggle span,
+  #site-view .topnav .nav-mobile-toggle::before,
+  #site-view .topnav .nav-mobile-toggle::after{
+    display:block !important;
+    visibility:visible !important;
+    opacity:1 !important;
+    width:24px !important;
+    height:2px !important;
+    background:#063f3b !important;
+    left:9px !important;
+    right:auto !important;
   }
-}
+  #site-view .topnav .nav-mobile-toggle span{transform:translateY(0) !important;}
+  #site-view .topnav .nav-mobile-toggle::before{transform:translateY(-7px) !important;}
+  #site-view .topnav .nav-mobile-toggle::after{transform:translateY(7px) !important;}
+  #site-view .topnav .nav-mobile-toggle.open span{opacity:0 !important;}
+  #site-view .topnav .nav-mobile-toggle.open::before{transform:rotate(45deg) !important;}
+  #site-view .topnav .nav-mobile-toggle.open::after{transform:rotate(-45deg) !important;}
 
-/* La barra inferior queda exactamente con Inicio, Menú y Ubicación. */
-#mobile-bottom-nav{
-  grid-template-columns:repeat(3,1fr) !important;
-}
-#mobile-bottom-nav .btab[data-view="auditorio"],
-#mobile-bottom-nav .btab[data-view="piso"]{
-  display:none !important;
+  /* El panel sale desde la esquina superior derecha. */
+  #site-view .topnav .mobile-nav-panel{
+    display:none !important;
+    position:absolute !important;
+    top:64px !important;
+    right:12px !important;
+    left:auto !important;
+    width:min(290px,calc(100vw - 24px)) !important;
+    padding:10px 20px 16px !important;
+    background:rgba(6,63,59,.98) !important;
+    border:1px solid rgba(255,255,255,.13) !important;
+    border-radius:0 0 0 18px !important;
+    box-shadow:0 18px 40px rgba(0,0,0,.24) !important;
+    z-index:19 !important;
+  }
+  #site-view .topnav .mobile-nav-panel.open{display:block !important;}
+  #site-view .topnav .mobile-nav-panel a{
+    padding:17px 2px !important;
+    border-bottom:1px solid rgba(255,255,255,.18) !important;
+    color:#fbfaf6 !important;
+    font-family:var(--cr-mono) !important;
+    font-size:.67rem !important;
+    letter-spacing:.16em !important;
+  }
+  #site-view .topnav .mobile-nav-panel a:last-child{border-bottom:0 !important;}
+
+  /* Hero: composición centrada, no pegada a la izquierda. */
+  #site-view .hero-copy{
+    align-items:center !important;
+    text-align:center !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+    padding-left:22px !important;
+    padding-right:22px !important;
+    width:100% !important;
+    max-width:620px !important;
+  }
+  #site-view .hero-copy::before,
+  #site-view .hero-copy::after{margin-left:auto !important;margin-right:auto !important;}
+  #site-view .hero h1{margin-left:auto !important;margin-right:auto !important;}
+  #site-view .hero h1::after{margin-left:auto !important;margin-right:auto !important;}
+  #site-view .hero-sub{margin-left:auto !important;margin-right:auto !important;}
+  #site-view .hero-cta{margin-left:auto !important;margin-right:auto !important;}
+
+  /* Barra inferior: exactamente Inicio / Menú / Ubicación. */
+  #mobile-bottom-nav .btab[data-view="auditorio"],
+  #mobile-bottom-nav .btab[data-view="piso"]{display:none !important;}
+  #mobile-bottom-nav .btab{flex:1 1 33.333% !important;}
 }
 </style>
 
-
-<style id="cr-hamburger-final-fix">
-/* ===== HAMBURGUESA + DESPLEGABLE FINAL ===== */
-.topnav .nav-mobile-toggle{
-  display:flex !important;
-  position:absolute !important;
-  left:14px !important;
-  top:50% !important;
-  transform:translateY(-50%) !important;
-  width:44px !important;
-  height:44px !important;
-  padding:8px !important;
-  margin:0 !important;
-  border:0 !important;
-  background:transparent !important;
-  color:#034944 !important;
-  z-index:10002 !important;
-  cursor:pointer !important;
-}
-.topnav .nav-mobile-toggle span,
-.topnav .nav-mobile-toggle::before,
-.topnav .nav-mobile-toggle::after{
-  content:"" !important;
-  position:absolute !important;
-  left:9px !important;
-  width:26px !important;
-  height:2px !important;
-  background:#034944 !important;
-  border-radius:2px !important;
-  transition:transform .25s ease,opacity .2s ease !important;
-}
-.topnav .nav-mobile-toggle::before{transform:translateY(-8px) !important;}
-.topnav .nav-mobile-toggle::after{transform:translateY(8px) !important;}
-.topnav .nav-mobile-toggle.open::before{transform:rotate(45deg) !important;}
-.topnav .nav-mobile-toggle.open::after{transform:rotate(-45deg) !important;}
-.topnav .nav-mobile-toggle.open span{opacity:0 !important;}
-
-.topnav .mobile-nav-panel{
-  display:block !important;
-  position:absolute !important;
-  left:12px !important;
-  top:calc(100% + 8px) !important;
-  right:auto !important;
-  width:min(280px,calc(100vw - 24px)) !important;
-  padding:8px !important;
-  background:rgba(247,244,236,.99) !important;
-  border:1px solid rgba(3,73,68,.15) !important;
-  border-radius:16px !important;
-  box-shadow:0 18px 45px rgba(0,0,0,.18) !important;
-  opacity:0 !important;
-  visibility:hidden !important;
-  transform:translateY(-10px) !important;
-  pointer-events:none !important;
-  z-index:10001 !important;
-  transition:opacity .22s ease,transform .22s ease,visibility .22s ease !important;
-}
-.topnav .mobile-nav-panel.open{
-  opacity:1 !important;
-  visibility:visible !important;
-  transform:translateY(0) !important;
-  pointer-events:auto !important;
-}
-.topnav .mobile-nav-panel a{
-  display:flex !important;
-  align-items:center !important;
-  justify-content:space-between !important;
-  padding:15px 14px !important;
-  color:#034944 !important;
-  background:transparent !important;
-  text-decoration:none !important;
-  font-family:'Public Sans',sans-serif !important;
-  font-size:.72rem !important;
-  font-weight:600 !important;
-  letter-spacing:.13em !important;
-  text-transform:uppercase !important;
-  border-bottom:1px solid rgba(3,73,68,.11) !important;
-}
-.topnav .mobile-nav-panel a:last-child{border-bottom:0 !important;}
-
-@media (min-width:861px){
-  .topnav .nav-mobile-toggle{display:flex !important;}
-  .topnav .mobile-nav-panel{display:block !important;}
-}
-@media (max-width:860px){
-  .topnav .nav-mobile-toggle{display:flex !important;}
-  .topnav .mobile-nav-panel{display:block !important;}
-}
-</style>
-<script id="cr-hamburger-final-fix-js">
+<script id="cafe-real-nav-final-request-js">
 (function(){
-  function setup(){
+  function setRequestedMobileMenu(){
     document.querySelectorAll('.topnav').forEach(function(nav){
-      var toggle=nav.querySelector('.nav-mobile-toggle');
       var panel=nav.querySelector('.mobile-nav-panel');
-      if(!toggle){
-        toggle=document.createElement('button');
-        toggle.className='nav-mobile-toggle';
-        toggle.type='button';
-        toggle.innerHTML='<span></span>';
-        nav.appendChild(toggle);
-      }
-      if(!panel){
-        panel=document.createElement('div');
-        panel.className='mobile-nav-panel';
-        nav.appendChild(panel);
-      }
-      panel.innerHTML='' +
-        '<a href="#" onclick="enterView(\'galeria\');return false;">Lugar <span>→</span></a>' +
-        '<a href="#" onclick="enterView(\'auditorio\');return false;">Eventos <span>→</span></a>' +
-        '<a href="#" onclick="enterView(\'piso\');return false;">Reservas <span>→</span></a>' ;
-      if(!toggle.dataset.finalBound){
-        toggle.dataset.finalBound='1';
-        toggle.setAttribute('aria-label','Abrir menú');
-        toggle.setAttribute('aria-expanded','false');
-        toggle.addEventListener('click',function(e){
-          e.preventDefault(); e.stopPropagation();
-          var open=panel.classList.toggle('open');
-          toggle.classList.toggle('open',open);
-          toggle.setAttribute('aria-expanded',String(open));
-        });
-      }
+      if(!panel) return;
+      /* Solo las tres opciones solicitadas en el desplegable. */
+      panel.innerHTML=''
+        +'<a href="#" data-view="galeria">Lugar <span>→</span></a>'
+        +'<a href="#" data-view="auditorio">Eventos <span>→</span></a>'
+        +'<a href="#" data-view="piso">Reservas <span>→</span></a>';
       panel.querySelectorAll('a').forEach(function(a){
-        if(!a.dataset.closeBound){
-          a.dataset.closeBound='1';
-          a.addEventListener('click',function(){
-            panel.classList.remove('open');
-            toggle.classList.remove('open');
-            toggle.setAttribute('aria-expanded','false');
-          });
-        }
+        a.addEventListener('click',function(e){
+          e.preventDefault();
+          var view=a.dataset.view;
+          if(typeof window.enterView==='function') window.enterView(view);
+          panel.classList.remove('open');
+          var toggle=nav.querySelector('.nav-mobile-toggle');
+          if(toggle){toggle.classList.remove('open');toggle.setAttribute('aria-expanded','false');}
+        });
       });
     });
   }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',setup); else setup();
-  setTimeout(setup,200);
-  setTimeout(setup,800);
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',setRequestedMobileMenu);
+  else setRequestedMobileMenu();
+  document.addEventListener('click',function(){setTimeout(setRequestedMobileMenu,80);});
 })();
 </script>
 </body>
