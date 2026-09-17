@@ -6736,3 +6736,54 @@ body .reserva-hero p,body .menu-hero p{font-family:'Cormorant Garamond',serif;}
 
 </body>
 </html>
+<style id="cafe-real-reference-layout">
+/* Referencia visual: hero compacto + ritmo editorial y secciones más limpias. */
+@media (min-width:861px){
+  #site-view .hero{
+    height:55vh !important;
+    min-height:430px !important;
+    max-height:560px !important;
+  }
+  #site-view .hero-copy{
+    max-width:820px !important;
+    padding:0 6vw !important;
+  }
+  #site-view .hero h1{
+    font-size:clamp(3rem,6vw,5.8rem) !important;
+    max-width:11ch !important;
+  }
+  #site-view .hero p{max-width:42ch !important;margin:12px auto 20px !important;}
+}
+
+@media (max-width:860px){
+  #site-view .hero{
+    height:52vh !important;
+    min-height:390px !important;
+    max-height:500px !important;
+  }
+  #site-view .hero-copy{padding:0 22px 28px !important;}
+  #site-view .hero h1{font-size:clamp(2.35rem,11vw,3.15rem) !important;}
+}
+
+/* Más parecido a la referencia: bloques con aire, pero sin alargar innecesariamente. */
+.menu-hero{padding-top:72px !important;padding-bottom:42px !important;}
+.menu-body{padding-top:18px !important;padding-bottom:68px !important;}
+.reserva-hero{padding-top:72px !important;padding-bottom:34px !important;}
+
+/* Mantener el menú existente: solo refinamos espaciado y presentación. */
+.menu-tabs-wrap{margin-top:22px !important;}
+.menu-cat-head{margin-bottom:22px !important;}
+
+/* Café Arias conserva sus tarjetas de video; se reduce el espacio vertical. */
+.cafearias{padding-top:68px !important;padding-bottom:68px !important;}
+
+@media (max-width:860px){
+  .menu-hero{padding-top:54px !important;padding-bottom:28px !important;}
+  .menu-body{padding-bottom:48px !important;}
+  .reserva-hero{padding-top:54px !important;padding-bottom:28px !important;}
+  .cafearias{padding-top:52px !important;padding-bottom:52px !important;}
+}
+</style>
+
+</body>
+</html>
