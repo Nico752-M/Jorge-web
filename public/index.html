@@ -8551,3 +8551,131 @@
   else init();
 })();
 </script>
+
+
+<!-- CAFÉ REAL · FINAL CATEGORY IMAGE/CENTER FIX -->
+<style id="cr-v7-category-image-center-fix">
+@media (max-width: 860px){
+  #menu-view .menu-category-options{
+    display:grid !important;
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    grid-auto-flow:row !important;
+    gap:10px !important;
+    width:100% !important;
+  }
+
+  #menu-view .menu-category-options button[data-k]{
+    position:relative !important;
+    width:100% !important;
+    height:110px !important;
+    min-height:110px !important;
+    max-width:none !important;
+    overflow:hidden !important;
+    padding:14px !important;
+    border:0 !important;
+    border-radius:18px !important;
+    background-color:#064f49 !important;
+    background-size:cover !important;
+    background-position:center !important;
+    background-repeat:no-repeat !important;
+    isolation:isolate !important;
+  }
+
+  /* Desayunos: solo centramos la tarjeta; NO la encogemos verticalmente. */
+  #menu-view .menu-category-options button[data-k="desayunos"]{
+    grid-column:1 / 3 !important;
+    grid-row:4 !important;
+    justify-self:center !important;
+    width:50% !important;
+    min-width:0 !important;
+    max-width:50% !important;
+    height:110px !important;
+    min-height:110px !important;
+    margin:0 auto !important;
+  }
+
+  #menu-view .menu-category-options button[data-k] > .cr-category-photo{
+    position:absolute !important;
+    inset:0 !important;
+    z-index:-2 !important;
+    display:block !important;
+    width:100% !important;
+    height:100% !important;
+    object-fit:cover !important;
+    object-position:center !important;
+    opacity:1 !important;
+    visibility:visible !important;
+    pointer-events:none !important;
+    transform:none !important;
+  }
+
+  #menu-view .menu-category-options button[data-k]::before{
+    z-index:-1 !important;
+    background:linear-gradient(180deg,rgba(0,0,0,.03) 8%,rgba(0,25,22,.70) 100%) !important;
+  }
+
+  #menu-view .menu-category-options button[data-k] > *:not(.cr-category-photo){
+    position:relative !important;
+    z-index:2 !important;
+  }
+}
+</style>
+<script id="cr-v7-category-images">
+(function(){
+  const CATEGORY_IMAGES={
+    'tarderos':'burrito-de-cerdo',
+    'cafes':'cafe-real',
+    'bebidas-frias':'soda-frutos-rojos',
+    'limonadas':'limonada-mango',
+    'cervezas':'heineken',
+    'postres':'cheesecake',
+    'desayunos':'huevos-rancheros'
+  };
+
+  function applyCategoryPhotos(){
+    document.querySelectorAll('#menu-category-options button[data-k]').forEach(function(btn){
+      const slug=CATEGORY_IMAGES[btn.dataset.k];
+      if(!slug) return;
+      const url='images/menu/'+slug+'.webp';
+      let img=btn.querySelector('.cr-category-photo');
+      if(!img){
+        img=document.createElement('img');
+        img.className='cr-category-photo';
+        img.alt='';
+        img.setAttribute('aria-hidden','true');
+        img.loading='eager';
+        img.decoding='sync';
+        try{img.fetchPriority='high';}catch(e){}
+        btn.prepend(img);
+      }
+      if(img.src !== new URL(url,document.baseURI).href) img.src=url;
+      btn.style.setProperty('background-image','url("'+url+'")','important');
+      btn.style.setProperty('background-size','cover','important');
+      btn.style.setProperty('background-position','center','important');
+    });
+  }
+
+  function preload(){
+    Object.values(CATEGORY_IMAGES).forEach(function(slug){
+      const img=new Image();
+      img.decoding='sync';
+      try{img.fetchPriority='high';}catch(e){}
+      img.src='images/menu/'+slug+'.webp';
+    });
+    applyCategoryPhotos();
+  }
+
+  function init(){
+    preload();
+    requestAnimationFrame(applyCategoryPhotos);
+    setTimeout(applyCategoryPhotos,50);
+    setTimeout(applyCategoryPhotos,250);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
+  else init();
+
+  document.addEventListener('click',function(){
+    requestAnimationFrame(applyCategoryPhotos);
+  },{passive:true});
+})();
+</script>
