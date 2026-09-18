@@ -7414,3 +7414,136 @@
 
 </body>
 </html>
+<!-- CAFE REAL · FIX NAVEGACION MENU + MODAL PRODUCTO -->
+<style id="cr-menu-fixes-final">
+@media (max-width:860px){
+  /* La ficha del producto siempre muestra toda su informacion sin necesitar desplazamiento */
+  #producto-modal{
+    align-items:flex-end!important;
+    padding:0!important;
+    z-index:5000!important;
+    background:rgba(8,20,17,.72)!important;
+  }
+  #producto-modal .producto-modal-box{
+    width:100%!important;
+    max-width:none!important;
+    max-height:calc(100vh - 24px)!important;
+    height:auto!important;
+    margin:0!important;
+    border-radius:26px 26px 0 0!important;
+    overflow-y:auto!important;
+    -webkit-overflow-scrolling:touch!important;
+    transform:translateY(100%)!important;
+  }
+  #producto-modal.open .producto-modal-box{
+    transform:translateY(0)!important;
+  }
+  #producto-modal .producto-modal-box img{
+    width:100%!important;
+    height:auto!important;
+    max-height:58vh!important;
+    aspect-ratio:auto!important;
+    object-fit:cover!important;
+    display:block!important;
+  }
+  #producto-modal .producto-modal-body{
+    display:block!important;
+    padding:22px 32px 110px!important;
+    opacity:1!important;
+    visibility:visible!important;
+  }
+  #producto-modal .producto-modal-body .top{
+    opacity:1!important;
+    visibility:visible!important;
+  }
+  #producto-modal .producto-modal-body h3,
+  #producto-modal .producto-modal-body .precio,
+  #producto-modal .producto-modal-body p,
+  #producto-modal .producto-modal-close{
+    opacity:1!important;
+    visibility:visible!important;
+  }
+  #producto-modal .producto-modal-body p{
+    transform:none!important;
+    margin-top:12px!important;
+    min-height:1.5em!important;
+  }
+  #producto-modal .producto-modal-close{
+    z-index:20!important;
+    width:46px!important;
+    height:46px!important;
+    top:14px!important;
+    right:14px!important;
+    background:rgba(255,255,255,.94)!important;
+    color:#173f3a!important;
+  }
+
+  /* La pista de detalle nunca se oculta en las tarjetas */
+  .prod-detail-hint{
+    display:flex!important;
+    opacity:1!important;
+    visibility:visible!important;
+    transform:none!important;
+    min-height:20px!important;
+  }
+  .prod-info{
+    min-width:0!important;
+  }
+}
+
+/* El boton Desayunos queda centrado independientemente de reglas anteriores */
+.menu-category-options button:last-child{
+  grid-column:1 / -1!important;
+  justify-self:center!important;
+  width:calc(50% - 6px)!important;
+}
+@media (max-width:520px){
+  .menu-category-options button:last-child{
+    width:calc(50% - 6px)!important;
+  }
+}
+</style>
+<script id="cr-menu-navigation-fix-final">
+(function(){
+  function goMenuCategorias(){
+    if(typeof window.enterView === 'function') window.enterView('menu');
+    // showCat oculta la portada; aqui queremos siempre la portada/categorias.
+    if(typeof window.volverCategorias === 'function'){
+      window.volverCategorias(false);
+    } else {
+      var landing=document.getElementById('menu-landing');
+      var panel=document.getElementById('menu-panel-body');
+      if(panel) panel.classList.remove('is-open');
+      if(landing) landing.classList.remove('menu-page-hidden');
+      document.querySelectorAll('.menu-panel-full .menu-cat').forEach(function(c){c.classList.remove('active');});
+      try{history.replaceState({menuCategory:null},'',location.pathname+location.search);}catch(e){}
+      window.scrollTo({top:0,behavior:'instant'});
+    }
+  }
+
+  window.mobileNavGo = function(v){
+    if(v === 'ubicacion'){
+      if(typeof goToUbicacion === 'function') goToUbicacion();
+    } else if(v === 'menu'){
+      goMenuCategorias();
+    } else {
+      if(typeof window.enterView === 'function') window.enterView(v);
+    }
+    var b=document.getElementById('mobile-bottom-nav');
+    if(b){
+      b.querySelectorAll('.btab').forEach(function(t){
+        t.classList.toggle('btab-active', t.dataset.view===v);
+      });
+    }
+  };
+
+  // Si el usuario pulsa Menu desde una categoria, volver siempre a la portada.
+  document.addEventListener('click',function(e){
+    var tab=e.target.closest && e.target.closest('.mobile-bottom-nav .btab[data-view="menu"]');
+    if(!tab) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    goMenuCategorias();
+  },true);
+})();
+</script>
