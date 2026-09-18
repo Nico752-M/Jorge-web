@@ -6831,5 +6831,145 @@
   document.addEventListener('click',function(){setTimeout(setRequestedMobileMenu,80);});
 })();
 </script>
+
+<style id="cr-mobile-menu-working-fix">
+/* ===== MENÚ HAMBURGUESA: SIEMPRE VISIBLE Y DESPLEGABLE ===== */
+@media (max-width:860px){
+  .topnav .nav-mobile-toggle{
+    display:flex !important;
+    visibility:visible !important;
+    opacity:1 !important;
+    pointer-events:auto !important;
+    position:absolute !important;
+    top:50% !important;
+    right:14px !important;
+    left:auto !important;
+    transform:translateY(-50%) !important;
+    width:44px !important;
+    height:44px !important;
+    z-index:10002 !important;
+    border:0 !important;
+    background:transparent !important;
+  }
+  .topnav .nav-mobile-toggle span,
+  .topnav .nav-mobile-toggle::before,
+  .topnav .nav-mobile-toggle::after{
+    display:block !important;
+    visibility:visible !important;
+    opacity:1 !important;
+    position:absolute !important;
+    left:9px !important;
+    width:26px !important;
+    height:2px !important;
+    background:#034944 !important;
+    content:"" !important;
+  }
+  .topnav .nav-mobile-toggle span{top:21px !important;transform:none !important;}
+  .topnav .nav-mobile-toggle::before{top:14px !important;transform:none !important;}
+  .topnav .nav-mobile-toggle::after{top:28px !important;transform:none !important;}
+  .topnav .nav-mobile-toggle.open span{opacity:0 !important;}
+  .topnav .nav-mobile-toggle.open::before{top:21px !important;transform:rotate(45deg) !important;}
+  .topnav .nav-mobile-toggle.open::after{top:21px !important;transform:rotate(-45deg) !important;}
+
+  .topnav .mobile-nav-panel,
+  .topnav .mobile-nav-panel.open{
+    position:fixed !important;
+    display:none !important;
+    top:64px !important;
+    right:12px !important;
+    left:auto !important;
+    width:min(300px,calc(100vw - 24px)) !important;
+    max-height:calc(100vh - 84px) !important;
+    overflow-y:auto !important;
+    padding:8px 20px 14px !important;
+    background:rgba(3,45,41,.98) !important;
+    border:1px solid rgba(255,255,255,.16) !important;
+    border-radius:0 0 0 18px !important;
+    box-shadow:0 18px 45px rgba(0,0,0,.30) !important;
+    z-index:10001 !important;
+  }
+  .topnav .mobile-nav-panel.open{display:block !important;}
+  .topnav .mobile-nav-panel a{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    min-height:58px !important;
+    padding:16px 2px !important;
+    border-bottom:1px solid rgba(255,255,255,.20) !important;
+    color:#fff !important;
+    font-family:'Public Sans',sans-serif !important;
+    font-size:.78rem !important;
+    font-weight:600 !important;
+    letter-spacing:.12em !important;
+    text-transform:uppercase !important;
+  }
+  .topnav .mobile-nav-panel a:last-child{border-bottom:0 !important;}
+}
+</style>
+
+<script id="cr-mobile-menu-working-fix-js">
+(function(){
+  function ensureMenu(nav){
+    if(!nav) return;
+    var toggle=nav.querySelector('.nav-mobile-toggle');
+    var panel=nav.querySelector('.mobile-nav-panel');
+    if(!toggle){
+      toggle=document.createElement('button');
+      toggle.type='button';
+      toggle.className='nav-mobile-toggle';
+      toggle.setAttribute('aria-label','Abrir menú');
+      toggle.setAttribute('aria-expanded','false');
+      toggle.innerHTML='<span></span>';
+      nav.appendChild(toggle);
+    }
+    if(!panel){
+      panel=document.createElement('div');
+      panel.className='mobile-nav-panel';
+      nav.appendChild(panel);
+    }
+    panel.innerHTML=
+      '<a href="#" data-view="galeria">Lugar <span>→</span></a>'+
+      '<a href="#" data-view="auditorio">Eventos <span>→</span></a>'+
+      '<a href="#" data-view="piso">Reservas <span>→</span></a>';
+
+    if(toggle.dataset.menuBound!=='1'){
+      toggle.dataset.menuBound='1';
+      toggle.addEventListener('click',function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        var isOpen=panel.classList.contains('open');
+        document.querySelectorAll('.topnav .mobile-nav-panel.open').forEach(function(p){p.classList.remove('open');});
+        document.querySelectorAll('.topnav .nav-mobile-toggle.open').forEach(function(t){
+          t.classList.remove('open'); t.setAttribute('aria-expanded','false');
+        });
+        if(!isOpen){
+          panel.classList.add('open');
+          toggle.classList.add('open');
+          toggle.setAttribute('aria-expanded','true');
+        }
+      },true);
+    }
+    panel.querySelectorAll('a').forEach(function(a){
+      if(a.dataset.menuLinkBound==='1') return;
+      a.dataset.menuLinkBound='1';
+      a.addEventListener('click',function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        var view=a.getAttribute('data-view');
+        if(typeof window.enterView==='function') window.enterView(view);
+        panel.classList.remove('open');
+        toggle.classList.remove('open');
+        toggle.setAttribute('aria-expanded','false');
+      });
+    });
+  }
+  function init(){document.querySelectorAll('.topnav').forEach(ensureMenu);}
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
+  else init();
+  window.addEventListener('load',init);
+  window.addEventListener('resize',init);
+})();
+</script>
+
 </body>
 </html>
