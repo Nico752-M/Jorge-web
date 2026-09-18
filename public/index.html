@@ -3686,15 +3686,17 @@
     }
   }
 
-  function showCat(k){
+  function showCat(k, push=true){
     const cat = MENU[k];
+    if(!cat) return;
     document.querySelectorAll('.menu-category-options button').forEach(b=>b.classList.toggle('active', b.dataset.k===k));
     const current = document.querySelector('.menu-category-current');
-    if(current && cat) current.textContent = cat.label;
+    if(current) current.textContent = cat.label;
 
     const landing = document.getElementById('menu-landing');
     const panel = document.getElementById('menu-panel-body');
-    if(landing) landing.style.display='none';
+    // La portada desaparece por completo: la categoria funciona como una pagina independiente.
+    if(landing) landing.classList.add('menu-page-hidden');
     if(panel) panel.classList.add('is-open');
 
     const actual = document.querySelector('.menu-panel-full .menu-cat.active');
@@ -3706,30 +3708,44 @@
     }
     nuevo.classList.add('active');
     gsap.fromTo(nuevo,{autoAlpha:0,y:12},{autoAlpha:1,y:0,duration:.35,ease:'power2.out'});
-    window.scrollTo({top:0,behavior:'smooth'});
+    window.scrollTo({top:0,behavior:'instant'});
+    if(push){
+      try{ history.pushState({menuCategory:k}, '', '#menu/'+encodeURIComponent(k)); }catch(_){}
+    }
   }
 
-  function volverCategorias(){
+  function volverCategorias(push=true){
     const landing=document.getElementById('menu-landing');
     const panel=document.getElementById('menu-panel-body');
     if(panel) panel.classList.remove('is-open');
-    if(landing) landing.style.display='block';
-    window.scrollTo({top:0,behavior:'smooth'});
+    if(landing) landing.classList.remove('menu-page-hidden');
+    document.querySelectorAll('.menu-panel-full .menu-cat').forEach(c=>c.classList.remove('active'));
+    window.scrollTo({top:0,behavior:'instant'});
+    if(push){
+      try{ history.pushState({menuCategory:null}, '', location.pathname + location.search); }catch(_){}
+    }
   }
 
   buildTabs();
 
-  // Click/touch robusto para las categorías del menú.
-  // Evita que estilos/overlays antiguos interfieran con la navegación.
-  document.querySelectorAll('#menu-category-options button').forEach(btn => {
-    const key = btn.dataset.k;
-    btn.addEventListener('click', function(e){
-      e.preventDefault();
-      e.stopPropagation();
-      if (key && typeof showCat === 'function') showCat(key);
-    }, {passive:false});
-  });
   window.showCat = showCat;
+
+  // Si el usuario usa el boton atras del navegador, volvemos a la portada del menu.
+  window.addEventListener('popstate', function(){
+    const match = location.hash.match(/^#menu\/(.+)$/);
+    if(match){
+      const key=decodeURIComponent(match[1]);
+      if(MENU[key]) showCat(key,false);
+    }else{
+      volverCategorias(false);
+    }
+  });
+
+  // Permite abrir directamente una categoria desde un enlace #menu/cafes.
+  if(location.hash.startsWith('#menu/')){
+    const key=decodeURIComponent(location.hash.slice(6));
+    if(MENU[key]) showCat(key,false);
+  }
 
   buildBody();
   buildDestacados();
@@ -7357,6 +7373,42 @@
   #producto-modal .producto-modal-body{padding:18px 20px 28px !important;}
   #producto-modal .producto-modal-body h3{font-size:2rem !important;line-height:.95 !important;}
   #producto-modal .producto-modal-body p{font-size:.72rem !important;line-height:1.55 !important;opacity:1 !important;transform:none !important;}
+}
+
+/* =========================================================
+   CAFE REAL — NAVEGACION DE CATEGORIAS COMO PAGINA APARTE
+   ========================================================= */
+#menu-view .menu-landing.menu-page-hidden{
+  display:none !important;
+}
+#menu-view .menu-panel-full.is-open{
+  display:block !important;
+  min-height:calc(100vh - 78px);
+  padding-bottom:140px !important;
+}
+#menu-view .menu-panel-full.is-open .menu-cat.active{
+  display:block !important;
+}
+#menu-view .menu-panel-full .menu-back-button{
+  position:relative;
+  z-index:10;
+  margin:0 0 12px !important;
+}
+#menu-view .menu-category-options button:last-child,
+#menu-view .menu-category-options button:last-child:nth-child(odd){
+  grid-column:1 / -1 !important;
+  width:calc(50% - 6px) !important;
+  justify-self:center !important;
+  margin-left:0 !important;
+  margin-right:0 !important;
+}
+@media(max-width:430px){
+  #menu-view .menu-category-options button:last-child,
+  #menu-view .menu-category-options button:last-child:nth-child(odd){
+    grid-column:1 / -1 !important;
+    width:calc(50% - 5px) !important;
+    justify-self:center !important;
+  }
 }
 </style>
 
