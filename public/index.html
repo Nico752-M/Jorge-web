@@ -2206,6 +2206,15 @@
   .topnav .mobile-nav-panel{display:none !important;}
 }
 </style>
+
+<!-- Café Real: precarga inmediata de imágenes de categorías para evitar parpadeos/retrasos -->
+<link rel="preload" as="image" href="images/menu/burrito-de-cerdo.webp" fetchpriority="high">
+<link rel="preload" as="image" href="images/menu/cafe-real.webp" fetchpriority="high">
+<link rel="preload" as="image" href="images/menu/soda-frutos-rojos.webp" fetchpriority="high">
+<link rel="preload" as="image" href="images/menu/limonada-mango.webp" fetchpriority="high">
+<link rel="preload" as="image" href="images/menu/heineken.webp" fetchpriority="high">
+<link rel="preload" as="image" href="images/menu/cheesecake.webp" fetchpriority="high">
+<link rel="preload" as="image" href="images/menu/huevos-rancheros.webp" fetchpriority="high">
 </head>
     <body>
 
@@ -8473,6 +8482,70 @@
     /* Reaplica después de que el menú reconstruya categorías. */
     setTimeout(setCategoryImages,100);
     setTimeout(setCategoryImages,500);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
+  else init();
+})();
+</script>
+
+<style id="cr-v6-category-images-and-breakfast-fix">
+@media (max-width:860px){
+  /* 2 + 2 + 2 + Desayunos: la última tarjeta ocupa la fila completa
+     y su propia tarjeta queda exactamente al centro. */
+  #menu-view .menu-category-options{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    grid-auto-flow:row !important;
+  }
+  #menu-view .menu-category-options button[data-k="desayunos"]{
+    grid-area:4 / 1 / 5 / 3 !important;
+    width:50% !important;
+    min-width:50% !important;
+    max-width:50% !important;
+    justify-self:center !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+  }
+
+  /* Las imágenes se dibujan como background, sin depender del repintado tardío. */
+  #menu-view .menu-category-options button[data-k]{
+    background-repeat:no-repeat !important;
+    background-size:cover !important;
+    background-position:center !important;
+  }
+}
+</style>
+
+<script id="cr-v6-image-preload-final">
+(function(){
+  const imgs = [
+    'burrito-de-cerdo','cafe-real','soda-frutos-rojos','limonada-mango',
+    'heineken','cheesecake','huevos-rancheros'
+  ];
+  const base='images/menu/';
+  function preloadAndApply(){
+    const buttons=document.querySelectorAll('#menu-category-options button[data-k]');
+    buttons.forEach(function(btn){
+      const slug=imgs[{tarderos:0,cafes:1,'bebidas-frias':2,limonadas:3,cervezas:4,postres:5,desayunos:6}[btn.dataset.k]];
+      if(!slug) return;
+      const url=base+slug+'.webp';
+      const image=new Image();
+      image.decoding='async';
+      image.fetchPriority='high';
+      image.onload=function(){
+        btn.style.setProperty('background-image','linear-gradient(180deg,rgba(0,0,0,.04) 8%,rgba(0,25,22,.70) 100%),url("'+url+'")','important');
+        btn.classList.add('cr-image-ready');
+      };
+      image.onerror=function(){
+        /* Si una foto individual falla, no rompe el resto de la carta. */
+      };
+      image.src=url;
+      if(image.complete && image.naturalWidth) image.onload();
+    });
+  }
+  function init(){
+    preloadAndApply();
+    setTimeout(preloadAndApply,50);
+    setTimeout(preloadAndApply,300);
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
   else init();
