@@ -7819,7 +7819,7 @@
     var categoryImages={
       'tarderos':'burrito-de-cerdo',
       'cafes':'cafe-real',
-      'bebidas-frias':'soda-de-frutos-rojos',
+      'bebidas-frias':'soda-frutos-rojos',
       'limonadas':'limonada-mango',
       'cervezas':'heineken',
       'postres':'cheesecake',
@@ -8133,7 +8133,7 @@
   const CATEGORY_IMAGES={
     'tarderos':'burrito-de-cerdo',
     'cafes':'cafe-real',
-    'bebidas-frias':'soda-de-frutos-rojos',
+    'bebidas-frias':'soda-frutos-rojos',
     'limonadas':'limonada-mango',
     'cervezas':'heineken',
     'postres':'cheesecake',
@@ -8259,3 +8259,222 @@
 </script>
 </body>
 </html>
+
+<style id="cr-v5-menu-final-visual">
+/* =========================================================
+   CAFÉ REAL · V5 FINAL VISUAL FIX
+   - header móvil compacto
+   - pulsera retráctil real al hacer scroll
+   - fotos de categorías restauradas
+   - desayunos perfectamente centrado
+   - destacados sin romper la home
+   ========================================================= */
+@media (max-width:860px){
+  /* Header del MENÚ: exactamente una franja compacta de 64px */
+  #menu-view > .topnav{
+    position:fixed !important;
+    top:0 !important; left:0 !important; right:0 !important;
+    width:100% !important;
+    height:64px !important; min-height:64px !important;
+    padding:0 !important;
+    margin:0 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    overflow:visible !important;
+    z-index:12000 !important;
+  }
+  #menu-view > .topnav::before{
+    content:"" !important;
+    position:absolute !important;
+    left:0 !important; right:0 !important; top:0 !important;
+    width:auto !important; height:64px !important;
+    background:#f7f2e8 !important;
+    border-bottom:1px solid rgba(6,79,73,.11) !important;
+    border-radius:0 !important;
+    box-shadow:0 2px 12px rgba(3,73,68,.05) !important;
+    z-index:0 !important;
+    transition:left .65s cubic-bezier(.22,.61,.36,1),
+               right .65s cubic-bezier(.22,.61,.36,1),
+               width .65s cubic-bezier(.22,.61,.36,1),
+               border-radius .65s cubic-bezier(.22,.61,.36,1),
+               box-shadow .45s ease !important;
+  }
+  #menu-view > .topnav .brand{
+    position:absolute !important;
+    left:50% !important; top:50% !important;
+    transform:translate(-50%,-50%) !important;
+    z-index:3 !important;
+    width:auto !important;
+    margin:0 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+  }
+  #menu-view > .topnav .brand > div{display:none !important;}
+  #menu-view > .topnav .brand .logo-nav{
+    width:48px !important; height:48px !important;
+    flex:0 0 48px !important; margin:0 !important;
+  }
+  #menu-view > .topnav nav,
+  #menu-view > .topnav .actions{display:none !important;}
+  #menu-view > .topnav .nav-mobile-toggle{
+    display:flex !important;
+    position:absolute !important;
+    right:16px !important; top:8px !important;
+    width:48px !important; height:48px !important;
+    margin:0 !important;
+    z-index:4 !important;
+    opacity:1 !important;
+    visibility:visible !important;
+    pointer-events:auto !important;
+  }
+  #menu-view > .topnav .nav-mobile-toggle span,
+  #menu-view > .topnav .nav-mobile-toggle::before,
+  #menu-view > .topnav .nav-mobile-toggle::after{
+    width:28px !important; height:2px !important;
+    left:10px !important;
+    background:#034944 !important;
+  }
+
+  /* Pulsera: la franja se retrae desde ambos lados hasta el logo. */
+  #menu-view > .topnav.cr-header-scrolled::before{
+    left:calc(50% - 36px) !important;
+    right:calc(50% - 36px) !important;
+    width:auto !important;
+    height:64px !important;
+    border-radius:36px !important;
+    box-shadow:0 5px 20px rgba(3,73,68,.14) !important;
+  }
+  #menu-view > .topnav.cr-header-scrolled .nav-mobile-toggle{
+    opacity:0 !important;
+    visibility:hidden !important;
+    pointer-events:none !important;
+    transform:translateX(10px) !important;
+    transition:opacity .25s ease, transform .4s ease, visibility 0s linear .25s !important;
+  }
+
+  /* Nunca dejar un header de 200px: el contenido empieza debajo de 64px. */
+  #menu-view{padding-top:64px !important;}
+
+  /* Fotos de categorías: usar los mismos archivos del catálogo. */
+  #menu-view .menu-category-options{
+    display:grid !important;
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:9px 10px !important;
+  }
+  #menu-view .menu-category-options button{
+    min-width:0 !important;
+    width:100% !important;
+    height:110px !important;
+    min-height:110px !important;
+    position:relative !important;
+    overflow:hidden !important;
+    border:0 !important;
+    border-radius:18px !important;
+    background-color:#064f49 !important;
+    background-size:cover !important;
+    background-repeat:no-repeat !important;
+    background-position:center !important;
+    isolation:isolate !important;
+    padding:14px !important;
+    color:#fff !important;
+  }
+  #menu-view .menu-category-options button::before{
+    content:"" !important;
+    position:absolute !important;
+    inset:0 !important;
+    z-index:0 !important;
+    background:linear-gradient(180deg,rgba(0,0,0,.04) 10%,rgba(0,25,22,.72) 100%) !important;
+    pointer-events:none !important;
+  }
+  #menu-view .menu-category-options button > *{
+    position:relative !important;
+    z-index:2 !important;
+  }
+  #menu-view .category-icon{display:none !important;}
+  #menu-view .category-name{
+    font:italic 400 1rem/1 'Cormorant Garamond',serif !important;
+    color:#fff !important;
+    text-shadow:0 1px 8px rgba(0,0,0,.4) !important;
+  }
+  #menu-view .menu-category-options .cnt{
+    font:.54rem 'JetBrains Mono',monospace !important;
+    color:rgba(255,255,255,.8) !important;
+    margin-top:5px !important;
+  }
+  #menu-view .category-arrow{
+    display:block !important;
+    position:absolute !important;
+    right:12px !important; bottom:12px !important;
+    color:#fff !important; z-index:3 !important;
+  }
+  /* 2 + 2 + 2 + 1: DESAYUNOS en el centro exacto. */
+  #menu-view .menu-category-options button[data-k="desayunos"]{
+    grid-column:1 / -1 !important;
+    width:50% !important;
+    justify-self:center !important;
+    height:82px !important;
+    min-height:82px !important;
+  }
+
+  /* El título de destacados no debe quedar pegado al último botón. */
+  #menu-view .destacados{
+    padding-top:30px !important;
+    padding-bottom:110px !important;
+  }
+}
+</style>
+
+<script id="cr-v5-menu-final-js">
+(function(){
+  const categoryImages={
+    'tarderos':'burrito-de-cerdo',
+    'cafes':'cafe-real',
+    'bebidas-frias':'soda-frutos-rojos',
+    'limonadas':'limonada-mango',
+    'cervezas':'heineken',
+    'postres':'cheesecake',
+    'desayunos':'huevos-rancheros'
+  };
+
+  function setCategoryImages(){
+    document.querySelectorAll('#menu-category-options button[data-k]').forEach(function(btn){
+      const slug=categoryImages[btn.dataset.k];
+      if(!slug) return;
+      const url='images/menu/'+slug+'.webp';
+      btn.style.setProperty('background-image','linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,25,22,.68)),url("'+url+'")','important');
+      btn.style.setProperty('background-size','cover','important');
+      btn.style.setProperty('background-position','center','important');
+    });
+  }
+
+  function initHeader(){
+    const header=document.querySelector('#menu-view > .topnav');
+    if(!header || header.dataset.v5Header==='1') return;
+    header.dataset.v5Header='1';
+    function update(){
+      const menu=document.getElementById('menu-view');
+      const active=menu && !menu.classList.contains('hidden');
+      const scrolled=(window.scrollY||document.documentElement.scrollTop||0)>32;
+      if(active) header.classList.toggle('cr-header-scrolled',scrolled);
+    }
+    window.addEventListener('scroll',update,{passive:true});
+    window.addEventListener('resize',update,{passive:true});
+    update();
+  }
+
+  function init(){
+    setCategoryImages();
+    initHeader();
+    /* Reaplica después de que el menú reconstruya categorías. */
+    setTimeout(setCategoryImages,100);
+    setTimeout(setCategoryImages,500);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
+  else init();
+})();
+</script>
