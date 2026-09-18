@@ -3480,7 +3480,7 @@
     const icons = {
       tarderos:'♨',
       cafes:'☕',
-      'bebidas-frias':'🥤',
+      frias:'🥤',
       limonadas:'🍋',
       cervezas:'🍺',
       postres:'🍰',
@@ -3488,8 +3488,8 @@
     };
     const categoryImages = {
       tarderos:'burrito-de-cerdo',
-      cafes:'cafe-real',
-      'bebidas-frias':'soda-frutos-rojos',
+      cafes:'cappuccino',
+      frias:'soda-de-frutos-rojos',
       limonadas:'limonada-mango',
       cervezas:'heineken',
       postres:'cheesecake',
@@ -6055,9 +6055,9 @@
 
   /* Última categoría centrada */
   #menu-view .menu-category-options button:last-child:nth-child(odd){
-    grid-column:2 !important;
-    justify-self:stretch !important;
-    width:100% !important;
+    grid-column:1 / -1 !important;
+    justify-self:center !important;
+    width:calc(50% - 5px) !important;
   }
 
   /* Menos aire entre categorías y productos */
