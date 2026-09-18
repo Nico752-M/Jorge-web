@@ -2206,56 +2206,6 @@
   .topnav .mobile-nav-panel{display:none !important;}
 }
 </style>
-
-<style id="cafe-real-destacados-carousel-final">
-@media (max-width:860px){
-  #menu-view .destacados{
-    overflow:hidden !important;
-  }
-  #menu-view .destacados-row{
-    display:flex !important;
-    flex-wrap:nowrap !important;
-    overflow-x:auto !important;
-    scroll-behavior:smooth !important;
-    scroll-snap-type:x mandatory !important;
-    -webkit-overflow-scrolling:touch !important;
-    scrollbar-width:none !important;
-    gap:12px !important;
-  }
-  #menu-view .destacados-row::-webkit-scrollbar{display:none !important;}
-  #menu-view .dest-card{
-    flex:0 0 calc((100% - 24px) / 3) !important;
-    min-width:0 !important;
-    scroll-snap-align:start !important;
-    padding:0 !important;
-    text-align:left !important;
-    color:inherit !important;
-    font:inherit !important;
-    cursor:pointer !important;
-  }
-  #menu-view .dest-card .ph{
-    width:100% !important;
-    aspect-ratio:1 / 1 !important;
-    height:auto !important;
-  }
-  #menu-view .dest-card .ph img{
-    width:100% !important;
-    height:100% !important;
-    object-fit:cover !important;
-  }
-  #menu-view .dest-card .info{
-    padding:7px 2px 0 !important;
-  }
-  #menu-view .dest-card .info b{
-    font-size:.72rem !important;
-    line-height:1.15 !important;
-  }
-  #menu-view .dest-card .price{
-    display:none !important;
-  }
-}
-</style>
-
 </head>
     <body>
 
@@ -3585,101 +3535,27 @@
     }).join('');
   }
 
-  let DESTACADOS_TIMER = null;
-  let DESTACADOS_PAUSED = false;
-
-  function buscarProductoEnMenu(nombre){
-    for(const cat of Object.values(MENU)){
-      const pool = cat.layout === 'cards' ? cat.items : cat.shelves.flatMap(s=>s.items);
-      const item = pool.find(it => it.n === nombre);
-      if(item) return item;
-    }
-    return null;
-  }
-
-  function abrirDestacado(nombre){
-    const item = buscarProductoEnMenu(nombre);
-    if(!item) return;
-    const id = PRODUCTOS_FLAT.indexOf(item);
-    if(id >= 0 && typeof abrirProducto === 'function') abrirProducto(id);
-  }
-
   function buildDestacados(){
     const wrap = document.getElementById('destacados');
     const row = document.getElementById('destacados-row');
-    if(!wrap || !row) return;
-
-    /* Selección editorial: primero los favoritos marcados y después
-       recomendaciones adicionales para que la sección siempre tenga
-       suficiente contenido para girar como carrusel. */
     const favoritos = [];
-    const todos = [];
     Object.values(MENU).forEach(cat=>{
       const pool = cat.layout === 'cards' ? cat.items : cat.shelves.flatMap(s=>s.items);
-      pool.forEach(it=>{
-        todos.push(it);
-        if(it.tag === 'Favorito') favoritos.push(it);
-      });
+      pool.filter(it=>it.tag==='Favorito').forEach(it=>favoritos.push(it));
     });
-
-    const recomendados = [
-      'Burrito de cerdo',
-      'Burrito de pollo',
-      'Cheesecake',
-      'Hamburguesa',
-      'Brownie con helado',
-      'Cappuccino',
-      'Waffles de pandebono',
-      'Limonada mango',
-      'Sándwich combo',
-      'Aborrajados'
-    ];
-
-    const seleccion = [];
-    [...favoritos, ...recomendados.map(buscarProductoEnMenu).filter(Boolean), ...todos].forEach(it=>{
-      if(it && !seleccion.some(x=>x.n === it.n) && seleccion.length < 10) seleccion.push(it);
-    });
-
-    if(!seleccion.length){ wrap.classList.add('hidden'); return; }
+    if(favoritos.length === 0){ wrap.classList.add('hidden'); return; }
     wrap.classList.remove('hidden');
-    row.innerHTML = seleccion.map((it, index) => `
-      <button type="button" class="dest-card" onclick="abrirDestacado('${it.n.replace(/'/g, "\\'")}')" aria-label="Ver ${it.n}">
+    row.innerHTML = favoritos.map(it => `
+      <div class="dest-card">
         <div class="ph">
           <img src="${imgPathFor(it.n)}" alt="${it.n}" onerror="onImgErr(this, '${it.n.replace(/'/g, "\\'")}')">
-          ${index < 3 ? `<span class="ribbon">${index===0 ? 'Más pedido' : index===1 ? 'Recomendado' : 'De la casa'}</span>` : ''}
+          <span class="ribbon">Favorito</span>
         </div>
         <div class="info">
           <b>${it.n}</b>
           ${it.p ? `<span class="price">$${it.p}</span>` : ''}
         </div>
-      </button>`).join('');
-
-    iniciarCarruselDestacados();
-  }
-
-  function iniciarCarruselDestacados(){
-    clearInterval(DESTACADOS_TIMER);
-    const row = document.getElementById('destacados-row');
-    if(!row || row.children.length < 4) return;
-
-    const avanzar = () => {
-      if(DESTACADOS_PAUSED) return;
-      const card = row.children[0];
-      if(!card) return;
-      const paso = card.getBoundingClientRect().width + parseFloat(getComputedStyle(row).gap || 0);
-      const final = row.scrollLeft + paso >= row.scrollWidth - row.clientWidth - 2;
-      if(final){
-        row.scrollTo({left:0, behavior:'auto'});
-      } else {
-        row.scrollTo({left: row.scrollLeft + paso, behavior:'smooth'});
-      }
-    };
-
-    DESTACADOS_TIMER = setInterval(avanzar, 3000);
-    row.addEventListener('mouseenter', ()=>DESTACADOS_PAUSED=true);
-    row.addEventListener('mouseleave', ()=>DESTACADOS_PAUSED=false);
-    row.addEventListener('touchstart', ()=>DESTACADOS_PAUSED=true, {passive:true});
-    row.addEventListener('touchend', ()=>{ setTimeout(()=>DESTACADOS_PAUSED=false, 1800); }, {passive:true});
+      </div>`).join('');
   }
 
   function showCat(k){
@@ -8050,5 +7926,336 @@
 })();
 </script>
 
+
+<style id="cr-final-fix-v4">
+/* =========================================================
+   CAFÉ REAL · CORRECCIÓN FINAL DE NAVEGACIÓN + MENÚ
+   1) Las vistas vuelven a ser realmente independientes.
+   2) Categorías 2×2 + 2×1 + Desayunos centrado.
+   3) Fotografías de categorías forzadas sobre los parches anteriores.
+   4) Header móvil con cinta/pulsera retráctil + hamburguesa visible.
+   5) Destacados con desplazamiento continuo y fluido.
+   ========================================================= */
+
+/* Nunca permitir que #menu-view se muestre junto con Inicio. */
+#menu-view.hidden,
+#site-view.hidden,
+#reserva-view.hidden,
+#galeria-view.hidden,
+#auditorio-view.hidden,
+#piso-view.hidden{
+  display:none !important;
+}
+
+@media(max-width:860px){
+  /* ----- HEADER / PULSERA RETRÁCTIL ----- */
+  .topnav{
+    position:fixed !important;
+    inset:0 0 auto 0 !important;
+    width:100% !important;
+    height:64px !important;
+    min-height:64px !important;
+    padding:0 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    overflow:visible !important;
+    z-index:12000 !important;
+  }
+  .topnav::before{
+    content:"" !important;
+    position:absolute !important;
+    z-index:0 !important;
+    left:0 !important;
+    right:0 !important;
+    top:0 !important;
+    height:64px !important;
+    background:#f6f1e4 !important;
+    border-bottom:1px solid rgba(3,73,68,.10) !important;
+    border-radius:0 !important;
+    box-shadow:0 2px 12px rgba(3,73,68,.04) !important;
+    transition:left .62s cubic-bezier(.22,.61,.36,1),
+               right .62s cubic-bezier(.22,.61,.36,1),
+               border-radius .62s cubic-bezier(.22,.61,.36,1),
+               box-shadow .45s ease !important;
+  }
+  .topnav .brand{
+    position:absolute !important;
+    z-index:3 !important;
+    left:50% !important;
+    top:50% !important;
+    transform:translate(-50%,-50%) !important;
+    width:auto !important;
+    margin:0 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+  }
+  .topnav .brand > div{display:none !important;}
+  .topnav .brand .logo-nav{
+    display:block !important;
+    width:48px !important;
+    height:48px !important;
+    margin:0 !important;
+  }
+  .topnav nav,.topnav .actions{display:none !important;}
+
+  /* Hamburguesa visible en todas las vistas móviles. */
+  .topnav .nav-mobile-toggle{
+    display:block !important;
+    visibility:visible !important;
+    opacity:1 !important;
+    pointer-events:auto !important;
+    position:absolute !important;
+    z-index:4 !important;
+    right:17px !important;
+    top:8px !important;
+    width:48px !important;
+    height:48px !important;
+  }
+  .topnav .nav-mobile-toggle span,
+  .topnav .nav-mobile-toggle::before,
+  .topnav .nav-mobile-toggle::after{
+    display:block !important;
+    visibility:visible !important;
+    opacity:1 !important;
+    background:#034944 !important;
+    width:28px !important;
+    height:2px !important;
+    left:10px !important;
+  }
+
+  /* La pulsera se enrolla desde los bordes hacia el logo. */
+  .topnav.cr-header-scrolled::before{
+    left:calc(50% - 38px) !important;
+    right:calc(50% - 38px) !important;
+    top:0 !important;
+    height:64px !important;
+    border-radius:38px !important;
+    box-shadow:0 5px 18px rgba(3,73,68,.13) !important;
+  }
+  .topnav.cr-header-scrolled .brand .logo-nav{
+    width:48px !important;
+    height:48px !important;
+  }
+  .topnav.cr-header-scrolled .nav-mobile-toggle{
+    opacity:0 !important;
+    pointer-events:none !important;
+    transform:translateX(10px) !important;
+    transition:opacity .28s ease,transform .42s ease !important;
+  }
+
+  /* El espacio superior evita que el header fijo tape el contenido. */
+  #menu-view,#site-view,#reserva-view,#galeria-view,#auditorio-view,#piso-view{
+    padding-top:64px !important;
+  }
+
+  /* ----- CATEGORÍAS: 2 + 2 + 2 + DESAYUNOS CENTRADO ----- */
+  #menu-view .menu-category-options{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:9px 10px !important;
+  }
+  #menu-view .menu-category-options button{
+    min-height:110px !important;
+    height:110px !important;
+    width:100% !important;
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:flex-start !important;
+    justify-content:flex-end !important;
+    position:relative !important;
+    overflow:hidden !important;
+    padding:14px !important;
+    border:0 !important;
+    border-radius:18px !important;
+    color:#fff !important;
+    background-color:#034944 !important;
+    background-size:cover !important;
+    background-position:center !important;
+    isolation:isolate !important;
+  }
+  #menu-view .menu-category-options button::before{
+    content:"" !important;
+    position:absolute !important;
+    inset:0 !important;
+    z-index:-1 !important;
+    background:linear-gradient(180deg,rgba(0,0,0,.04),rgba(0,35,31,.72)) !important;
+    pointer-events:none !important;
+  }
+  #menu-view .category-icon{display:none !important;}
+  #menu-view .category-name{
+    position:relative !important;
+    z-index:2 !important;
+    color:#fff !important;
+    font:italic 400 1rem/1 'Cormorant Garamond',serif !important;
+    text-shadow:0 1px 8px rgba(0,0,0,.38) !important;
+    white-space:normal !important;
+  }
+  #menu-view .menu-category-options .cnt{
+    position:relative !important;
+    z-index:2 !important;
+    color:rgba(255,255,255,.78) !important;
+    font:.54rem 'JetBrains Mono',monospace !important;
+    margin-top:6px !important;
+  }
+  #menu-view .category-arrow{
+    display:block !important;
+    position:absolute !important;
+    right:12px !important;
+    bottom:13px !important;
+    z-index:2 !important;
+    color:#fff !important;
+    font-size:1rem !important;
+  }
+  #menu-view .menu-category-options button:last-child{
+    grid-column:1 / -1 !important;
+    width:50% !important;
+    justify-self:center !important;
+  }
+
+  /* ----- DESTACADOS: carrusel continuo ----- */
+  #menu-view .destacados-row{
+    overflow:hidden !important;
+    scroll-snap-type:none !important;
+    touch-action:pan-y !important;
+    cursor:grab !important;
+  }
+  #menu-view .destacados-row.arrastrando{cursor:grabbing !important;}
+}
+</style>
+
+<script id="cr-final-fix-v4-js">
+(function(){
+  /* Imágenes de categoría: !important para vencer los parches anteriores. */
+  const CATEGORY_IMAGES={
+    'tarderos':'burrito-de-cerdo',
+    'cafes':'cafe-real',
+    'bebidas-frias':'soda-de-frutos-rojos',
+    'limonadas':'limonada-mango',
+    'cervezas':'heineken',
+    'postres':'cheesecake',
+    'desayunos':'huevos-rancheros'
+  };
+
+  function forceCategoryImages(){
+    document.querySelectorAll('#menu-category-options button[data-k]').forEach(function(btn){
+      const slug=CATEGORY_IMAGES[btn.getAttribute('data-k')];
+      if(!slug) return;
+      btn.style.setProperty('background-image',
+        'linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,35,31,.12)),url("images/menu/'+slug+'.webp")',
+        'important');
+    });
+  }
+
+  /* Convierte los productos reales del menú en recomendaciones, sin inventar
+     productos nuevos. Toma los primeros 10 que ya existen en la carta. */
+  function rebuildDestacados(){
+    const wrap=document.getElementById('destacados');
+    const row=document.getElementById('destacados-row');
+    if(!wrap || !row) return;
+
+    const seen=new Set();
+    const cards=[];
+    document.querySelectorAll('#menu-panel-body .prod-row').forEach(function(prod){
+      const title=prod.querySelector('.prod-top h4');
+      const img=prod.querySelector('.prod-photo img');
+      const price=prod.querySelector('.prod-price');
+      if(!title || !img) return;
+      const name=title.textContent.trim();
+      if(!name || seen.has(name)) return;
+      seen.add(name);
+      cards.push({name:name,src:img.getAttribute('src'),price:price?price.textContent.trim():''});
+    });
+
+    if(cards.length<4) return;
+    const picks=cards.slice(0,Math.min(10,cards.length));
+    row.innerHTML=picks.map(function(it){
+      return '<div class="dest-card" role="button" tabindex="0" data-product-name="'+it.name.replace(/"/g,'&quot;')+'">'
+        +'<div class="ph"><img src="'+it.src+'" alt="'+it.name.replace(/"/g,'&quot;')+'"></div>'
+        +'<div class="info"><b>'+it.name+'</b>'+(it.price?'<span class="price">'+it.price+'</span>':'')+'</div>'
+        +'</div>';
+    }).join('');
+
+    /* Duplicado exacto para que el loop sea verdaderamente continuo. */
+    row.innerHTML += row.innerHTML;
+
+    row.querySelectorAll('.dest-card').forEach(function(card){
+      function open(){
+        const name=card.getAttribute('data-product-name');
+        const target=Array.from(document.querySelectorAll('#menu-panel-body .prod-row')).find(function(r){
+          const h=r.querySelector('.prod-top h4');
+          return h && h.textContent.trim()===name;
+        });
+        if(target) target.click();
+      }
+      card.addEventListener('click',open);
+      card.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}});
+    });
+
+    startContinuousCarousel(row);
+  }
+
+  function startContinuousCarousel(row){
+    if(row.__crContinuousStarted) return;
+    row.__crContinuousStarted=true;
+    let last=performance.now();
+    let paused=false;
+    const speed=.030; /* px/ms = ~30px/s, movimiento constante */
+
+    function frame(now){
+      const dt=Math.min(40,now-last); last=now;
+      if(!paused && row.scrollWidth>row.clientWidth){
+        row.scrollLeft += speed*dt;
+        const half=row.scrollWidth/2;
+        if(row.scrollLeft>=half) row.scrollLeft-=half;
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+
+    ['pointerdown','touchstart','mouseenter'].forEach(function(ev){
+      row.addEventListener(ev,function(){paused=true;});
+    });
+    ['pointerup','pointercancel','touchend','mouseleave'].forEach(function(ev){
+      row.addEventListener(ev,function(){paused=false;last=performance.now();});
+    });
+  }
+
+  /* Menú inferior = volver a la portada de categorías, no quedarse en la
+     categoría actual. */
+  function patchMobileMenuButton(){
+    const b=document.querySelector('#mobile-bottom-nav .btab[data-view="menu"]');
+    if(!b || b.dataset.crPatched==='1') return;
+    b.dataset.crPatched='1';
+    b.onclick=function(){
+      if(typeof window.enterView==='function') window.enterView('menu');
+      const menu=document.getElementById('menu-view');
+      if(menu) menu.classList.remove('ref-category-mode');
+      forceCategoryImages();
+      window.scrollTo(0,0);
+      document.querySelectorAll('#mobile-bottom-nav .btab').forEach(function(t){
+        t.classList.toggle('btab-active',t.dataset.view==='menu');
+      });
+    };
+  }
+
+  function init(){
+    forceCategoryImages();
+    rebuildDestacados();
+    patchMobileMenuButton();
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){setTimeout(init,120);});
+  else setTimeout(init,120);
+
+  /* Cada vez que se entra al menú, reasegurar imágenes y navegación. */
+  document.addEventListener('click',function(){
+    setTimeout(function(){forceCategoryImages();patchMobileMenuButton();},80);
+  },{passive:true});
+})();
+</script>
 </body>
 </html>
