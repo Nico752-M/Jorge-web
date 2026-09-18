@@ -7442,5 +7442,489 @@
 })();
 </script>
 
+<!-- =========================================================
+     CAFÉ REAL · MENÚ REFERENCE MATCH v2
+     Replica visual de la referencia compartida por el usuario.
+     No carrito / no compra.
+     ========================================================= -->
+<style id="cr-menu-reference-match-v2">
+#menu-view.cr-reference-menu,
+#menu-view{
+  --ref-green:#064f49;
+  --ref-green-2:#0b675f;
+  --ref-cream:#f7f2e8;
+  --ref-paper:#fbfaf6;
+  --ref-ink:#18312e;
+  --ref-muted:#64716d;
+  background:var(--ref-cream) !important;
+}
+
+/* Header: logo centrado, como la referencia */
+@media(max-width:860px){
+  #menu-view .topnav{
+    position:sticky !important;
+    top:0 !important;
+    height:92px !important;
+    min-height:92px !important;
+    padding:0 20px !important;
+    justify-content:center !important;
+    background:rgba(250,247,239,.96) !important;
+    border-bottom:1px solid rgba(6,79,73,.12) !important;
+    backdrop-filter:blur(16px) !important;
+  }
+  #menu-view .topnav .brand{
+    position:absolute !important;
+    left:50% !important;
+    top:50% !important;
+    transform:translate(-50%,-50%) !important;
+    display:block !important;
+    margin:0 !important;
+    font-size:0 !important;
+  }
+  #menu-view .topnav .brand .logo-nav{
+    width:67px !important;
+    height:67px !important;
+    margin:0 !important;
+  }
+  #menu-view .topnav .brand div{display:none !important;}
+  #menu-view .topnav nav,
+  #menu-view .topnav .actions{display:none !important;}
+  #menu-view .topnav .nav-mobile-toggle{
+    right:18px !important;
+    width:48px !important;
+    height:48px !important;
+  }
+  #menu-view .topnav .nav-mobile-toggle span,
+  #menu-view .topnav .nav-mobile-toggle::before,
+  #menu-view .topnav .nav-mobile-toggle::after{
+    background:var(--ref-green) !important;
+    width:28px !important;
+    left:10px !important;
+    height:2px !important;
+  }
+}
+
+/* La vista principal del menú es la segunda pantalla de la referencia. */
+#menu-view .menu-hero{display:none !important;}
+#menu-view .menu-mobile-tools{order:1 !important;}
+#menu-view .menu-layout{order:2 !important;}
+#menu-view .destacados{order:3 !important;}
+#menu-view .menu-final-cta{order:4 !important;}
+#menu-view .menu-mobile-tools{background:transparent !important;}
+
+@media(max-width:860px){
+  #menu-view{
+    display:flex !important;
+    flex-direction:column !important;
+  }
+  #menu-view .topnav{order:0 !important;}
+  #menu-view .menu-mobile-tools{
+    padding:20px 20px 0 !important;
+    width:100% !important;
+  }
+  #menu-view .menu-search-box{
+    height:56px !important;
+    border-radius:19px !important;
+    padding:0 16px !important;
+    background:rgba(255,255,255,.90) !important;
+    border:1px solid rgba(6,79,73,.10) !important;
+    box-shadow:0 7px 22px rgba(34,53,48,.07) !important;
+  }
+  #menu-view .menu-search-box svg{width:21px !important;height:21px !important;}
+  #menu-view .menu-search-box input{font-size:.79rem !important;}
+
+  /* Categorías fotográficas 2x3 + una de ancho completo */
+  #menu-view .menu-layout{
+    display:flex !important;
+    flex-direction:column !important;
+    width:100% !important;
+    padding:0 20px 0 !important;
+  }
+  #menu-view .menu-sidebar{
+    padding-top:28px !important;
+    width:100% !important;
+  }
+  #menu-view .menu-category-heading{
+    margin:0 0 15px !important;
+    font-size:.59rem !important;
+    letter-spacing:.20em !important;
+    color:var(--ref-green) !important;
+  }
+  #menu-view .menu-category-heading-line{
+    width:43px !important;
+    background:rgba(6,79,73,.30) !important;
+  }
+  #menu-view .menu-category-options{
+    display:grid !important;
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:8px !important;
+  }
+  #menu-view .menu-category-options button{
+    position:relative !important;
+    min-height:94px !important;
+    height:94px !important;
+    padding:13px 13px !important;
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:flex-start !important;
+    justify-content:flex-end !important;
+    gap:2px !important;
+    overflow:hidden !important;
+    border:0 !important;
+    border-radius:14px !important;
+    color:#fff !important;
+    background-color:var(--ref-green) !important;
+    background-size:cover !important;
+    background-position:center !important;
+    box-shadow:0 5px 15px rgba(25,40,36,.10) !important;
+    text-shadow:0 1px 4px rgba(0,0,0,.28) !important;
+  }
+  #menu-view .menu-category-options button::before{
+    content:"" !important;
+    position:absolute !important;
+    inset:0 !important;
+    background:linear-gradient(180deg,rgba(4,30,27,.02) 15%,rgba(4,30,27,.67) 100%) !important;
+    pointer-events:none !important;
+  }
+  #menu-view .menu-category-options button.active::before{
+    background:linear-gradient(180deg,rgba(3,73,68,.16),rgba(3,73,68,.84)) !important;
+  }
+  #menu-view .menu-category-options button > *{position:relative !important;z-index:1 !important;}
+  #menu-view .category-icon{display:none !important;}
+  #menu-view .category-name{
+    font-size:.72rem !important;
+    line-height:1.1 !important;
+    font-weight:500 !important;
+    color:#fff !important;
+    order:1 !important;
+    overflow:visible !important;
+    text-overflow:clip !important;
+  }
+  #menu-view .menu-category-options .cnt{
+    font-size:.51rem !important;
+    color:rgba(255,255,255,.72) !important;
+    order:2 !important;
+  }
+  #menu-view .category-arrow{
+    display:block !important;
+    position:absolute !important;
+    right:11px !important;
+    bottom:10px !important;
+    color:rgba(255,255,255,.88) !important;
+    font-size:1.1rem !important;
+    z-index:2 !important;
+  }
+  #menu-view .menu-category-options button:nth-child(7){grid-column:1 / -1 !important;height:82px !important;min-height:82px !important;}
+
+  /* En home no mostramos los productos de la categoría hasta entrar en una categoría. */
+  #menu-view .menu-panel-body{display:none !important;}
+
+  /* Favoritos */
+  #menu-view .destacados{
+    display:block !important;
+    width:100% !important;
+    padding:28px 20px 110px !important;
+    margin:0 !important;
+  }
+  #menu-view .destacados .head{
+    display:block !important;
+    margin-bottom:12px !important;
+  }
+  #menu-view .destacados .head h3{
+    font-size:1.55rem !important;
+    color:var(--ref-green) !important;
+  }
+  #menu-view .destacados .head span{
+    display:block !important;
+    margin-top:5px !important;
+    font-size:.61rem !important;
+    color:var(--ref-muted) !important;
+  }
+  #menu-view .destacados-row{
+    gap:9px !important;
+    overflow-x:auto !important;
+    padding:0 0 4px !important;
+  }
+  #menu-view .dest-card{
+    flex:0 0 112px !important;
+    border:0 !important;
+    border-radius:13px !important;
+    background:transparent !important;
+    box-shadow:none !important;
+    overflow:visible !important;
+  }
+  #menu-view .dest-card .ph{
+    height:95px !important;
+    border-radius:12px !important;
+    overflow:hidden !important;
+  }
+  #menu-view .dest-card .ribbon{display:none !important;}
+  #menu-view .dest-card .info{
+    display:block !important;
+    padding:7px 2px 0 !important;
+  }
+  #menu-view .dest-card .info b{
+    display:block !important;
+    font-size:.78rem !important;
+    line-height:1.05 !important;
+    color:var(--ref-ink) !important;
+  }
+  #menu-view .dest-card .price{display:none !important;}
+
+  #menu-view .menu-final-cta{display:none !important;}
+}
+
+/* Vista de categoría: tercera pantalla de la referencia. */
+#menu-view.ref-category-mode .menu-hero{display:flex !important;}
+#menu-view.ref-category-mode .menu-mobile-tools,
+#menu-view.ref-category-mode .menu-sidebar,
+#menu-view.ref-category-mode .destacados{display:none !important;}
+#menu-view.ref-category-mode .menu-layout{
+  display:block !important;
+  padding:0 16px 110px !important;
+}
+#menu-view.ref-category-mode .menu-panel-body{display:block !important;}
+#menu-view.ref-category-mode .menu-cat:not(.active){display:none !important;}
+#menu-view.ref-category-mode .menu-hero{
+  height:235px !important;
+  min-height:235px !important;
+  max-height:none !important;
+  padding:52px 26px 25px !important;
+  justify-content:flex-end !important;
+}
+#menu-view.ref-category-mode .menu-hero h2{font-size:2.45rem !important;max-width:14ch !important;}
+#menu-view.ref-category-mode .menu-hero p{font-size:.73rem !important;max-width:31ch !important;margin-top:9px !important;}
+#menu-view.ref-category-mode .menu-hero .tag{font-size:.55rem !important;margin-bottom:8px !important;}
+#menu-view.ref-category-mode .menu-panel-head{display:none !important;}
+#menu-view.ref-category-mode .prod-list{display:grid !important;grid-template-columns:1fr !important;gap:10px !important;}
+#menu-view.ref-category-mode .menu-shelf-2{margin:0 0 16px !important;}
+#menu-view.ref-category-mode .shelf-title{font-size:1.15rem !important;margin:16px 0 9px !important;}
+#menu-view.ref-category-mode .prod-row{
+  display:grid !important;
+  grid-template-columns:115px minmax(0,1fr) !important;
+  min-height:140px !important;
+  padding:10px !important;
+  gap:13px !important;
+  border:1px solid rgba(6,79,73,.06) !important;
+  border-radius:18px !important;
+  background:rgba(255,255,255,.68) !important;
+  box-shadow:0 5px 16px rgba(36,50,46,.055) !important;
+}
+#menu-view.ref-category-mode .prod-photo{width:115px !important;height:120px !important;min-height:120px !important;border-radius:14px !important;}
+#menu-view.ref-category-mode .prod-info{padding:6px 2px 4px 0 !important;justify-content:center !important;}
+#menu-view.ref-category-mode .prod-top{display:flex !important;align-items:flex-start !important;justify-content:space-between !important;gap:7px !important;}
+#menu-view.ref-category-mode .prod-top h4{font-size:1.25rem !important;line-height:1.0 !important;}
+#menu-view.ref-category-mode .prod-price{font-size:.59rem !important;padding-top:3px !important;}
+#menu-view.ref-category-mode .prod-tag{align-self:flex-start !important;margin:0 0 7px !important;padding:4px 7px !important;font-size:.45rem !important;background:var(--ref-green) !important;color:#fff !important;}
+#menu-view.ref-category-mode .prod-info > p{display:block !important;font-size:.66rem !important;line-height:1.42 !important;margin-top:7px !important;-webkit-line-clamp:2 !important;}
+#menu-view.ref-category-mode .prod-detail-hint{font-size:.52rem !important;margin-top:8px !important;color:var(--ref-green-2) !important;}
+
+/* Flecha de volver dentro del hero */
+#menu-view .ref-menu-back{
+  display:none;
+  position:absolute;
+  left:18px;
+  top:16px;
+  width:40px;height:40px;
+  align-items:center;justify-content:center;
+  border:1px solid rgba(255,255,255,.28);
+  border-radius:50%;
+  color:#fff;
+  background:rgba(0,0,0,.10);
+  backdrop-filter:blur(8px);
+  font-size:1.25rem;
+  z-index:4;
+}
+#menu-view.ref-category-mode .ref-menu-back{display:flex;}
+
+/* Modal de producto = pantalla editorial de producto de la referencia. */
+@media(max-width:860px){
+  #producto-modal .producto-modal-box{
+    width:100vw !important;
+    max-width:none !important;
+    height:100dvh !important;
+    max-height:none !important;
+    border-radius:0 !important;
+    display:flex !important;
+    flex-direction:column !important;
+    background:var(--ref-paper) !important;
+  }
+  #producto-modal #producto-modal-img{
+    flex:0 0 58vh !important;
+    width:100% !important;
+    height:58vh !important;
+    min-height:0 !important;
+    aspect-ratio:auto !important;
+    object-fit:cover !important;
+  }
+  #producto-modal .producto-modal-body{
+    flex:1 1 auto !important;
+    overflow:auto !important;
+    padding:22px 22px 38px !important;
+  }
+  #producto-modal #producto-modal-nombre{font-size:2rem !important;}
+  #producto-modal #producto-modal-precio{font-size:.68rem !important;}
+  #producto-modal #producto-modal-desc{font-size:.74rem !important;line-height:1.65 !important;margin-top:13px !important;}
+  #producto-modal .producto-modal-close{
+    top:16px !important;right:16px !important;
+    width:40px !important;height:40px !important;
+    background:rgba(255,255,255,.90) !important;
+  }
+}
+
+/* Contacto final inspirado en la sexta pantalla. */
+#menu-view .menu-final-cta.ref-contact-card{
+  position:relative !important;
+  min-height:360px !important;
+  margin:0 !important;
+  padding:42px 24px 95px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  text-align:center !important;
+  color:#fff !important;
+  overflow:hidden !important;
+  border:0 !important;
+  background:var(--ref-green) !important;
+}
+#menu-view .ref-contact-card::before{
+  content:"" !important;position:absolute !important;inset:0 !important;
+  background:linear-gradient(180deg,rgba(3,28,25,.25),rgba(3,28,25,.80)) !important;
+  z-index:0 !important;
+}
+#menu-view .ref-contact-card > *{position:relative !important;z-index:1 !important;}
+#menu-view .ref-contact-card h3{color:#fff !important;font-size:2rem !important;}
+#menu-view .ref-contact-card span{color:rgba(255,255,255,.75) !important;}
+#menu-view .ref-contact-card .btn{border-color:#fff !important;color:#fff !important;background:transparent !important;border-radius:999px !important;}
+</style>
+
+<script id="cr-menu-reference-match-v2-js">
+(function(){
+  function refMenuInit(){
+    var menu=document.getElementById('menu-view');
+    if(!menu) return;
+    menu.classList.add('cr-reference-menu');
+
+    /* Orden exacto de la referencia: buscador → categorías → favoritos. */
+    var search=menu.querySelector('.menu-mobile-tools');
+    var layout=menu.querySelector('.menu-layout');
+    var favorites=menu.querySelector('.destacados');
+    if(search && layout && favorites){
+      menu.appendChild(search);
+      menu.appendChild(layout);
+      menu.appendChild(favorites);
+    }
+
+    /* Imágenes de las categorías tomadas de productos que ya existen en la carta. */
+    var categoryImages={
+      'tarderos':'burrito-de-cerdo',
+      'cafes':'cafe-real',
+      'bebidas-frias':'soda-de-frutos-rojos',
+      'limonadas':'limonada-mango',
+      'cervezas':'heineken',
+      'postres':'cheesecake',
+      'desayunos':'huevos-rancheros'
+    };
+    menu.querySelectorAll('#menu-category-options button').forEach(function(btn){
+      var k=btn.getAttribute('data-k');
+      var slug=categoryImages[k];
+      if(slug){
+        btn.style.backgroundImage='url("images/menu/'+slug+'.webp")';
+      }
+    });
+
+    /* Botón volver de la vista de categoría. */
+    var hero=menu.querySelector('.menu-hero');
+    if(hero && !hero.querySelector('.ref-menu-back')){
+      var back=document.createElement('button');
+      back.type='button';
+      back.className='ref-menu-back';
+      back.setAttribute('aria-label','Volver a categorías');
+      back.innerHTML='←';
+      back.addEventListener('click',function(){refHome();});
+      hero.appendChild(back);
+    }
+
+    /* Contacto visual al final: no compra. */
+    var cta=menu.querySelector('.menu-final-cta');
+    if(cta){
+      cta.classList.add('ref-contact-card');
+      var copy=cta.querySelector('h3');
+      if(copy) copy.innerHTML='¿Quieres reservar<br>o tienes alguna duda?';
+      var label=cta.querySelector('span');
+      if(label) label.textContent='Estamos para ti';
+    }
+
+    /* Guardamos la función original de categoría una sola vez. */
+    if(!window.__crRefShowCatWrapped && typeof window.showCat==='function'){
+      window.__crRefShowCatWrapped=true;
+      var original=window.showCat;
+      window.showCat=function(k){
+        original.apply(this,arguments);
+        setTimeout(function(){
+          refCategory(k);
+        },30);
+      };
+    }
+
+    /* Si la vista se reconstruye al cambiar de página, volver a aplicar. */
+    setTimeout(function(){
+      menu.querySelectorAll('#menu-category-options button').forEach(function(btn){
+        var k=btn.getAttribute('data-k');
+        var slug=categoryImages[k];
+        if(slug) btn.style.backgroundImage='url("images/menu/'+slug+'.webp")';
+      });
+    },100);
+  }
+
+  function refCategory(k){
+    var menu=document.getElementById('menu-view');
+    if(!menu) return;
+    menu.classList.add('ref-category-mode');
+
+    var button=menu.querySelector('#menu-category-options button[data-k="'+k+'"]');
+    var catLabel=button ? (button.querySelector('.category-name')||{}).textContent : '';
+    var catNode=menu.querySelector('#cat-'+k);
+    var noteNode=catNode ? catNode.querySelector('.menu-panel-head p') : null;
+    var firstImg=catNode ? catNode.querySelector('.prod-photo img') : null;
+    var hero=menu.querySelector('.menu-hero');
+    var img=menu.querySelector('.menu-hero-bg');
+    var tag=menu.querySelector('.menu-hero .tag');
+    var h=menu.querySelector('.menu-hero h2');
+    var p=menu.querySelector('.menu-hero > p');
+
+    if(firstImg && img && firstImg.src) img.src=firstImg.src;
+    if(tag) tag.textContent=(catLabel||'Carta').toUpperCase();
+    if(h) h.textContent=noteNode ? noteNode.textContent : (catLabel||'Nuestra carta');
+    if(p) p.textContent='Una selección para compartir, conversar y quedarse un rato.';
+    if(hero) hero.setAttribute('aria-label',catLabel||'Categoría');
+
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function refHome(){
+    var menu=document.getElementById('menu-view');
+    if(!menu) return;
+    menu.classList.remove('ref-category-mode');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  window.__crRefHome=refHome;
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',refMenuInit);
+  else refMenuInit();
+
+  /* En caso de que la vista menú se oculte/muestre dinámicamente. */
+  var oldEnter=window.enterView;
+  if(typeof oldEnter==='function' && !window.__crRefEnterWrapped){
+    window.__crRefEnterWrapped=true;
+    window.enterView=function(v){
+      var r=oldEnter.apply(this,arguments);
+      if(v==='menu') setTimeout(refMenuInit,50);
+      return r;
+    };
+  }
+})();
+</script>
+
 </body>
 </html>
