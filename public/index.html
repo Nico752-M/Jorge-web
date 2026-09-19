@@ -8176,12 +8176,24 @@
 
   /* ----- DESTACADOS: carrusel continuo ----- */
   #menu-view .destacados-row{
-    overflow:hidden !important;
+    overflow-x:auto !important;
+    overflow-y:hidden !important;
     scroll-snap-type:none !important;
     touch-action:pan-y !important;
+    -webkit-overflow-scrolling:touch !important;
+    overscroll-behavior-x:contain !important;
     cursor:grab !important;
+    user-select:none !important;
+    -webkit-user-select:none !important;
   }
-  #menu-view .destacados-row.arrastrando{cursor:grabbing !important;}
+  #menu-view .destacados-row.arrastrando{
+    cursor:grabbing !important;
+    scroll-behavior:auto !important;
+  }
+  #menu-view .destacados-row img{
+    -webkit-user-drag:none !important;
+    user-drag:none !important;
+  }
 }
 </style>
 
@@ -8259,27 +8271,144 @@
   function startContinuousCarousel(row){
     if(row.__crContinuousStarted) return;
     row.__crContinuousStarted=true;
+
     let last=performance.now();
     let paused=false;
-    const speed=.030; /* px/ms = ~30px/s, movimiento constante */
+    let dragging=false;
+    let moved=false;
+    let startX=0;
+    let startScroll=0;
+    let pointerId=null;
+    let resumeTimer=null;
+
+    /* Movimiento automático original: suave y constante. */
+    const speed=.030; /* px/ms = ~30px/s */
+
+    function getHalf(){
+      return row.scrollWidth / 2;
+    }
+
+    function normalizeLoop(){
+      const half=getHalf();
+      if(!half) return;
+      if(row.scrollLeft >= half) row.scrollLeft -= half;
+      else if(row.scrollLeft < 0) row.scrollLeft += half;
+    }
+
+    function pauseAuto(){
+      paused=true;
+      last=performance.now();
+    }
+
+    function resumeAuto(){
+      paused=false;
+      last=performance.now();
+    }
+
+    function scheduleResume(){
+      clearTimeout(resumeTimer);
+      resumeTimer=setTimeout(function(){
+        if(!dragging) resumeAuto();
+      }, 120);
+    }
+
+    function beginDrag(x, id){
+      dragging=true;
+      moved=false;
+      startX=x;
+      startScroll=row.scrollLeft;
+      pointerId=id;
+      pauseAuto();
+      row.classList.add('arrastrando');
+      if(id!==null && row.setPointerCapture){
+        try{ row.setPointerCapture(id); }catch(_){}
+      }
+    }
+
+    function moveDrag(x, ev){
+      if(!dragging) return;
+      const delta=x-startX;
+
+      if(Math.abs(delta)>6) moved=true;
+
+      if(Math.abs(delta)>1){
+        /* Con touch-action:pan-y, prevenimos solo cuando el gesto
+           realmente es horizontal, dejando el scroll vertical de la página. */
+        if(ev && ev.cancelable) ev.preventDefault();
+        row.scrollLeft=startScroll-delta;
+        normalizeLoop();
+      }
+    }
+
+    function endDrag(){
+      if(!dragging) return;
+      dragging=false;
+      pointerId=null;
+      row.classList.remove('arrastrando');
+      scheduleResume();
+    }
+
+    /* Pointer Events: Safari/iOS moderno, Chrome Android y escritorio. */
+    if(window.PointerEvent){
+      row.addEventListener('pointerdown',function(e){
+        if(e.pointerType==='mouse' && e.button!==0) return;
+        beginDrag(e.clientX,e.pointerId);
+      });
+
+      row.addEventListener('pointermove',function(e){
+        if(dragging) moveDrag(e.clientX,e);
+      },{passive:false});
+
+      row.addEventListener('pointerup',endDrag);
+      row.addEventListener('pointercancel',endDrag);
+      row.addEventListener('lostpointercapture',endDrag);
+    } else {
+      /* Fallback para navegadores antiguos sin Pointer Events. */
+      row.addEventListener('touchstart',function(e){
+        if(e.touches.length!==1) return;
+        beginDrag(e.touches[0].clientX,null);
+      },{passive:true});
+
+      row.addEventListener('touchmove',function(e){
+        if(e.touches.length!==1) return;
+        moveDrag(e.touches[0].clientX,e);
+      },{passive:false});
+
+      row.addEventListener('touchend',endDrag,{passive:true});
+      row.addEventListener('touchcancel',endDrag,{passive:true});
+    }
+
+    /* Mouse: al pasar por encima se detiene el auto-scroll, pero el
+       arrastre manual sigue disponible. */
+    row.addEventListener('mouseenter',function(){
+      if(!dragging) pauseAuto();
+    });
+    row.addEventListener('mouseleave',function(){
+      if(!dragging) resumeAuto();
+    });
+
+    /* No abrir un producto cuando el usuario realmente estaba deslizando. */
+    row.addEventListener('click',function(e){
+      if(moved){
+        e.preventDefault();
+        e.stopPropagation();
+        moved=false;
+      }
+    },true);
 
     function frame(now){
-      const dt=Math.min(40,now-last); last=now;
-      if(!paused && row.scrollWidth>row.clientWidth){
+      const dt=Math.min(40,now-last);
+      last=now;
+
+      if(!paused && !dragging && row.scrollWidth>row.clientWidth){
         row.scrollLeft += speed*dt;
-        const half=row.scrollWidth/2;
-        if(row.scrollLeft>=half) row.scrollLeft-=half;
+        normalizeLoop();
       }
+
       requestAnimationFrame(frame);
     }
-    requestAnimationFrame(frame);
 
-    ['pointerdown','touchstart','mouseenter'].forEach(function(ev){
-      row.addEventListener(ev,function(){paused=true;});
-    });
-    ['pointerup','pointercancel','touchend','mouseleave'].forEach(function(ev){
-      row.addEventListener(ev,function(){paused=false;last=performance.now();});
-    });
+    requestAnimationFrame(frame);
   }
 
   /* Menú inferior = volver a la portada de categorías, no quedarse en la
