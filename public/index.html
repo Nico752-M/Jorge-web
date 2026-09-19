@@ -2484,8 +2484,13 @@
         <p>Una primera probada de lo que hace especial la experiencia en Café Real.</p>
       </div>
       <div class="cafearias-carousel">
-        <div class="cafearias-row" id="cafearias-row"></div>
+      <div class="cafearias-row" id="cafearias-row">
+        <article class="cafearias-video-card"><video class="video-poster" autoplay muted loop playsinline preload="auto" disablePictureInPicture controlsList="nodownload noplaybackrate" poster="images/cafearias/cafearias-granos.webp" aria-label="Del grano a la taza."><source src="menu/cafe-arias-1.mp4" type="video/mp4"></video><div class="video-copy"><small>Historia del café</small><h3>Del grano a la taza.</h3></div></article>
+        <article class="cafearias-video-card"><video class="video-poster" autoplay muted loop playsinline preload="auto" disablePictureInPicture controlsList="nodownload noplaybackrate" poster="images/cafearias/cafearias-canasta.webp" aria-label="Café, origen y territorio."><source src="menu/cafe-arias-2.mp4" type="video/mp4"></video><div class="video-copy"><small>Así se vive</small><h3>Café, origen y territorio.</h3></div></article>
+        <article class="cafearias-video-card"><video class="video-poster" autoplay muted loop playsinline preload="auto" disablePictureInPicture controlsList="nodownload noplaybackrate" poster="images/cafearias/cafearias-preparado.webp" aria-label="Historias detrás del café."><source src="menu/cafe-arias-3.mp4" type="video/mp4"></video><div class="video-copy"><small>Nuestra gente</small><h3>Historias detrás del café.</h3></div></article>
+        <article class="cafearias-video-card"><video class="video-poster" autoplay muted loop playsinline preload="auto" disablePictureInPicture controlsList="nodownload noplaybackrate" poster="images/cafearias/cafearias-paquete.webp" aria-label="Una taza con historia."><source src="menu/cafe-arias-4.mp4" type="video/mp4"></video><div class="video-copy"><small>Café Real</small><h3>Una taza con historia.</h3></div></article>
       </div>
+    </div>
     </section>  
 
     <!-- PUENTE DE INTENCIÓN: convierte el interés en una elección personal -->
@@ -3643,7 +3648,7 @@
         <div class="info"><b>${p.label}</b><p>${p.texto}</p></div>
       </div>`).join('');
   }
-  buildCafeArias();
+  /* buildCafeArias desactivado: Café Arias usa videos. */
   function activarArrastreHorizontal(selector){
     document.querySelectorAll(selector).forEach(el=>{
       let dragging=false, startX=0, startScroll=0, moved=false, pointerId=null;
@@ -8310,7 +8315,21 @@
   },{passive:true});
 })();
 </script>
-</body>
+<script>
+(function(){
+  function activar(){
+    document.querySelectorAll('#cafearias-row .cafearias-video-card video').forEach(function(v){
+      v.muted=true; v.defaultMuted=true; v.autoplay=true; v.loop=true; v.controls=false; v.playsInline=true;
+      v.addEventListener('contextmenu',function(e){e.preventDefault()});
+      v.addEventListener('click',function(e){e.preventDefault()});
+      function play(){v.controls=false;v.muted=true;var p=v.play();if(p&&p.catch)p.catch(function(){});}
+      v.addEventListener('loadeddata',play);v.addEventListener('canplay',play);v.addEventListener('pause',play);
+      v.addEventListener('ended',function(){v.currentTime=0;play()});play();
+    });
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',activar); else activar();
+})();
+</script></body>
 </html>
 
 <style id="cr-v5-menu-final-visual">
