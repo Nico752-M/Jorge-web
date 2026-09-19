@@ -8329,7 +8329,147 @@
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',activar); else activar();
 })();
-</script></body>
+</script>
+<style id="ajuste-final-hamburguesa-modal">
+@media (max-width:860px){
+  /* ===== HAMBURGUESA: 3 LÍNEAS CLARAS ===== */
+  #site-view .topnav .nav-mobile-toggle,
+  #menu-view .topnav .nav-mobile-toggle,
+  .topnav .nav-mobile-toggle{
+    display:block !important;
+    visibility:visible !important;
+    opacity:1 !important;
+    position:absolute !important;
+    top:50% !important;
+    right:12px !important;
+    left:auto !important;
+    transform:translateY(-50%) !important;
+    width:46px !important;
+    height:46px !important;
+    min-width:46px !important;
+    min-height:46px !important;
+    padding:0 !important;
+    margin:0 !important;
+    border:0 !important;
+    background:transparent !important;
+    z-index:100002 !important;
+    overflow:visible !important;
+  }
+
+  #site-view .topnav .nav-mobile-toggle span,
+  #menu-view .topnav .nav-mobile-toggle span,
+  .topnav .nav-mobile-toggle span{
+    display:block !important;
+    position:absolute !important;
+    left:9px !important;
+    top:21px !important;
+    width:28px !important;
+    height:2.5px !important;
+    margin:0 !important;
+    padding:0 !important;
+    background:#034944 !important;
+    border-radius:2px !important;
+    opacity:1 !important;
+    visibility:visible !important;
+    transform:none !important;
+  }
+
+  #site-view .topnav .nav-mobile-toggle::before,
+  #site-view .topnav .nav-mobile-toggle::after,
+  #menu-view .topnav .nav-mobile-toggle::before,
+  #menu-view .topnav .nav-mobile-toggle::after,
+  .topnav .nav-mobile-toggle::before,
+  .topnav .nav-mobile-toggle::after{
+    content:"" !important;
+    display:block !important;
+    position:absolute !important;
+    left:9px !important;
+    width:28px !important;
+    height:2.5px !important;
+    margin:0 !important;
+    padding:0 !important;
+    background:#034944 !important;
+    border-radius:2px !important;
+    opacity:1 !important;
+    visibility:visible !important;
+    transform:none !important;
+  }
+
+  #site-view .topnav .nav-mobile-toggle::before,
+  #menu-view .topnav .nav-mobile-toggle::before,
+  .topnav .nav-mobile-toggle::before{ top:11px !important; }
+
+  #site-view .topnav .nav-mobile-toggle::after,
+  #menu-view .topnav .nav-mobile-toggle::after,
+  .topnav .nav-mobile-toggle::after{ top:31px !important; }
+
+  /* Al abrir: las tres líneas se convierten limpiamente en X. */
+  .topnav .nav-mobile-toggle.open span{
+    opacity:0 !important;
+  }
+  .topnav .nav-mobile-toggle.open::before{
+    top:21px !important;
+    transform:rotate(45deg) !important;
+  }
+  .topnav .nav-mobile-toggle.open::after{
+    top:21px !important;
+    transform:rotate(-45deg) !important;
+  }
+
+  /* ===== TARJETA DE PRODUCTO: ALTURA ADAPTATIVA ===== */
+  #producto-modal{
+    padding:12px !important;
+    align-items:center !important;
+    justify-content:center !important;
+  }
+
+  #producto-modal .producto-modal-box{
+    width:calc(100vw - 24px) !important;
+    max-width:520px !important;
+    height:auto !important;
+    min-height:0 !important;
+    max-height:calc(100dvh - 24px) !important;
+    border-radius:20px !important;
+    display:block !important;
+    overflow-y:auto !important;
+    overflow-x:hidden !important;
+    background:#fbfaf6 !important;
+  }
+
+  #producto-modal #producto-modal-img{
+    display:block !important;
+    width:100% !important;
+    height:auto !important;
+    max-height:58dvh !important;
+    min-height:0 !important;
+    aspect-ratio:4 / 3 !important;
+    object-fit:cover !important;
+    flex:none !important;
+  }
+
+  #producto-modal .producto-modal-body{
+    display:block !important;
+    height:auto !important;
+    min-height:0 !important;
+    max-height:none !important;
+    overflow:visible !important;
+    flex:none !important;
+    padding:20px 22px 24px !important;
+  }
+
+  #producto-modal #producto-modal-nombre{
+    font-size:clamp(1.65rem,7vw,2rem) !important;
+    line-height:1.05 !important;
+  }
+
+  #producto-modal #producto-modal-desc{
+    margin-top:12px !important;
+    margin-bottom:0 !important;
+  }
+}
+</style>
+
+</body>
 </html>
 
 <style id="cr-v5-menu-final-visual">
