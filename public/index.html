@@ -4936,21 +4936,37 @@
 }
 </style>
 
+<style id="cafe-real-video-gif-style">
+  #site-view .cafearias-video-card video{
+    display:block !important;
+    width:100% !important;
+    height:100% !important;
+    object-fit:cover !important;
+    border:0 !important;
+    outline:0 !important;
+    pointer-events:none !important;
+    user-select:none !important;
+    -webkit-user-select:none !important;
+  }
+</style>
+
 <script id="cr-mobile-v2-script">
 (function(){
   /* Convierte las tarjetas de Café Arias en un carrusel de videos.
      Los archivos reales se colocan en /videos/cafe-arias-1.mp4, etc. */
   const VIDEOS = [
-    {src:'videos/cafe-arias-1.mp4', poster:'images/cafearias/cafearias-granos.webp', kicker:'Historia del café', title:'Del grano a la taza.'},
-    {src:'videos/cafe-arias-2.mp4', poster:'images/cafearias/cafearias-canasta.webp', kicker:'Así se vive', title:'Café, origen y territorio.'},
-    {src:'videos/cafe-arias-3.mp4', poster:'images/cafearias/cafearias-preparado.webp', kicker:'Nuestra gente', title:'Historias detrás del café.'},
-    {src:'videos/cafe-arias-4.mp4', poster:'images/cafearias/cafearias-paquete.webp', kicker:'Café Real', title:'Una taza con historia.'}
+    {src:'menu/cafe-arias-1.mp4', poster:'images/cafearias/cafearias-granos.webp', kicker:'Historia del café', title:'Del grano a la taza.'},
+    {src:'menu/cafe-arias-2.mp4', poster:'images/cafearias/cafearias-canasta.webp', kicker:'Así se vive', title:'Café, origen y territorio.'},
+    {src:'menu/cafe-arias-3.mp4', poster:'images/cafearias/cafearias-preparado.webp', kicker:'Nuestra gente', title:'Historias detrás del café.'},
+    {src:'menu/cafe-arias-4.mp4', poster:'images/cafearias/cafearias-paquete.webp', kicker:'Café Real', title:'Una taza con historia.'}
   ];
   function buildVideoCarousel(){
     const row=document.getElementById('cafearias-row');
     if(!row) return;
     row.innerHTML=VIDEOS.map(v=>`<article class="cafearias-video-card">
-      <video class="video-poster" autoplay muted loop playsinline preload="auto" poster="${v.poster}" aria-label="${v.title}">
+      <video class="video-poster" autoplay muted loop playsinline preload="auto"
+        disablePictureInPicture controlsList="nodownload noplaybackrate"
+        poster="${v.poster}" aria-label="${v.title}">
         <source src="${v.src}" type="video/mp4">
       </video>
       <div class="video-copy"><small>${v.kicker}</small><h3>${v.title}</h3></div>
@@ -4963,16 +4979,31 @@
       video.setAttribute('autoplay','');
       video.setAttribute('loop','');
       video.setAttribute('playsinline','');
+      video.setAttribute('disablePictureInPicture','');
+      video.setAttribute('controlsList','nodownload noplaybackrate');
+      video.controls = false;
+
+      // Se comportan visualmente como GIFs: siempre en silencio, en bucle
+      // y sin controles visibles.
+      video.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+      video.addEventListener('click', function(e){ e.preventDefault(); });
 
       var forcePlay = function(){
-        var promise = video.play();
-        if(promise && typeof promise.catch === 'function') promise.catch(function(){});
+        video.controls = false;
+        if(video.paused || video.ended){
+          video.currentTime = video.ended ? 0 : video.currentTime;
+          var promise = video.play();
+          if(promise && typeof promise.catch === 'function') promise.catch(function(){});
+        }
       };
 
       video.addEventListener('canplay', forcePlay);
       video.addEventListener('loadeddata', forcePlay);
       video.addEventListener('pause', forcePlay);
-      video.addEventListener('ended', forcePlay);
+      video.addEventListener('ended', function(){
+        video.currentTime = 0;
+        forcePlay();
+      });
       forcePlay();
     });
   }
