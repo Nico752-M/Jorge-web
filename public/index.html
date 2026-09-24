@@ -8598,6 +8598,182 @@
 }
 </style>
 
+
+
+<!-- CAFÉ REAL · NUEVO DISEÑO MÓVIL DE CATEGORÍAS -->
+<style id="cr-v9-long-category-cards">
+@media (max-width:860px){
+  /* Buscador discreto: sigue funcionando, pero deja de dominar la pantalla. */
+  #menu-view .menu-mobile-tools{
+    padding:14px 24px 0 !important;
+  }
+  #menu-view .menu-search-box{
+    height:44px !important;
+    min-height:44px !important;
+    border-radius:0 !important;
+    padding:0 4px 0 2px !important;
+    background:transparent !important;
+    border:0 !important;
+    border-bottom:1px solid rgba(3,73,68,.14) !important;
+    box-shadow:none !important;
+  }
+  #menu-view .menu-search-box svg{
+    width:18px !important;
+    height:18px !important;
+    opacity:.42 !important;
+    color:var(--teal-osc) !important;
+    flex:0 0 auto !important;
+  }
+  #menu-view .menu-search-box input{
+    font-size:.82rem !important;
+    color:rgba(3,73,68,.72) !important;
+    background:transparent !important;
+  }
+  #menu-view .menu-search-box input::placeholder{
+    color:rgba(3,73,68,.45) !important;
+    opacity:1 !important;
+  }
+  #menu-view .menu-search-status{
+    min-height:5px !important;
+    padding-top:0 !important;
+  }
+
+  /* Categorías: una tarjeta larga por fila. */
+  #menu-view .menu-layout{
+    padding-left:24px !important;
+    padding-right:24px !important;
+    padding-bottom:112px !important;
+  }
+  #menu-view .menu-sidebar{
+    padding-top:28px !important;
+  }
+  #menu-view .menu-category-heading{
+    margin:0 0 13px !important;
+    gap:10px !important;
+    font-size:.67rem !important;
+    letter-spacing:.15em !important;
+  }
+  #menu-view .menu-category-heading-line{
+    width:44px !important;
+  }
+
+  #menu-view .menu-category-options,
+  #menu-view .menu-category-options.open{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    gap:11px !important;
+    width:100% !important;
+    max-height:none !important;
+    height:auto !important;
+    overflow:visible !important;
+    padding:0 !important;
+    margin:0 !important;
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+  }
+
+  #menu-view .menu-category-options button[data-k],
+  #menu-view .menu-category-options button[data-k="desayunos"]{
+    position:relative !important;
+    grid-column:auto !important;
+    grid-row:auto !important;
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+    height:104px !important;
+    min-height:104px !important;
+    margin:0 !important;
+    padding:16px 20px !important;
+    border:0 !important;
+    border-radius:20px !important;
+    overflow:hidden !important;
+    display:flex !important;
+    align-items:flex-end !important;
+    justify-content:flex-start !important;
+    background-color:#064f49 !important;
+    background-size:cover !important;
+    background-position:center !important;
+    background-repeat:no-repeat !important;
+    box-shadow:0 5px 16px rgba(3,73,68,.08) !important;
+    isolation:isolate !important;
+    color:#fff !important;
+  }
+
+  #menu-view .menu-category-options button[data-k]::before{
+    content:"" !important;
+    position:absolute !important;
+    inset:0 !important;
+    z-index:-1 !important;
+    background:linear-gradient(180deg,rgba(0,0,0,.02) 10%,rgba(0,25,22,.76) 100%) !important;
+    pointer-events:none !important;
+  }
+
+  #menu-view .menu-category-options button[data-k] > .cr-category-photo{
+    position:absolute !important;
+    inset:0 !important;
+    z-index:-2 !important;
+    width:100% !important;
+    height:100% !important;
+    object-fit:cover !important;
+    object-position:center !important;
+    opacity:1 !important;
+    visibility:visible !important;
+    pointer-events:none !important;
+  }
+
+  #menu-view .menu-category-options button[data-k] > *:not(.cr-category-photo){
+    position:relative !important;
+    z-index:2 !important;
+  }
+
+  #menu-view .menu-category-options .category-icon{
+    display:none !important;
+  }
+  #menu-view .menu-category-options .category-name{
+    font:italic 400 1.28rem/1 'Cormorant Garamond',serif !important;
+    color:#fff !important;
+    text-align:left !important;
+    text-shadow:0 1px 9px rgba(0,0,0,.5) !important;
+    margin:0 !important;
+  }
+  #menu-view .menu-category-options .cnt{
+    margin-left:9px !important;
+    margin-bottom:1px !important;
+    font:.55rem 'JetBrains Mono',monospace !important;
+    color:rgba(255,255,255,.74) !important;
+  }
+  #menu-view .menu-category-options .category-arrow{
+    display:block !important;
+    position:absolute !important;
+    right:18px !important;
+    bottom:15px !important;
+    color:rgba(255,255,255,.88) !important;
+    font-size:1.45rem !important;
+    line-height:1 !important;
+    z-index:3 !important;
+  }
+
+  #menu-view .destacados{
+    padding-top:30px !important;
+  }
+}
+
+@media (max-width:430px){
+  #menu-view .menu-mobile-tools{padding-left:20px !important;padding-right:20px !important;}
+  #menu-view .menu-layout{padding-left:20px !important;padding-right:20px !important;}
+  #menu-view .menu-category-options{gap:10px !important;}
+  #menu-view .menu-category-options button[data-k],
+  #menu-view .menu-category-options button[data-k="desayunos"]{
+    height:100px !important;
+    min-height:100px !important;
+    border-radius:18px !important;
+    padding:15px 18px !important;
+  }
+  #menu-view .menu-category-options .category-name{font-size:1.22rem !important;}
+}
+</style>
+
 </body>
 </html>
 
@@ -9084,6 +9260,182 @@
 
 /* En escritorio no alteramos el diseño existente. */
 
+</style>
+
+
+
+<!-- CAFÉ REAL · NUEVO DISEÑO MÓVIL DE CATEGORÍAS -->
+<style id="cr-v9-long-category-cards">
+@media (max-width:860px){
+  /* Buscador discreto: sigue funcionando, pero deja de dominar la pantalla. */
+  #menu-view .menu-mobile-tools{
+    padding:14px 24px 0 !important;
+  }
+  #menu-view .menu-search-box{
+    height:44px !important;
+    min-height:44px !important;
+    border-radius:0 !important;
+    padding:0 4px 0 2px !important;
+    background:transparent !important;
+    border:0 !important;
+    border-bottom:1px solid rgba(3,73,68,.14) !important;
+    box-shadow:none !important;
+  }
+  #menu-view .menu-search-box svg{
+    width:18px !important;
+    height:18px !important;
+    opacity:.42 !important;
+    color:var(--teal-osc) !important;
+    flex:0 0 auto !important;
+  }
+  #menu-view .menu-search-box input{
+    font-size:.82rem !important;
+    color:rgba(3,73,68,.72) !important;
+    background:transparent !important;
+  }
+  #menu-view .menu-search-box input::placeholder{
+    color:rgba(3,73,68,.45) !important;
+    opacity:1 !important;
+  }
+  #menu-view .menu-search-status{
+    min-height:5px !important;
+    padding-top:0 !important;
+  }
+
+  /* Categorías: una tarjeta larga por fila. */
+  #menu-view .menu-layout{
+    padding-left:24px !important;
+    padding-right:24px !important;
+    padding-bottom:112px !important;
+  }
+  #menu-view .menu-sidebar{
+    padding-top:28px !important;
+  }
+  #menu-view .menu-category-heading{
+    margin:0 0 13px !important;
+    gap:10px !important;
+    font-size:.67rem !important;
+    letter-spacing:.15em !important;
+  }
+  #menu-view .menu-category-heading-line{
+    width:44px !important;
+  }
+
+  #menu-view .menu-category-options,
+  #menu-view .menu-category-options.open{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    gap:11px !important;
+    width:100% !important;
+    max-height:none !important;
+    height:auto !important;
+    overflow:visible !important;
+    padding:0 !important;
+    margin:0 !important;
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+  }
+
+  #menu-view .menu-category-options button[data-k],
+  #menu-view .menu-category-options button[data-k="desayunos"]{
+    position:relative !important;
+    grid-column:auto !important;
+    grid-row:auto !important;
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+    height:104px !important;
+    min-height:104px !important;
+    margin:0 !important;
+    padding:16px 20px !important;
+    border:0 !important;
+    border-radius:20px !important;
+    overflow:hidden !important;
+    display:flex !important;
+    align-items:flex-end !important;
+    justify-content:flex-start !important;
+    background-color:#064f49 !important;
+    background-size:cover !important;
+    background-position:center !important;
+    background-repeat:no-repeat !important;
+    box-shadow:0 5px 16px rgba(3,73,68,.08) !important;
+    isolation:isolate !important;
+    color:#fff !important;
+  }
+
+  #menu-view .menu-category-options button[data-k]::before{
+    content:"" !important;
+    position:absolute !important;
+    inset:0 !important;
+    z-index:-1 !important;
+    background:linear-gradient(180deg,rgba(0,0,0,.02) 10%,rgba(0,25,22,.76) 100%) !important;
+    pointer-events:none !important;
+  }
+
+  #menu-view .menu-category-options button[data-k] > .cr-category-photo{
+    position:absolute !important;
+    inset:0 !important;
+    z-index:-2 !important;
+    width:100% !important;
+    height:100% !important;
+    object-fit:cover !important;
+    object-position:center !important;
+    opacity:1 !important;
+    visibility:visible !important;
+    pointer-events:none !important;
+  }
+
+  #menu-view .menu-category-options button[data-k] > *:not(.cr-category-photo){
+    position:relative !important;
+    z-index:2 !important;
+  }
+
+  #menu-view .menu-category-options .category-icon{
+    display:none !important;
+  }
+  #menu-view .menu-category-options .category-name{
+    font:italic 400 1.28rem/1 'Cormorant Garamond',serif !important;
+    color:#fff !important;
+    text-align:left !important;
+    text-shadow:0 1px 9px rgba(0,0,0,.5) !important;
+    margin:0 !important;
+  }
+  #menu-view .menu-category-options .cnt{
+    margin-left:9px !important;
+    margin-bottom:1px !important;
+    font:.55rem 'JetBrains Mono',monospace !important;
+    color:rgba(255,255,255,.74) !important;
+  }
+  #menu-view .menu-category-options .category-arrow{
+    display:block !important;
+    position:absolute !important;
+    right:18px !important;
+    bottom:15px !important;
+    color:rgba(255,255,255,.88) !important;
+    font-size:1.45rem !important;
+    line-height:1 !important;
+    z-index:3 !important;
+  }
+
+  #menu-view .destacados{
+    padding-top:30px !important;
+  }
+}
+
+@media (max-width:430px){
+  #menu-view .menu-mobile-tools{padding-left:20px !important;padding-right:20px !important;}
+  #menu-view .menu-layout{padding-left:20px !important;padding-right:20px !important;}
+  #menu-view .menu-category-options{gap:10px !important;}
+  #menu-view .menu-category-options button[data-k],
+  #menu-view .menu-category-options button[data-k="desayunos"]{
+    height:100px !important;
+    min-height:100px !important;
+    border-radius:18px !important;
+    padding:15px 18px !important;
+  }
+  #menu-view .menu-category-options .category-name{font-size:1.22rem !important;}
+}
 </style>
 
 </body>
