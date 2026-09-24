@@ -8681,8 +8681,8 @@
     width:100% !important;
     min-width:0 !important;
     max-width:none !important;
-    height:104px !important;
-    min-height:104px !important;
+    height:154px !important;
+    min-height:154px !important;
     margin:0 !important;
     padding:16px 20px !important;
     border:0 !important;
@@ -8705,7 +8705,7 @@
     position:absolute !important;
     inset:0 !important;
     z-index:-1 !important;
-    background:linear-gradient(180deg,rgba(0,0,0,.02) 10%,rgba(0,25,22,.76) 100%) !important;
+    background:linear-gradient(180deg,rgba(0,0,0,.02) 15%,rgba(0,25,22,.58) 100%) !important;
     pointer-events:none !important;
   }
 
@@ -8765,12 +8765,167 @@
   #menu-view .menu-category-options{gap:10px !important;}
   #menu-view .menu-category-options button[data-k],
   #menu-view .menu-category-options button[data-k="desayunos"]{
-    height:100px !important;
-    min-height:100px !important;
+    height:150px !important;
+    min-height:150px !important;
     border-radius:18px !important;
     padding:15px 18px !important;
   }
   #menu-view .menu-category-options .category-name{font-size:1.22rem !important;}
+}
+</style>
+
+
+<!-- CAFÉ REAL · FIX DEFINITIVO DESAYUNOS ANCHO COMPLETO -->
+<style id="cr-v10-breakfast-full-width">
+@media (max-width:860px){
+  #menu-view #menu-category-options button[data-k="desayunos"]{
+    grid-column:1 !important;
+    grid-row:auto !important;
+    justify-self:stretch !important;
+    align-self:stretch !important;
+    width:100% !important;
+    min-width:100% !important;
+    max-width:100% !important;
+    height:154px !important;
+    min-height:154px !important;
+    margin-left:0 !important;
+    margin-right:0 !important;
+  }
+}
+@media (max-width:430px){
+  #menu-view #menu-category-options button[data-k="desayunos"]{
+    width:100% !important;
+    min-width:100% !important;
+    max-width:100% !important;
+    height:100px !important;
+    min-height:100px !important;
+  }
+}
+</style>
+
+
+<!-- CAFÉ REAL · V11: tarjetas móviles con foto + panel de categoría -->
+<style id="cr-v11-split-category-cards">
+@media (max-width:860px){
+  #menu-view #menu-category-options button[data-k],
+  #menu-view #menu-category-options button[data-k="desayunos"]{
+    position:relative !important;
+    display:block !important;
+    width:100% !important;
+    min-width:100% !important;
+    max-width:100% !important;
+    height:140px !important;
+    min-height:140px !important;
+    margin:0 !important;
+    padding:0 !important;
+    overflow:hidden !important;
+    border:1px solid rgba(3,73,68,.12) !important;
+    border-radius:20px !important;
+    background:#f8f3e8 !important;
+    box-shadow:0 5px 16px rgba(3,73,68,.07) !important;
+    isolation:isolate !important;
+  }
+
+  /* La foto queda en su propio bloque; ya no lleva el texto encima. */
+  #menu-view #menu-category-options button[data-k] > .cr-category-photo{
+    position:absolute !important;
+    top:0 !important;
+    left:0 !important;
+    bottom:0 !important;
+    width:60% !important;
+    height:100% !important;
+    z-index:0 !important;
+    display:block !important;
+    object-fit:cover !important;
+    object-position:center !important;
+    opacity:1 !important;
+    visibility:visible !important;
+    pointer-events:none !important;
+    transform:none !important;
+    border-radius:19px 0 0 19px !important;
+  }
+
+  /* Eliminamos el degradado anterior que oscurecía demasiado las fotos. */
+  #menu-view #menu-category-options button[data-k]::before{
+    display:none !important;
+  }
+
+  /* Panel limpio para el nombre y cantidad. */
+  #menu-view #menu-category-options button[data-k] > *:not(.cr-category-photo){
+    position:relative !important;
+    z-index:2 !important;
+  }
+
+  #menu-view #menu-category-options .category-icon{
+    display:none !important;
+  }
+
+  #menu-view #menu-category-options .category-name{
+    position:absolute !important;
+    left:63% !important;
+    right:34px !important;
+    top:50% !important;
+    transform:translateY(-72%) !important;
+    margin:0 !important;
+    padding:0 !important;
+    font:italic 400 1.35rem/1.05 'Cormorant Garamond',serif !important;
+    color:#075b53 !important;
+    text-align:left !important;
+    text-shadow:none !important;
+    white-space:normal !important;
+  }
+
+  #menu-view #menu-category-options .cnt{
+    position:absolute !important;
+    left:63% !important;
+    top:50% !important;
+    transform:translateY(18%) !important;
+    margin:0 !important;
+    font:.58rem 'JetBrains Mono',monospace !important;
+    letter-spacing:.02em !important;
+    color:rgba(3,73,68,.55) !important;
+  }
+
+  #menu-view #menu-category-options .category-arrow{
+    display:block !important;
+    position:absolute !important;
+    right:16px !important;
+    top:50% !important;
+    transform:translateY(-50%) !important;
+    color:#075b53 !important;
+    font-size:1.5rem !important;
+    line-height:1 !important;
+    z-index:3 !important;
+  }
+
+  #menu-view #menu-category-options button[data-k]:active{
+    transform:scale(.992) !important;
+  }
+}
+
+@media (max-width:430px){
+  #menu-view #menu-category-options button[data-k],
+  #menu-view #menu-category-options button[data-k="desayunos"]{
+    height:136px !important;
+    min-height:136px !important;
+    border-radius:19px !important;
+  }
+  #menu-view #menu-category-options button[data-k] > .cr-category-photo{
+    width:59% !important;
+    border-radius:18px 0 0 18px !important;
+  }
+  #menu-view #menu-category-options .category-name{
+    left:62.5% !important;
+    right:30px !important;
+    font-size:1.27rem !important;
+  }
+  #menu-view #menu-category-options .cnt{
+    left:62.5% !important;
+  }
+  #menu-view #menu-category-options .category-arrow{
+    right:13px !important;
+    font-size:1.35rem !important;
+  }
 }
 </style>
 
@@ -9435,6 +9590,161 @@
     padding:15px 18px !important;
   }
   #menu-view .menu-category-options .category-name{font-size:1.22rem !important;}
+}
+</style>
+
+
+<!-- CAFÉ REAL · FIX DEFINITIVO DESAYUNOS ANCHO COMPLETO -->
+<style id="cr-v10-breakfast-full-width">
+@media (max-width:860px){
+  #menu-view #menu-category-options button[data-k="desayunos"]{
+    grid-column:1 !important;
+    grid-row:auto !important;
+    justify-self:stretch !important;
+    align-self:stretch !important;
+    width:100% !important;
+    min-width:100% !important;
+    max-width:100% !important;
+    height:104px !important;
+    min-height:104px !important;
+    margin-left:0 !important;
+    margin-right:0 !important;
+  }
+}
+@media (max-width:430px){
+  #menu-view #menu-category-options button[data-k="desayunos"]{
+    width:100% !important;
+    min-width:100% !important;
+    max-width:100% !important;
+    height:100px !important;
+    min-height:100px !important;
+  }
+}
+</style>
+
+
+<!-- CAFÉ REAL · V11: tarjetas móviles con foto + panel de categoría -->
+<style id="cr-v11-split-category-cards">
+@media (max-width:860px){
+  #menu-view #menu-category-options button[data-k],
+  #menu-view #menu-category-options button[data-k="desayunos"]{
+    position:relative !important;
+    display:block !important;
+    width:100% !important;
+    min-width:100% !important;
+    max-width:100% !important;
+    height:140px !important;
+    min-height:140px !important;
+    margin:0 !important;
+    padding:0 !important;
+    overflow:hidden !important;
+    border:1px solid rgba(3,73,68,.12) !important;
+    border-radius:20px !important;
+    background:#f8f3e8 !important;
+    box-shadow:0 5px 16px rgba(3,73,68,.07) !important;
+    isolation:isolate !important;
+  }
+
+  /* La foto queda en su propio bloque; ya no lleva el texto encima. */
+  #menu-view #menu-category-options button[data-k] > .cr-category-photo{
+    position:absolute !important;
+    top:0 !important;
+    left:0 !important;
+    bottom:0 !important;
+    width:60% !important;
+    height:100% !important;
+    z-index:0 !important;
+    display:block !important;
+    object-fit:cover !important;
+    object-position:center !important;
+    opacity:1 !important;
+    visibility:visible !important;
+    pointer-events:none !important;
+    transform:none !important;
+    border-radius:19px 0 0 19px !important;
+  }
+
+  /* Eliminamos el degradado anterior que oscurecía demasiado las fotos. */
+  #menu-view #menu-category-options button[data-k]::before{
+    display:none !important;
+  }
+
+  /* Panel limpio para el nombre y cantidad. */
+  #menu-view #menu-category-options button[data-k] > *:not(.cr-category-photo){
+    position:relative !important;
+    z-index:2 !important;
+  }
+
+  #menu-view #menu-category-options .category-icon{
+    display:none !important;
+  }
+
+  #menu-view #menu-category-options .category-name{
+    position:absolute !important;
+    left:63% !important;
+    right:34px !important;
+    top:50% !important;
+    transform:translateY(-72%) !important;
+    margin:0 !important;
+    padding:0 !important;
+    font:italic 400 1.35rem/1.05 'Cormorant Garamond',serif !important;
+    color:#075b53 !important;
+    text-align:left !important;
+    text-shadow:none !important;
+    white-space:normal !important;
+  }
+
+  #menu-view #menu-category-options .cnt{
+    position:absolute !important;
+    left:63% !important;
+    top:50% !important;
+    transform:translateY(18%) !important;
+    margin:0 !important;
+    font:.58rem 'JetBrains Mono',monospace !important;
+    letter-spacing:.02em !important;
+    color:rgba(3,73,68,.55) !important;
+  }
+
+  #menu-view #menu-category-options .category-arrow{
+    display:block !important;
+    position:absolute !important;
+    right:16px !important;
+    top:50% !important;
+    transform:translateY(-50%) !important;
+    color:#075b53 !important;
+    font-size:1.5rem !important;
+    line-height:1 !important;
+    z-index:3 !important;
+  }
+
+  #menu-view #menu-category-options button[data-k]:active{
+    transform:scale(.992) !important;
+  }
+}
+
+@media (max-width:430px){
+  #menu-view #menu-category-options button[data-k],
+  #menu-view #menu-category-options button[data-k="desayunos"]{
+    height:136px !important;
+    min-height:136px !important;
+    border-radius:19px !important;
+  }
+  #menu-view #menu-category-options button[data-k] > .cr-category-photo{
+    width:59% !important;
+    border-radius:18px 0 0 18px !important;
+  }
+  #menu-view #menu-category-options .category-name{
+    left:62.5% !important;
+    right:30px !important;
+    font-size:1.27rem !important;
+  }
+  #menu-view #menu-category-options .cnt{
+    left:62.5% !important;
+  }
+  #menu-view #menu-category-options .category-arrow{
+    right:13px !important;
+    font-size:1.35rem !important;
+  }
 }
 </style>
 
