@@ -2647,19 +2647,19 @@
       </div>
       <div class="galeria-grid">
         <div class="ph"><img id="g1" alt="Café afuera"><span class="tag">Café afuera</span></div>
-        <div class="ph"><img id="g2" alt="Auditorio desde segundo piso"><span class="tag">Auditorio</span></div>
-        <div class="ph"><img id="g3" alt="Auditorio desde atrás"><span class="tag">Auditorio · detalle</span></div>
-        <div class="ph"><img id="g4" alt="Mesa frontal"><span class="tag">Mesa frontal</span></div>
         <div class="ph"><img id="g5" alt="Mesa con libro y café"><span class="tag">Mesa &amp; café</span></div>
-        <div class="ph"><img id="g6" alt="Segundo piso vista"><span class="tag">Segundo piso</span></div>
-        <div class="ph"><img id="g7" alt="Foto segundo piso"><span class="tag">Segundo piso</span></div>
-        <div class="ph"><img id="g8" alt="Mesa libro y café"><span class="tag">Mesa &amp; libro</span></div>
+        <div class="ph"><img id="g2" alt="Auditorio desde segundo piso"><span class="tag">Auditorio</span></div>
         <div class="ph"><img id="g9" alt="Máquina y café"><span class="tag">Máquina &amp; café</span></div>
+        <div class="ph"><img id="g6" alt="Segundo piso vista"><span class="tag">Segundo piso vista</span></div>
         <div class="ph"><img id="g10" alt="Copas en Café Real"><span class="tag">Copas</span></div>
+        <div class="ph"><img id="g3" alt="Auditorio desde atrás"><span class="tag">Auditorio · detalle</span></div>
+        <div class="ph"><img id="g8" alt="Mesa libro y café"><span class="tag">Mesa &amp; libro</span></div>
         <div class="ph"><img id="g11" alt="Café trasera"><span class="tag">Café</span></div>
+        <div class="ph"><img id="g4" alt="Mesa frontal"><span class="tag">Mesa frontal</span></div>
+        <div class="ph"><img id="g14" alt="Cerveza en mesa"><span class="tag">Cerveza</span></div>
+        <div class="ph"><img id="g7" alt="Foto segundo piso"><span class="tag">Segundo piso · detalle</span></div>
         <div class="ph"><img id="g12" alt="Café en mesa"><span class="tag">Café &amp; mesa</span></div>
         <div class="ph"><img id="g13" alt="Café de Ana"><span class="tag">Café Real</span></div>
-        <div class="ph"><img id="g14" alt="Cerveza en mesa"><span class="tag">Cerveza</span></div>
         <div class="ph"><img id="g15" alt="Cerveza en mesa, detalle"><span class="tag">Cerveza · detalle</span></div>
       </div>
     </section>
@@ -9226,6 +9226,79 @@
 }
 </style>
 
+
+<style id="cafe-real-video-gallery-final">
+/* Videos principales: menos altos, más compactos y con mejor lectura del contenido siguiente. */
+.experiencia-tile.tile-main{
+  min-height:390px!important;
+  aspect-ratio:4/3!important;
+}
+.experiencia-tile.tile-main video{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  display:block!important;
+}
+.auditorio-video-brillo{
+  aspect-ratio:4/3!important;
+  max-height:none!important;
+}
+.auditorio-video-brillo video{
+  width:100%!important;
+  height:100%!important;
+  max-height:none!important;
+  object-fit:cover!important;
+  display:block!important;
+}
+
+/* Galería: distribución uniforme y sin agrupar fotos parecidas. */
+.galeria-grid{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:14px!important;
+}
+.galeria-grid .ph,
+.galeria-grid .ph:nth-child(n){
+  grid-column:auto!important;
+  aspect-ratio:4/3!important;
+  min-height:0!important;
+}
+.galeria-grid .ph img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  display:block!important;
+}
+@media(max-width:800px){
+  .experiencia-tile.tile-main{
+    min-height:285px!important;
+    aspect-ratio:4/3!important;
+  }
+  .auditorio-video-brillo{
+    aspect-ratio:4/3!important;
+  }
+  .galeria-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:10px!important;
+  }
+  .galeria-grid .ph,
+  .galeria-grid .ph:nth-child(n){
+    grid-column:auto!important;
+    aspect-ratio:1/1!important;
+  }
+}
+@media(max-width:500px){
+  .experiencia-tile.tile-main{
+    min-height:270px!important;
+    aspect-ratio:4/3!important;
+  }
+  .auditorio-video-brillo{
+    aspect-ratio:4/3!important;
+  }
+}
+</style>
 </body>
 </html>
 
