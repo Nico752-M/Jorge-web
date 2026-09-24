@@ -3516,13 +3516,15 @@
           const image = categoryImages[k];
           const imageUrl = image ? `images/menu/${image}.webp` : '';
           return `<button type="button" data-k="${k}" class="${i===0?'active':''}"
-                    onclick="showCat('${k}')"
-                    style="${imageUrl ? `background-image:linear-gradient(180deg,rgba(0,0,0,.03) 8%,rgba(0,25,22,.70) 100%),url('${imageUrl}');` : ''}">
-                    ${imageUrl ? `<img class="cr-category-photo" src="${imageUrl}" alt="" aria-hidden="true" loading="eager" decoding="async" fetchpriority="high" onerror="this.style.display='none'">` : ''}
-                    <span class="category-icon">${icon}</span>
-                    <span class="category-name">${cat.label}</span>
-                    <span class="cnt">${count}</span>
-                    <span class="category-arrow">›</span>
+                    onclick="showCat('${k}')">
+                    <span class="cr-category-media">
+                      ${imageUrl ? `<img class="cr-category-photo" src="${imageUrl}" alt="${cat.label}" loading="eager" decoding="async" fetchpriority="high" onerror="this.style.display='none'">` : ''}
+                    </span>
+                    <span class="cr-category-info">
+                      <span class="category-name">${cat.label}</span>
+                      <span class="cr-category-meta"><span class="cnt">${count}</span> productos</span>
+                      <span class="category-arrow">›</span>
+                    </span>
                   </button>`;
         }).join('')}
       </div>
@@ -8929,6 +8931,271 @@
 }
 </style>
 
+
+<style id="cr-v12-split-card-polish">
+@media (max-width:860px){
+  #menu-view #menu-category-options button[data-k],
+  #menu-view #menu-category-options button[data-k="desayunos"]{
+    height:150px !important;
+    min-height:150px !important;
+    display:block !important;
+    background:#f8f3e8 !important;
+    overflow:hidden !important;
+    position:relative !important;
+  }
+
+  #menu-view #menu-category-options button[data-k] > .cr-category-photo{
+    width:55% !important;
+    height:100% !important;
+    left:0 !important;
+    top:0 !important;
+    bottom:0 !important;
+    object-fit:cover !important;
+    object-position:center !important;
+    border-radius:18px 0 0 18px !important;
+  }
+
+  /* Panel derecho: espacio real para el texto, sin que se pegue al borde. */
+  #menu-view #menu-category-options button[data-k]::after{
+    content:"" !important;
+    position:absolute !important;
+    left:55% !important;
+    top:14px !important;
+    bottom:14px !important;
+    width:1px !important;
+    background:rgba(3,73,68,.09) !important;
+    z-index:1 !important;
+  }
+
+  #menu-view #menu-category-options .category-name{
+    left:59% !important;
+    right:30px !important;
+    top:50% !important;
+    transform:translateY(-58%) !important;
+    font-size:1.32rem !important;
+    line-height:1.08 !important;
+    text-align:left !important;
+    white-space:normal !important;
+    overflow-wrap:anywhere !important;
+  }
+
+  #menu-view #menu-category-options .cnt{
+    left:59% !important;
+    top:50% !important;
+    transform:translateY(28%) !important;
+    font-size:.56rem !important;
+    color:rgba(3,73,68,.52) !important;
+  }
+
+  #menu-view #menu-category-options .category-arrow{
+    right:13px !important;
+    top:18px !important;
+    transform:none !important;
+    font-size:1.25rem !important;
+    color:rgba(3,73,68,.58) !important;
+  }
+}
+
+@media (max-width:430px){
+  #menu-view #menu-category-options button[data-k],
+  #menu-view #menu-category-options button[data-k="desayunos"]{
+    height:142px !important;
+    min-height:142px !important;
+    border-radius:18px !important;
+  }
+
+  #menu-view #menu-category-options button[data-k] > .cr-category-photo{
+    width:56% !important;
+    border-radius:17px 0 0 17px !important;
+  }
+
+  #menu-view #menu-category-options button[data-k]::after{
+    left:56% !important;
+  }
+
+  #menu-view #menu-category-options .category-name{
+    left:60% !important;
+    right:27px !important;
+    font-size:1.22rem !important;
+  }
+
+  #menu-view #menu-category-options .cnt{
+    left:60% !important;
+  }
+}
+</style>
+
+<!-- CAFÉ REAL · V13: evita duplicación de imagen en tarjetas divididas -->
+<style id="cr-v13-no-duplicate-category-background">
+@media (max-width:860px){
+  #menu-view #menu-category-options button[data-k],
+  #menu-view #menu-category-options button[data-k="desayunos"]{
+    background-image:none !important;
+    background-color:#f8f3e8 !important;
+  }
+
+  #menu-view #menu-category-options button[data-k] > .cr-category-photo{
+    display:block !important;
+    opacity:1 !important;
+    visibility:visible !important;
+    width:56% !important;
+    height:100% !important;
+    object-fit:cover !important;
+    object-position:center !important;
+  }
+
+  #menu-view #menu-category-options button[data-k]::before{
+    display:none !important;
+  }
+}
+
+@media (max-width:430px){
+  #menu-view #menu-category-options button[data-k] > .cr-category-photo{
+    width:56% !important;
+  }
+}
+</style>
+
+
+<style id="cafe-real-category-photo-panel-fix">
+/* Diseño definitivo de categorías: foto a la izquierda + información a la derecha.
+   La foto NO se usa como fondo de la tarjeta, evitando duplicación y deformaciones. */
+#menu-view .menu-category-options button {
+  position: relative !important;
+  overflow: hidden !important;
+  display: grid !important;
+  grid-template-columns: 55% 45% !important;
+  grid-template-rows: 1fr !important;
+  min-height: 150px !important;
+  height: 150px !important;
+  padding: 0 !important;
+  border: 1px solid rgba(3,73,68,.13) !important;
+  border-radius: 20px !important;
+  background: #f7f3e8 !important;
+  color: var(--teal-osc) !important;
+  box-shadow: 0 4px 14px rgba(3,73,68,.045) !important;
+  gap: 0 !important;
+  text-align: left !important;
+}
+
+#menu-view .menu-category-options button.active {
+  background: #f7f3e8 !important;
+  color: var(--teal-osc) !important;
+  border-color: rgba(3,73,68,.13) !important;
+  box-shadow: 0 4px 14px rgba(3,73,68,.045) !important;
+}
+
+#menu-view .cr-category-media {
+  position: relative !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  background: #e9e4d8 !important;
+}
+
+#menu-view .cr-category-photo {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  margin: 0 !important;
+}
+
+#menu-view .cr-category-info {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  height: 100% !important;
+  padding: 18px 22px !important;
+  background: #f7f3e8 !important;
+  box-sizing: border-box !important;
+}
+
+#menu-view .category-icon {
+  display: none !important;
+}
+
+#menu-view .category-name {
+  display: block !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  font: italic 400 clamp(1.25rem, 4.5vw, 1.65rem)/1.05 'Cormorant Garamond', Georgia, serif !important;
+  color: var(--teal-osc) !important;
+}
+
+#menu-view .cr-category-meta {
+  display: block !important;
+  margin-top: 6px !important;
+  font: 500 .68rem 'JetBrains Mono', monospace !important;
+  color: rgba(3,73,68,.58) !important;
+}
+
+#menu-view .menu-category-options .cnt {
+  font: inherit !important;
+  color: inherit !important;
+}
+
+#menu-view .category-arrow {
+  position: absolute !important;
+  top: 15px !important;
+  right: 18px !important;
+  display: block !important;
+  font: 400 1.5rem/1 'Public Sans', sans-serif !important;
+  color: rgba(3,73,68,.52) !important;
+}
+
+#menu-view .menu-category-options button:last-child:nth-child(odd) {
+  grid-column: auto !important;
+  justify-self: stretch !important;
+  width: 100% !important;
+}
+
+@media (max-width: 430px) {
+  #menu-view .menu-category-options {
+    gap: 10px !important;
+  }
+  #menu-view .menu-category-options button {
+    grid-template-columns: 55% 45% !important;
+    min-height: 142px !important;
+    height: 142px !important;
+    border-radius: 18px !important;
+  }
+  #menu-view .cr-category-info {
+    padding: 16px 17px !important;
+  }
+  #menu-view .category-name {
+    font-size: 1.18rem !important;
+  }
+  #menu-view .cr-category-meta {
+    margin-top: 5px !important;
+    font-size: .6rem !important;
+  }
+  #menu-view .category-arrow {
+    top: 12px !important;
+    right: 14px !important;
+    font-size: 1.3rem !important;
+  }
+}
+
+@media (min-width: 431px) and (max-width: 860px) {
+  #menu-view .menu-category-options {
+    grid-template-columns: 1fr !important;
+  }
+}
+</style>
+
 </body>
 </html>
 
@@ -9748,5 +10015,345 @@
 }
 </style>
 
+
+<style id="cr-v12-split-card-polish">
+@media (max-width:860px){
+  #menu-view #menu-category-options button[data-k],
+  #menu-view #menu-category-options button[data-k="desayunos"]{
+    height:150px !important;
+    min-height:150px !important;
+    display:block !important;
+    background:#f8f3e8 !important;
+    overflow:hidden !important;
+    position:relative !important;
+  }
+
+  #menu-view #menu-category-options button[data-k] > .cr-category-photo{
+    width:55% !important;
+    height:100% !important;
+    left:0 !important;
+    top:0 !important;
+    bottom:0 !important;
+    object-fit:cover !important;
+    object-position:center !important;
+    border-radius:18px 0 0 18px !important;
+  }
+
+  /* Panel derecho: espacio real para el texto, sin que se pegue al borde. */
+  #menu-view #menu-category-options button[data-k]::after{
+    content:"" !important;
+    position:absolute !important;
+    left:55% !important;
+    top:14px !important;
+    bottom:14px !important;
+    width:1px !important;
+    background:rgba(3,73,68,.09) !important;
+    z-index:1 !important;
+  }
+
+  #menu-view #menu-category-options .category-name{
+    left:59% !important;
+    right:30px !important;
+    top:50% !important;
+    transform:translateY(-58%) !important;
+    font-size:1.32rem !important;
+    line-height:1.08 !important;
+    text-align:left !important;
+    white-space:normal !important;
+    overflow-wrap:anywhere !important;
+  }
+
+  #menu-view #menu-category-options .cnt{
+    left:59% !important;
+    top:50% !important;
+    transform:translateY(28%) !important;
+    font-size:.56rem !important;
+    color:rgba(3,73,68,.52) !important;
+  }
+
+  #menu-view #menu-category-options .category-arrow{
+    right:13px !important;
+    top:18px !important;
+    transform:none !important;
+    font-size:1.25rem !important;
+    color:rgba(3,73,68,.58) !important;
+  }
+}
+
+@media (max-width:430px){
+  #menu-view #menu-category-options button[data-k],
+  #menu-view #menu-category-options button[data-k="desayunos"]{
+    height:142px !important;
+    min-height:142px !important;
+    border-radius:18px !important;
+  }
+
+  #menu-view #menu-category-options button[data-k] > .cr-category-photo{
+    width:56% !important;
+    border-radius:17px 0 0 17px !important;
+  }
+
+  #menu-view #menu-category-options button[data-k]::after{
+    left:56% !important;
+  }
+
+  #menu-view #menu-category-options .category-name{
+    left:60% !important;
+    right:27px !important;
+    font-size:1.22rem !important;
+  }
+
+  #menu-view #menu-category-options .cnt{
+    left:60% !important;
+  }
+}
+</style>
+
+
+<style id="cafe-real-category-photo-panel-fix">
+/* Diseño definitivo de categorías: foto a la izquierda + información a la derecha.
+   La foto NO se usa como fondo de la tarjeta, evitando duplicación y deformaciones. */
+#menu-view .menu-category-options button {
+  position: relative !important;
+  overflow: hidden !important;
+  display: grid !important;
+  grid-template-columns: 55% 45% !important;
+  grid-template-rows: 1fr !important;
+  min-height: 150px !important;
+  height: 150px !important;
+  padding: 0 !important;
+  border: 1px solid rgba(3,73,68,.13) !important;
+  border-radius: 20px !important;
+  background: #f7f3e8 !important;
+  color: var(--teal-osc) !important;
+  box-shadow: 0 4px 14px rgba(3,73,68,.045) !important;
+  gap: 0 !important;
+  text-align: left !important;
+}
+
+#menu-view .menu-category-options button.active {
+  background: #f7f3e8 !important;
+  color: var(--teal-osc) !important;
+  border-color: rgba(3,73,68,.13) !important;
+  box-shadow: 0 4px 14px rgba(3,73,68,.045) !important;
+}
+
+#menu-view .cr-category-media {
+  position: relative !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  background: #e9e4d8 !important;
+}
+
+#menu-view .cr-category-photo {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  margin: 0 !important;
+}
+
+#menu-view .cr-category-info {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  height: 100% !important;
+  padding: 18px 22px !important;
+  background: #f7f3e8 !important;
+  box-sizing: border-box !important;
+}
+
+#menu-view .category-icon {
+  display: none !important;
+}
+
+#menu-view .category-name {
+  display: block !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  font: italic 400 clamp(1.25rem, 4.5vw, 1.65rem)/1.05 'Cormorant Garamond', Georgia, serif !important;
+  color: var(--teal-osc) !important;
+}
+
+#menu-view .cr-category-meta {
+  display: block !important;
+  margin-top: 6px !important;
+  font: 500 .68rem 'JetBrains Mono', monospace !important;
+  color: rgba(3,73,68,.58) !important;
+}
+
+#menu-view .menu-category-options .cnt {
+  font: inherit !important;
+  color: inherit !important;
+}
+
+#menu-view .category-arrow {
+  position: absolute !important;
+  top: 15px !important;
+  right: 18px !important;
+  display: block !important;
+  font: 400 1.5rem/1 'Public Sans', sans-serif !important;
+  color: rgba(3,73,68,.52) !important;
+}
+
+#menu-view .menu-category-options button:last-child:nth-child(odd) {
+  grid-column: auto !important;
+  justify-self: stretch !important;
+  width: 100% !important;
+}
+
+@media (max-width: 430px) {
+  #menu-view .menu-category-options {
+    gap: 10px !important;
+  }
+  #menu-view .menu-category-options button {
+    grid-template-columns: 55% 45% !important;
+    min-height: 142px !important;
+    height: 142px !important;
+    border-radius: 18px !important;
+  }
+  #menu-view .cr-category-info {
+    padding: 16px 17px !important;
+  }
+  #menu-view .category-name {
+    font-size: 1.18rem !important;
+  }
+  #menu-view .cr-category-meta {
+    margin-top: 5px !important;
+    font-size: .6rem !important;
+  }
+  #menu-view .category-arrow {
+    top: 12px !important;
+    right: 14px !important;
+    font-size: 1.3rem !important;
+  }
+}
+
+@media (min-width: 431px) and (max-width: 860px) {
+  #menu-view .menu-category-options {
+    grid-template-columns: 1fr !important;
+  }
+}
+</style>
+
+
+<style id="cr-final-category-cards-fix">
+/* Corrección final: la imagen vive dentro de .cr-category-media. */
+@media (max-width:860px){
+  #menu-view #menu-category-options button[data-k]{
+    display:grid !important;
+    grid-template-columns:56% 44% !important;
+    grid-template-rows:1fr !important;
+    width:100% !important;
+    height:150px !important;
+    min-height:150px !important;
+    padding:0 !important;
+    overflow:hidden !important;
+    position:relative !important;
+    background:#f7f3e8 !important;
+  }
+  #menu-view #menu-category-options .cr-category-media{
+    grid-column:1 !important;
+    grid-row:1 !important;
+    position:relative !important;
+    width:100% !important;
+    height:100% !important;
+    overflow:hidden !important;
+    display:block !important;
+    background:#e9e4d8 !important;
+  }
+  #menu-view #menu-category-options .cr-category-photo{
+    position:absolute !important;
+    inset:0 !important;
+    width:100% !important;
+    height:100% !important;
+    display:block !important;
+    object-fit:cover !important;
+    object-position:center !important;
+    margin:0 !important;
+    border-radius:0 !important;
+  }
+  #menu-view #menu-category-options .cr-category-info{
+    grid-column:2 !important;
+    grid-row:1 !important;
+    position:relative !important;
+    width:100% !important;
+    height:100% !important;
+    min-width:0 !important;
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:flex-start !important;
+    justify-content:center !important;
+    padding:18px 16px !important;
+    background:#f7f3e8 !important;
+    z-index:2 !important;
+    box-sizing:border-box !important;
+  }
+  #menu-view #menu-category-options .category-name{
+    position:static !important;
+    transform:none !important;
+    display:block !important;
+    width:100% !important;
+    max-width:100% !important;
+    margin:0 !important;
+    padding:0 !important;
+    font:italic 400 1.25rem/1.05 'Cormorant Garamond',serif !important;
+    color:#075b53 !important;
+    white-space:normal !important;
+    overflow-wrap:normal !important;
+    text-align:left !important;
+  }
+  #menu-view #menu-category-options .cr-category-meta{
+    position:static !important;
+    display:block !important;
+    margin-top:6px !important;
+    font:.58rem 'JetBrains Mono',monospace !important;
+    color:rgba(3,73,68,.55) !important;
+  }
+  #menu-view #menu-category-options .cnt{position:static !important; transform:none !important;}
+  #menu-view #menu-category-options .category-arrow{
+    position:absolute !important;
+    right:12px !important;
+    top:12px !important;
+    transform:none !important;
+    font:400 1.35rem/1 'Public Sans',sans-serif !important;
+    color:rgba(3,73,68,.52) !important;
+  }
+  #menu-view #menu-category-options button[data-k]::after{
+    content:"" !important;
+    position:absolute !important;
+    left:56% !important;
+    top:14px !important;
+    bottom:14px !important;
+    width:1px !important;
+    background:rgba(3,73,68,.09) !important;
+    z-index:3 !important;
+  }
+}
+@media (max-width:430px){
+  #menu-view #menu-category-options button[data-k]{
+    grid-template-columns:56% 44% !important;
+    height:142px !important;
+    min-height:142px !important;
+    border-radius:18px !important;
+  }
+  #menu-view #menu-category-options .cr-category-info{padding:16px 14px !important;}
+  #menu-view #menu-category-options .category-name{font-size:1.18rem !important;}
+  #menu-view #menu-category-options .cr-category-meta{font-size:.56rem !important;}
+}
+</style>
 </body>
 </html>
