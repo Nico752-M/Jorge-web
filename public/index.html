@@ -3325,33 +3325,33 @@
         ]},
       ]
     },
-    frias: {
+        frias: {
       label: "Bebidas frías",
       note: "Aguas, jugos, sodas y más",
       layout: "list",
       shelves: [
         { title:"Jugos &amp; sodas de la casa", items:[
           { n:"Jugos en agua", d:"Lulo, mango, piña, fresa, maracuyá, maracumango, mora", p:"9.000" },
-          { n:"Milo frío", p:"12.000" }, { n:"Soda michelada", p:"8.000" },
-          { n:"Soda de frutos rojos", p:"14.000" }, { n:"Soda de frutos amarillos", p:"14.000" },
+          { n:"Milo frío", p:"12.000" }, { n:"Soda michelada", logo:"bretana", p:"8.000" },
+          { n:"Soda de frutos rojos", logo:"bretana", p:"14.000" }, { n:"Soda de frutos amarillos", logo:"bretana", p:"14.000" },
           { n:"Lulada", p:"14.000" },
+        ]},
+        { title:"Sodas", items:[
+          { n:"Soda fresa", logo:"bretana", p:"14.000" }, { n:"Soda frutos amarillos", logo:"bretana", p:"14.000" }, { n:"Soda frutos rojos", logo:"bretana", p:"14.000" },
+        ]},
+        { title:"Especiales", items:[
+          { n:"Aromática", p:"4.000" }, { n:"Malteada", p:"14.000" }, { n:"Infusión", p:"11.000" },
+        ]},
+        { divider:"Otras bebidas", title:"Otras gaseosas", items:[
+          { n:"Coca-Cola", p:"X.000" }, { n:"Bretaña", p:"6.000" }, { n:"Ginger Ale Canada Dry 300 ml", p:"7.000" },
+          { n:"Soda Hatsu frambuesa 300 ml", p:"5.000" }, { n:"Soda Hatsu uva & romero 300 ml", p:"5.000" },
+          { n:"Soda Hatsu sandía y albahaca", p:"5.000" },
+          { n:"Energizante XS", p:"16.000" }, { n:"Red Bull", p:"10.000" },
         ]},
         { title:"Aguas", items:[
           { n:"Agua Hatsu 500 ml", p:"5.500" }, { n:"Agua Hatsu con gas 300 ml", p:"4.500" },
-          { n:"Agua tónica Canada Dry cero 300 ml", p:"4.500" }, { n:"Manantial", p:"5.500" },
+          { n:"Agua tónica Canada Dry cero 300 ml", p:"4.500" },
           { n:"Te Hatsu (vidrio 400 ml)", p:"9.000" },
-        ]},
-        { title:"Gaseosas &amp; sodas", items:[
-          { n:"Bretaña", p:"6.000" }, { n:"Ginger Ale Canada Dry 300 ml", p:"7.000" },
-          { n:"Soda Hatsu frambuesa 300 ml", p:"5.000" }, { n:"Soda Hatsu uva & romero 300 ml", p:"5.000" },
-          { n:"Energizante XS", p:"16.000" },
-          { n:"Red Bull", p:"10.000" },
-          { n:"Soda Hatsu sandía y albahaca", p:"5.000" },
-        ]},  { title:"Especiales", items:[
-          { n:"Aromática", p:"4.000" }, { n:"Malteada", p:"14.000" }, { n:"Infusión", p:"11.000" },
-        ]},
-        { title:"Sodas", items:[
-          { n:"Soda fresa", p:"14.000" }, { n:"Soda frutos amarillos", p:"14.000" }, { n:"Soda frutos rojos", p:"14.000" },
         ]},
       ]
     },
@@ -3382,17 +3382,18 @@
     },
     cervezas: {
       label: "Cervezas",
-      note: "Cervezadas de la casa y cervezas frías",
+      note: "Cervezas frías y cervezadas de la casa",
       layout: "list",
       shelves: [
+        { title:"Cervezas", items:[
+          { n:"Cordillera", p:"12.000" }, { n:"Heineken", p:"10.000" }, { n:"Miller lite", p:"6.000" },
+          { n:"Sol", p:"7.000" }, { n:"Mítica", p:"6.000" },
+          { n:"Budweiser", p:"10.000" }, { n:"Club", p:"10.000" }, { n:"Corona", p:"10.000" },
+          { n:"Redds", p:"9.000" }, { n:"Stella", p:"12.000" }, { n:"Águila", p:"10.000" },
+        ]},
         { title:"Cervezadas · $18.000", items:[
           { n:"Cervezada de cereza" }, { n:"Cervezada de frutos rojos" }, { n:"Cervezada de mango biche" },
           { n:"Cervezada de sandía" }, { n:"Cervezada de tamarindo" }, { n:"Cervezada de yerbabuena" },
-        ]},
-        { title:"Cervezas", items:[
-          { n:"Cordillera", p:"12.000" }, { n:"Budweiser", p:"10.000" }, { n:"Heineken", p:"10.000" },
-          { n:"Miller lite", p:"6.000" }, { n:"Sol", p:"7.000" }, { n:"Club", p:"10.000" },
-          { n:"Corona", p:"10.000" }, { n:"Redds", p:"9.000" }, { n:"Stella", p:"12.000" }, { n:"Águila", p:"10.000" }, { n:"Mítica", p:"6.000" },
         ]},
         { title:"Extras", items:[
           { n:"Vaso michelado", p:"2.000" },
@@ -3461,7 +3462,7 @@
           ${it.p ? `<span class="price-tag">$${it.p}</span>` : ''}
         </div>
         <div class="info">
-          <h4>${it.n}</h4>
+          <h4>${it.n}${it.logo ? `<img class="prod-logo" src="images/menu/logo-${it.logo}.webp" alt="">` : ''}</h4>
           ${it.d ? `<p>${it.d}</p>` : ''}
         </div>
       </div>`;
@@ -3487,7 +3488,7 @@
         </div>
         <div class="prod-info">
           <div class="prod-top">
-            <h4>${it.n}</h4>
+            <h4>${it.n}${it.logo ? `<img class="prod-logo" src="images/menu/logo-${it.logo}.webp" alt="">` : ''}</h4>
             ${it.p ? `<span class="prod-price">$${it.p}</span>` : ''}
           </div>
           ${it.tag ? `<span class="prod-tag">${it.tag}</span>` : ''}
@@ -3502,7 +3503,7 @@
     const img = document.getElementById('producto-modal-img');
     img.src = imgPathFor(it.n);
     img.onerror = function(){ onImgErr(this, it.n); };
-    document.getElementById('producto-modal-nombre').textContent = it.n;
+    document.getElementById('producto-modal-nombre').innerHTML = it.n + (it.logo ? ' <img class="prod-logo" src="images/menu/logo-'+it.logo+'.webp" alt="">' : '');
     document.getElementById('producto-modal-precio').textContent = it.p ? ('$' + it.p) : '';
     document.getElementById('producto-modal-desc').textContent = it.d || '';
     const modal = document.getElementById('producto-modal');
@@ -3591,7 +3592,7 @@
       } else {
         content = cat.shelves.map(s => `
           <div class="menu-shelf-2">
-            ${s.title ? `<h4 class="shelf-title">${s.title}</h4>` : ''}
+            ${s.divider ? `<h3 class="shelf-divider">${s.divider}</h3>` : ''}${s.title ? `<h4 class="shelf-title">${s.title}</h4>` : ''}
             <div class="prod-list">${s.items.map(prodRowHTML).join('')}</div>
           </div>`).join('');
       }
@@ -9235,6 +9236,10 @@
 </style>
 
 
+<style id="cr-prod-logo">
+.prod-logo,.producto-modal-box .prod-logo{display:inline-block !important;height:.78em !important;width:auto !important;max-width:none !important;aspect-ratio:auto !important;margin-left:9px;vertical-align:baseline;}
+.shelf-divider{font:italic 400 1.9rem/1 'Cormorant Garamond',serif;color:var(--teal-osc);margin:46px 0 18px;padding-top:22px;border-top:1px solid var(--linea);}
+</style>
 <style id="cafe-real-video-gallery-final">
 /* Videos principales: menos altos, más compactos y con mejor lectura del contenido siguiente. */
 .experiencia-tile.tile-main{
