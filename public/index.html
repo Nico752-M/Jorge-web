@@ -3291,15 +3291,15 @@
       note: "Para picar en la tarde",
       layout: "cards",
       items: [
-        { n:"Burrito de cerdo", d:"Tortilla de harina dorada a la plancha rellena de jugosa carne de cerdo desmechada, acompañada de papas gajo sazonadas y salsa de la casa.", p:"22.000" },
-        { n:"Burrito de pollo", d:"Tortilla crujiente por fuera con marcas de parrilla, rellena de tierno pollo desmenuzado, acompañada de papas gajo y dip especial.", p:"20.000" },
+        { n:"Burrito de cerdo", d:"Tortilla de harina rellena de cerdo BBQ, acompañada de piña calada y papas a la francesa.", p:"22.000" },
+        { n:"Burrito de pollo", d:"Tortilla de harina rellena de pollo a la plancha y jamón, acompañada de salsa de la casa.", p:"20.000" },
         { n:"Empanadas carne x3", d:"Una porción de tres empanadas crujientes de maíz rellenas de carne y acompañadas de ají", p:"12.000" },
-        { n:"Hamburguesa", d:"Suculenta hamburguesa en pan brioche con ajonjolí, carne jugosa, queso fundido y vegetales frescos, servida con papas gajo y salsa.", p:"26.000" },
+        { n:"Hamburguesa", d:"Hamburguesa con carne Angus y queso cheddar, acompañada de papas rústicas.", p:"26.000" },
         { n:"Sándwich de pollo sencillo (sin papas)", d:"Clásico sándwich en pan de molde con pollo desmechado y vegetales. Se sirve sin papas.", p:"15.000" },
         { n:"Sándwich de pollo con papas", d:"Sándwich de pollo desmechado con vegetales, acompañado de papas a la francesa.", p:"18.000" },
         { n:"Aborrajados", d:"Crujientes y sabrosos vallunos", p:"12.000" },
         { n:"Cheesecake", d:"Nuestra tarta de queso artesanal", p:"12.000" },
-        { n:"Porción de papas francesas", d:"Rústicas, sazonadas a la perfección", p:"9.000" },
+        { n:"Porción de papas a la francesa", d:"Porción de papas a la francesa.", p:"9.000" },
         { n:"Chips de plátano", d:"Viene con salsa de la casa", p:"7.000" },
         { n:"Sándwich combo", d:"Jamón y queso más papas a la francesa", p:"15.000" },
         { n:"Sándwich sencillo de jamón y queso (sin papas)", d:"Sándwich tradicional de jamón y queso, servido sin papas.", p:"9.000" },
@@ -3328,7 +3328,7 @@
           { n:"Mocaccino", d:"Combinación reconfortante de espresso, leche vaporizada y rico chocolate, coronado con una suave capa de espuma.", p:"10.000" },
           { n:"Latte vienés", d:"Delicioso espresso con leche vaporizada, coronado con una generosa capa de crema batida.", p:"10.500" },
           { n:"Affogato", d:"Postre de helado de vainilla \"ahogado\" con un espresso caliente recién preparado.", p:"8.500" },
-          { n:"Frappé de café", d:"Bebida fría y granizada de café, coronada con crema batida, hilos de chocolate y barquillos.", p:"11.000" },
+          { n:"Frappé de café", d:"Bebida fría y granizada de café, coronada con crema batida, hilos de chocolate y barquillos.", p:"14.000" },
           { n:"Limonada de café", d:"Refrescante y original fusión fría que combina la acidez de la limonada con el toque intenso del café y hielo.", p:"10.500" },
         ]},
       ]
@@ -3342,8 +3342,7 @@
           { n:"Jugos en agua", d:"Lulo, mango, piña, fresa, maracuyá, maracumango, mora", p:"9.000" },
           { n:"Milo frío", p:"12.000" }, { n:"Soda michelada", logo:"bretana", p:"8.000" },
           { n:"Soda de frutos rojos", logo:"bretana", p:"14.000" }, { n:"Soda de frutos amarillos", logo:"bretana", p:"14.000" },
-          { n:"Soda frutos rojos", logo:"bretana", p:"14.000" },
-          { n:"Soda fresa", logo:"bretana", p:"14.000" }, { n:"Soda frutos amarillos", logo:"bretana", p:"14.000" },
+          { n:"Soda fresa", logo:"bretana", p:"14.000" },
           { n:"Lulada", p:"14.000" },
         ]},
         { title:"Especiales", items:[
@@ -3382,7 +3381,7 @@
           { n:"Piña colada", d:"Clásico cóctel sin licor a base de piña fresca y crema de coco, servido bien frío." },
         ]},
         { title:"Bebidas especiales · $15.000", items:[
-          { n:"Granizado de café", d:"Bebida helada y espesa con una intensa y refrescante base de café espresso." },
+          { n:"Granizado de café", d:"Bebida helada y espesa con una intensa y refrescante base de café espresso.", p:"11.000" },
           { n:"Limonada de vino tinto", d:"Sofisticada mezcla que fusiona la frescura de la limonada tradicional con notas de vino tinto." },
         ]},
       ]
@@ -3458,6 +3457,9 @@
     const slug = slugify(nombre);
 
     const imagenesPersonalizadas = {
+      /* Las fotografías existentes de Macchiato y Mocaccino estaban intercambiadas. */
+      'macchiato': 'mocaccino.webp',
+      'mocaccino': 'macchiato.webp',
       'sandwich-de-pollo-sencillo-sin-papas':
         'sandwich-pollo-sencillo.webp',
       'sandwich-sencillo-de-jamon-y-queso-sin-papas':
