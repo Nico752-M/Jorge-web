@@ -3455,7 +3455,20 @@
       .replace(/^-+|-+$/g,'');
   }
   function imgPathFor(nombre){
-    return `images/menu/${slugify(nombre)}.webp`;
+    const slug = slugify(nombre);
+
+    const imagenesPersonalizadas = {
+      'sandwich-de-pollo-sencillo-sin-papas':
+        'sandwich-pollo-sencillo.webp',
+      'sandwich-sencillo-de-jamon-y-queso-sin-papas':
+        'sandwich-de-jamon-y-queso.webp'
+    };
+
+    if (imagenesPersonalizadas[slug]) {
+      return `images/menu/${imagenesPersonalizadas[slug]}`;
+    }
+
+    return `images/menu/${slug}.webp`;
   }
   function onImgErr(img, nombre){
     img.outerHTML = `<span class="mono">${initials(nombre)}</span>`;
